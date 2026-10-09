@@ -1,4 +1,4 @@
-# Primary source documents. Fetched, hashed and completeness-checked by scripts/fetch_sources.py.
+# Primary source documents. Fetched, hashed and completeness-checked by app/scripts/fetch_sources.py.
 #
 # WHY EVERY ENTRY CARRIES A `must_contain` AND A `unit_count`
 #   A PDF that downloads with HTTP 200 and has a text layer can still be the wrong document, a

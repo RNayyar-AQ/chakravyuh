@@ -84,13 +84,13 @@ risk in the corpus and are labelled accordingly.
 Procedure per record: open the instrument → confirm the section number → paste the exact text →
 set `verbatim_status: "verified"`, `provenance: "gazette_pdf"`, record `page` and
 `source_pdf_sha256` → leave `sha256` as `""` (recomputed on build) →
-`python scripts/build_kb.py && python scripts/check_sources.py`. If a provision turns out to say
-something different, **fix the rule** and re-run `scripts/run_demo.py`; the gap register changing
+`python app/scripts/build_kb.py && python app/scripts/check_sources.py`. If a provision turns out to say
+something different, **fix the rule** and re-run `app/scripts/run_demo.py`; the gap register changing
 is the system working.
 
 ## URLs
 
-`python scripts/check_sources.py` checks every URL in the store. Current: **27/31 reachable,
+`python app/scripts/check_sources.py` checks every URL in the store. Current: **27/31 reachable,
 2 blocked (403, bot protection), 2 timed out, 0 dead.** A timeout is not a dead link — curl
 resolves both SCC Online URLs with a 301.
 
@@ -109,7 +109,7 @@ confirmed reading of the notified text. Say so, or get the text.
 
 ### This is now enforced, not just documented
 
-`chakravyuh/analysis/gap_register.py` computes the gap register's `confidence` column from the
+`app/chakravyuh/analysis/gap_register.py` computes the gap register's `confidence` column from the
 provenance of the clauses each row cites. A row is `certain` only when every Indian clause it
 cites carries the instrument's own words from a primary source, and `likely` the moment one is a
 summary. A **negative finding** — a claim that an instrument is silent — is held one step

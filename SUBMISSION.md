@@ -9,11 +9,18 @@
 > replayed under three encoded legal regimes. Where an obligation fails to fire in time, the
 > system names the clause responsible.
 
-**Run everything, offline, in one command:**
+**Run everything, offline:**
+
+```bash
+make install          # Python deps + app/web/node_modules
+make dev              # backend on :8000, UI on :3000 — builds artefacts first if missing
+```
+
+Evidence only, no UI:
 
 ```bash
 pip install -e ".[test,ui,kb]"
-bash scripts/replay_demo.sh          # no network required
+bash app/scripts/replay_demo.sh          # no network required
 ```
 
 ---
@@ -22,28 +29,28 @@ bash scripts/replay_demo.sh          # no network required
 
 **Five documents are committed. Everything else is generated**, because the runs are
 deterministic — the same seed replays to the same ledger head hash — so a committed snapshot
-would only ever be a second source of truth to disagree with. `bash scripts/replay_demo.sh`
+would only ever be a second source of truth to disagree with. `bash app/scripts/replay_demo.sh`
 rebuilds all of it in about 35 seconds, offline.
 
 | Criterion | Evidence | Where it comes from |
 |---|---|---|
-| **1. Knowledge base quality** | [`data/sources/MANIFEST.yaml`](data/sources/MANIFEST.yaml) — every source with its SHA-256 and verification status | `docs/kb_report.md`, `docs/retrieval_eval.md` ← `python scripts/build_kb.py && python scripts/eval_retrieval.py` |
-| **2. Agent capability** | [`docs/architecture.md`](docs/architecture.md) — the six agents, their blind spots, the tick loop | `docs/demo_report.md`, `docs/adviser_eval.md` ← `bash scripts/replay_demo.sh` |
-| **3. Gap identification** | **[`docs/gap_register.md`](docs/gap_register.md)** — 11 gaps, each with an Indian clause, a neighbour and a global example | `python scripts/run_demo.py --seed 0` |
-| **4. Auditability** | the ledger itself, and the **Why?** tab in the UI | `python scripts/verify_ledger.py --all`, then `--tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl` |
+| **1. Knowledge base quality** | [`data/sources/MANIFEST.yaml`](data/sources/MANIFEST.yaml) — every source with its SHA-256 and verification status | `docs/kb_report.md`, `docs/retrieval_eval.md` ← `python app/scripts/build_kb.py && python app/scripts/eval_retrieval.py` |
+| **2. Agent capability** | [`docs/architecture.md`](docs/architecture.md) — the six agents, their blind spots, the tick loop | `docs/demo_report.md`, `docs/adviser_eval.md` ← `bash app/scripts/replay_demo.sh` |
+| **3. Gap identification** | **[`docs/gap_register.md`](docs/gap_register.md)** — 11 gaps, each with an Indian clause, a neighbour and a global example | `python app/scripts/run_demo.py --seed 0` |
+| **4. Auditability** | the ledger itself, and the **Why?** tab in the UI | `python app/scripts/verify_ledger.py --all`, then `--tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl` |
 | **5. ITU standards alignment** | [`docs/y3172_map.md`](docs/y3172_map.md) · [`docs/ai_readiness_map.md`](docs/ai_readiness_map.md) | generated from the `@node` decorators and from ITU's own `dimensions.json` |
 
 **Self-audit:** `docs/rubric_status.html` — 22 checks measured on every run, not asserted by
 hand. Currently **20 PASS · 2 WAIVED with printed reasons · 0 FAIL**. A waived check is one
 whose condition does not hold and which we decided should not, for a reason that lives in the
-check's own code. `python scripts/rubric_audit.py --strict` fails on a waiver too.
+check's own code. `python app/scripts/rubric_audit.py --strict` fails on a waiver too.
 
 ## 2. Mandatory brief items
 
-- [x] **Queryable policy/legal adviser that cannot act** — [`chakravyuh/agents/adviser.py`](chakravyuh/agents/adviser.py). Holds zero powers, proposes nothing. Scored 23/23 on never citing a clause outside the retrieved set.
-- [x] **Institutional actor agents + multi-agent coordination** — six roles in [`chakravyuh/agents/roles.py`](chakravyuh/agents/roles.py), resolved against one world state by the Game Master.
-- [x] **Events released progressively, chunked, uneven per agent** — [`chakravyuh/sim/bus.py`](chakravyuh/sim/bus.py) + per-event `delay_by_role`. Nine events reach two or more roles at different times; the cross-border channel runs 75 minutes behind.
-- [x] **Audit logging + reasoning traces** — hash-chained ledger, 928 entries in the India run. Every proposal carries `reasoning`, `cited_rule_ids` and `cited_clause_ids`. `scripts/export_audit_sample.py` writes the first 50 entries, which verify as a chain on their own.
+- [x] **Queryable policy/legal adviser that cannot act** — [`app/chakravyuh/agents/adviser.py`](app/chakravyuh/agents/adviser.py). Holds zero powers, proposes nothing. Scored 23/23 on never citing a clause outside the retrieved set.
+- [x] **Institutional actor agents + multi-agent coordination** — six roles in [`app/chakravyuh/agents/roles.py`](app/chakravyuh/agents/roles.py), resolved against one world state by the Game Master.
+- [x] **Events released progressively, chunked, uneven per agent** — [`app/chakravyuh/sim/bus.py`](app/chakravyuh/sim/bus.py) + per-event `delay_by_role`. Nine events reach two or more roles at different times; the cross-border channel runs 75 minutes behind.
+- [x] **Audit logging + reasoning traces** — hash-chained ledger, 928 entries in the India run. Every proposal carries `reasoning`, `cited_rule_ids` and `cited_clause_ids`. `app/scripts/export_audit_sample.py` writes the first 50 entries, which verify as a chain on their own.
 - [x] **ITU reference documents ingested into a vector KB** — ChromaDB `kb_main`, 257 chunks, each carrying `clause_id`, `instrument`, `jurisdiction`, `page`, `sha256`, `verbatim_status`.
 - [x] **AI Readiness perspectives mapped** — all 13 dimensions accounted for, labels read from ITU's own `dimensions.json`.
 
@@ -79,7 +86,7 @@ Stated in full in [`docs/limits.md`](docs/limits.md). The short version:
 
 Two, both argued rather than overlooked:
 
-1. **The package stays at `chakravyuh/`, not `src/chakravyuh/nodes/…` named after Y.3172 nodes.** Node membership is declared by an `@node("P")` decorator on every entry point and [`docs/y3172_map.md`](docs/y3172_map.md) is generated from that registry — which is stronger evidence than a directory name, because it cannot drift from the code and is checked by a test. Restructuring a working, 140-test system the night before the event would have risked the demo to gain a cosmetic signal.
+1. **The engine is not split into directories named after Y.3172 nodes** (`src/chakravyuh/nodes/P/…`). Node membership is declared by an `@node("P")` decorator on every entry point, and [`docs/y3172_map.md`](docs/y3172_map.md) is generated by walking that registry. That is stronger evidence than a directory name, because it cannot drift from the code and a test checks it. A single function also frequently belongs to one node while living beside the module it serves; a directory layout would force a false choice. Everything executable *is* under `app/`, one tier per directory, and a test fails the build if anything else appears at the repository root.
 2. **Clause data lives under `data/`, not `kb/`.** Same contents, same manifest, same schema — `data/sources/MANIFEST.yaml`, `data/clauses/*.jsonl`. Renaming it would have broken every generated artefact path for no judge-visible gain.
 
 ## 7. Known gaps in the submission itself

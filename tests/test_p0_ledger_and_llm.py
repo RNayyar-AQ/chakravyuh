@@ -162,7 +162,7 @@ def test_env_example_documents_every_variable_the_code_reads():
     declared = set(re.findall(r"^#?\s*([A-Z][A-Z0-9_]+)=", (root / ".env.example").read_text(),
                               flags=re.M))
     read: set[str] = set()
-    for src in (root / "chakravyuh").rglob("*.py"):
+    for src in (root / "app" / "chakravyuh").rglob("*.py"):
         read |= set(re.findall(r'environ(?:\.get)?\(\s*"([A-Z][A-Z0-9_]+)"', src.read_text()))
     # Provider keys are read by LiteLLM and checked by credential_env_for, never by os.environ
     # here, so they are legitimately documented without appearing in `read`.

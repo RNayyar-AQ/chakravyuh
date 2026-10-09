@@ -75,7 +75,7 @@ def test_card_reproduces_and_round_trips(scenario, packs, tmp_path):
     card = build_card(scenario, packs, "fcc_mdri", "P3", [m], seed=0, runs_dir=str(tmp_path))
     assert card is not None, "this mutation should break P3 under fcc_mdri"
     assert card.margin < 0
-    assert card.replay_cmd.startswith("python scripts/run_fuzz.py --replay")
+    assert card.replay_cmd.startswith("python app/scripts/run_fuzz.py --replay")
 
     again = build_card(scenario, packs, "fcc_mdri", "P3", card.mutations, seed=card.seed,
                        runs_dir=str(tmp_path))

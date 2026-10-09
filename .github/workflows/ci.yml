@@ -26,30 +26,47 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[test,ui,kb]"
+          pip install -e ".[test,ui,kb,api]"
 
       - name: Lint
         run: |
           pip install ruff
-          ruff check chakravyuh app scripts tests --select F,E9,B
+          ruff check app tests --select F,E9,B
 
       - name: Build the knowledge base
-        run: python scripts/build_kb.py
+        run: python app/scripts/build_kb.py
 
       - name: Replay the demo
-        run: python scripts/run_demo.py --seed 0
+        run: python app/scripts/run_demo.py --seed 0
 
       - name: Verify every ledger
-        run: python scripts/verify_ledger.py --all
+        run: python app/scripts/verify_ledger.py --all
 
       - name: Tamper test — an edited ledger must fail
-        run: python scripts/verify_ledger.py --tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl
+        run: python app/scripts/verify_ledger.py --tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl
 
       - name: Tests
         run: python -m pytest -q
 
       - name: Rubric audit
-        run: python scripts/rubric_audit.py
+        run: python app/scripts/rubric_audit.py
+
+      - name: Export the UI data bundle
+        run: python app/scripts/export_web.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/web/package-lock.json
+
+      - name: Build the frontend
+        working-directory: app/web
+        run: |
+          npm ci
+          npm run lint
+          npx tsc --noEmit
+          npm run build
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -58,4 +75,4 @@ jobs:
           path: |
             docs/
             outputs/
-            out/
+            app/web/out/

@@ -164,6 +164,6 @@ def test_kb_report_carries_the_provenance_warning(built_kb):
     report = Path(__file__).resolve().parents[1] / "docs/kb_report.md"
     if not report.exists():
         import pytest
-        pytest.skip("run scripts/build_kb.py first")
+        pytest.skip("run app/scripts/build_kb.py first")
     body = report.read_text(encoding="utf-8")
     assert "PROVENANCE" in body

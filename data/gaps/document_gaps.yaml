@@ -9,7 +9,7 @@
 #   Those are read, not simulated, and the register says which is which in its `source` column.
 #
 # HOW CONFIDENCE IS SET -- it is NOT written here
-#   `confidence` is COMPUTED by chakravyuh/analysis/gap_register.py from the provenance of the
+#   `confidence` is COMPUTED by app/chakravyuh/analysis/gap_register.py from the provenance of the
 #   clause records a row cites:
 #       certain  -- every cited clause carries the instrument's own words from a primary source
 #       likely   -- at least one cited clause is a summary (secondary_source or model_written)

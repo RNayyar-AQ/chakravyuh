@@ -16,22 +16,22 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-WEB = ROOT / "web"
+WEB = ROOT / "app" / "web"
 BUNDLE = WEB / "public" / "data" / "bundle.json"
-EXPORTER = ROOT / "scripts" / "export_web.py"
+EXPORTER = ROOT / "app" / "scripts" / "export_web.py"
 
 
 @pytest.fixture(scope="module")
 def bundle() -> dict:
     if not BUNDLE.exists():
-        pytest.skip("no bundle; run scripts/showcase.py then scripts/export_web.py")
+        pytest.skip("no bundle; run app/scripts/showcase.py then app/scripts/export_web.py")
     return json.loads(BUNDLE.read_text())
 
 
 def test_exporter_exists_and_is_wired_into_the_showcase():
     assert EXPORTER.exists()
-    showcase = (ROOT / "scripts" / "showcase.py").read_text(encoding="utf-8")
-    assert "scripts/export_web.py" in showcase, "export stage missing from the showcase run"
+    showcase = (ROOT / "app" / "scripts" / "showcase.py").read_text(encoding="utf-8")
+    assert "app/scripts/export_web.py" in showcase, "export stage missing from the showcase run"
 
 
 def test_scorecard_margins_match_the_comparison_artefact(bundle):
@@ -119,7 +119,7 @@ def test_the_ui_declares_every_bundle_key(bundle):
 
 def test_generated_data_is_not_committed():
     """Same rule as outputs/ and data/clauses/: we commit sources, not derivatives."""
-    out = subprocess.run(["git", "ls-files", "web/public/data", "web/out", "web/node_modules"],
+    out = subprocess.run(["git", "ls-files", "app/web/public/data", "app/web/out", "app/web/node_modules"],
                          cwd=ROOT, capture_output=True, text=True, check=False)
     assert out.stdout.strip() == "", f"build products are tracked:\n{out.stdout}"
 

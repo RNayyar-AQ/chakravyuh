@@ -24,7 +24,7 @@ ENGINE_ENTRY = "chakravyuh.policy.engine"
 
 def _project_imports(module: str) -> list[str]:
     """Every module name imported by `module`, with relative imports resolved."""
-    path = ROOT.joinpath(*module.split(".")).with_suffix(".py")
+    path = ROOT.joinpath("app", *module.split(".")).with_suffix(".py")
     if not path.exists():
         return []
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -145,7 +145,7 @@ def test_the_ci_check_would_catch_a_real_assertion():
 # ----------------------------------------------------------------- submission surface
 @pytest.mark.parametrize("name", [
     "LICENSE", "NOTICE", "CITATION.cff", "SUBMISSION.md", "README.md",
-    "requirements.lock", ".env.example", "scripts/replay_demo.sh",
+    "requirements.lock", ".env.example", "app/scripts/replay_demo.sh",
     "docs/limits.md", "docs/architecture.md", "data/sources/MANIFEST.yaml",
 ])
 def test_submission_file_exists(name):
@@ -154,7 +154,7 @@ def test_submission_file_exists(name):
 
 def test_replay_script_pins_replay_mode_and_is_executable():
     """The stage script must not be able to call a provider, whatever the environment says."""
-    script = ROOT / "scripts/replay_demo.sh"
+    script = ROOT / "app/scripts/replay_demo.sh"
     text = script.read_text(encoding="utf-8")
     assert "CHAKRAVYUH_LLM_MODE=replay" in text
     assert script.stat().st_mode & 0o111, "replay_demo.sh is not executable"

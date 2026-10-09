@@ -13,7 +13,7 @@ from chakravyuh.schemas import Decision, Event, Proposal
 from chakravyuh.world.state import build_world
 
 ROOT = Path(__file__).resolve().parents[1]
-ENGINE = ROOT / "chakravyuh/policy/engine.py"
+ENGINE = ROOT / "app/chakravyuh/policy/engine.py"
 
 
 def _imports_of(module: str) -> set[str]:
@@ -65,7 +65,7 @@ def test_engine_has_no_llm_import():
 
 
 def test_whole_policy_package_is_llm_free():
-    for mod_path in sorted((ROOT / "chakravyuh/policy").glob("*.py")):
+    for mod_path in sorted((ROOT / "app/chakravyuh/policy").glob("*.py")):
         module = f"chakravyuh.policy.{mod_path.stem}"
         reachable = _transitive_imports(module) | _imports_of(module)
         assert not any(m.startswith("chakravyuh.llm") for m in reachable), module

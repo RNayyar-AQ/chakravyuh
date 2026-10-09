@@ -92,7 +92,7 @@ def test_cap_info_language_is_the_local_language_not_the_alphabetically_first():
     """An Odia district's primary info block must read or-IN."""
     run = ROOT / "runs/amphan_2020__india_current__rule__seed0.jsonl"
     if not run.exists():
-        pytest.skip("no demo run; python scripts/run_demo.py")
+        pytest.skip("no demo run; python app/scripts/run_demo.py")
     seen = {}
     for line in run.read_text(encoding="utf-8").splitlines():
         entry = json.loads(line)
@@ -155,7 +155,7 @@ def test_every_document_gap_has_a_valid_type_and_three_instances():
 def test_gap_register_has_the_rubric_columns_first_and_enough_rows():
     path = ROOT / "outputs/gap_register.csv"
     if not path.exists():
-        pytest.skip("no register; python scripts/run_demo.py")
+        pytest.skip("no register; python app/scripts/run_demo.py")
     rows = list(csv.DictReader(path.open(encoding="utf-8")))
     assert len(rows) >= 5
     assert list(rows[0].keys())[: len(RUBRIC_COLUMNS)] == RUBRIC_COLUMNS
@@ -245,7 +245,7 @@ def test_the_audit_sample_verifies_on_its_own():
     """A prefix of a hash chain is a chain; a curated subset would not be."""
     sample = ROOT / "outputs/audit_sample.jsonl"
     if not sample.exists():
-        pytest.skip("no sample; python scripts/export_audit_sample.py")
+        pytest.skip("no sample; python app/scripts/export_audit_sample.py")
     from chakravyuh.audit.ledger import verify
     ok, msg = verify(sample)
     assert ok, msg
@@ -256,7 +256,7 @@ def test_tamper_demo_detects_a_single_character_edit():
     run = ROOT / "runs/amphan_2020__india_current__rule__seed0.jsonl"
     if not run.exists():
         pytest.skip("no demo run")
-    proc = subprocess.run([sys.executable, "scripts/verify_ledger.py", "--tamper-demo", str(run)],
+    proc = subprocess.run([sys.executable, "app/scripts/verify_ledger.py", "--tamper-demo", str(run)],
                           capture_output=True, text=True, cwd=ROOT)
     assert proc.returncode == 0, proc.stderr
     assert "FAIL" in proc.stdout, proc.stdout
@@ -283,7 +283,7 @@ def test_the_eval_set_has_answerable_and_unanswerable_questions():
 def test_retrieval_eval_reports_abstention_separability():
     path = ROOT / "outputs/retrieval_eval.json"
     if not path.exists():
-        pytest.skip("no eval; python scripts/eval_retrieval.py")
+        pytest.skip("no eval; python app/scripts/eval_retrieval.py")
     results = json.loads(path.read_text(encoding="utf-8"))
     scored = [r for r in results if r.get("questions")]
     assert len(scored) >= 3
@@ -298,7 +298,7 @@ def test_ai_readiness_map_accounts_for_every_itu_dimension():
     src = ROOT / "data/sources/INTL/02_ITU_AI_Readiness_dimensions.json"
     out = ROOT / "docs/ai_readiness_map.md"
     if not out.exists():
-        pytest.skip("no map; python scripts/gen_ai_readiness_map.py")
+        pytest.skip("no map; python app/scripts/gen_ai_readiness_map.py")
     data = json.loads(src.read_text(encoding="utf-8"))
     text = out.read_text(encoding="utf-8")
     for dim in data["dimensions"]:
@@ -317,7 +317,7 @@ def test_d1_is_the_data_model_marketplace_not_open_source():
 
 @pytest.mark.slow
 def test_rubric_audit_has_no_failing_checks():
-    proc = subprocess.run([sys.executable, "scripts/rubric_audit.py"],
+    proc = subprocess.run([sys.executable, "app/scripts/rubric_audit.py"],
                           capture_output=True, text=True, cwd=ROOT)
     assert proc.returncode == 0, proc.stdout[-3000:]
     assert "0 FAIL" in proc.stdout, proc.stdout[-3000:]

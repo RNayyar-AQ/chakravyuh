@@ -50,28 +50,56 @@ replay command with identical margins.
 
 ## Quickstart
 
+Two commands. The first installs, the second runs everything.
+
+```bash
+make install          # Python deps + app/web/node_modules
+make dev              # backend on :8000, frontend on :3000, one Ctrl-C stops both
+```
+
+`make dev` builds the artefacts first if they are missing, so a fresh clone goes straight to a
+working page. If another project is already on a port, it says so and takes the next one.
+
+<details>
+<summary>Without make</summary>
+
 ```bash
 python -m venv .venv && source .venv/bin/activate     # Python 3.11
-pip install -e ".[test,ui,kb]"                        # kb = ChromaDB, for the ITU vector index
+pip install -e ".[test,ui,kb,api]"                    # kb = ChromaDB; api = the HTTP tier
+cd app/web && npm install && cd ../..
 
-python scripts/showcase.py            # EVERYTHING, in dependency order (~4 min with fuzzing)
-python scripts/showcase.py --fast     # same, without the fuzz campaign (~35 s)
-
-pytest                                # every acceptance gate
+python app/dev.py                                     # the same thing make dev runs
 ```
+</details>
 
-Then the web UI, which renders what that run produced:
+| Command | What it does |
+|---|---|
+| `make dev` | backend and frontend together — the one you want |
+| `make artefacts` | run the pipeline and export the UI's data bundle (~35 s, offline) |
+| `make build` | artefacts, then the static site into `app/web/out/` |
+| `make test` | the Python suite, every acceptance gate |
+| `make lint` | ruff, ESLint and `tsc` |
+| `make api` / `make web` | one half on its own |
+| `make clean` | delete every generated artefact |
+
+### Three interfaces, deliberately different jobs
+
+**`app/web/`** is the submission UI: a Next.js static export over the sealed artefacts. It
+computes nothing, so it is identical for every judge, and `make build` produces a folder that
+works with the Wi-Fi switched off.
+
+**`app/api/`** is a read-only HTTP tier used by `make dev`. It serves the same artefacts and can
+re-walk every hash chain *on request*, so a judge asking "is that still true right now?" gets the
+answer from the chain rather than from a number baked in at build time. It decides nothing, writes
+nothing, and a test fails the build if it ever imports the simulator.
+
+**`app/ui/streamlit_app.py`** is the operator view. It drives a live run and exposes the
+human-in-the-loop approval button a static page cannot.
 
 ```bash
-cd web && npm install
-npm run dev                           # http://localhost:3000
-npm run build && npx serve out        # static export, no server needed
+python app/scripts/showcase.py        # EVERYTHING, in dependency order (~4 min with fuzzing)
+python app/scripts/showcase.py --fast # same, without the fuzz campaign (~35 s)
 ```
-
-Two interfaces, deliberately different jobs. **`web/` is the submission UI**: a static Next.js
-site over the sealed artefacts, so it is identical for every judge and works with the Wi-Fi off.
-`streamlit run app/streamlit_app.py` is the *operator* view — it drives a live run and exposes
-the human-in-the-loop approval button that a static page cannot.
 
 `showcase.py` ends by printing the rubric scorecard and writing
 `docs/rubric_status.html`. Each stage is also a standalone command, so
@@ -79,19 +107,19 @@ anything that fails can be re-run on its own:
 
 | # | Command | What it produces |
 |---|---|---|
-| 1 | `python scripts/build_kb.py` | clause store (157 records), chunks, Chroma `kb_main`, compiled packs → `docs/kb_report.md` |
-| 2 | `python scripts/eval_retrieval.py` | BM25 / vector / hybrid / hybrid+rerank / tree, with abstention separability → `docs/retrieval_eval.md` |
-| 3 | `python scripts/eval_adviser.py` | Adviser scored against 23 hand-labelled cases → `docs/adviser_eval.md` |
-| 4 | `python scripts/run_demo.py --seed 0` | replays Amphan under all three packs → `docs/demo_report.md`, `docs/gap_register.md + outputs/gap_register.csv`, `outputs/comparison.json` |
-| 5 | `python scripts/run_fuzz.py` | mutates the scenario until a property breaks, then shrinks it → `docs/failure_atlas.md` |
-| 6 | `python scripts/export_audit_sample.py` | first 50 ledger entries, self-verifying → `outputs/audit_sample.jsonl` |
-| 7 | `python scripts/gen_y3172_map.py` | Y.3172 node map, generated from the `@node` decorators |
-| 8 | `python scripts/gen_ai_readiness_map.py` | AI Readiness 2.0 map, labels read from ITU's `dimensions.json` |
-| 9 | `python scripts/gen_run_stats.py` | wall time, LLM calls and tokens per run → `docs/run_stats.md` |
-| 10 | `python scripts/check_sources.py` | do the cited URLs still resolve? (needs network) |
-| 11 | `python scripts/verify_ledger.py --all` | every run's hash chain |
-| 12 | `python scripts/verify_ledger.py --tamper-demo <ledger>` | **flip one character, watch the chain catch it** |
-| 13 | `python scripts/rubric_audit.py` | 18 rubric checks → `docs/rubric_status.html` |
+| 1 | `python app/scripts/build_kb.py` | clause store (157 records), chunks, Chroma `kb_main`, compiled packs → `docs/kb_report.md` |
+| 2 | `python app/scripts/eval_retrieval.py` | BM25 / vector / hybrid / hybrid+rerank / tree, with abstention separability → `docs/retrieval_eval.md` |
+| 3 | `python app/scripts/eval_adviser.py` | Adviser scored against 23 hand-labelled cases → `docs/adviser_eval.md` |
+| 4 | `python app/scripts/run_demo.py --seed 0` | replays Amphan under all three packs → `docs/demo_report.md`, `docs/gap_register.md + outputs/gap_register.csv`, `outputs/comparison.json` |
+| 5 | `python app/scripts/run_fuzz.py` | mutates the scenario until a property breaks, then shrinks it → `docs/failure_atlas.md` |
+| 6 | `python app/scripts/export_audit_sample.py` | first 50 ledger entries, self-verifying → `outputs/audit_sample.jsonl` |
+| 7 | `python app/scripts/gen_y3172_map.py` | Y.3172 node map, generated from the `@node` decorators |
+| 8 | `python app/scripts/gen_ai_readiness_map.py` | AI Readiness 2.0 map, labels read from ITU's `dimensions.json` |
+| 9 | `python app/scripts/gen_run_stats.py` | wall time, LLM calls and tokens per run → `docs/run_stats.md` |
+| 10 | `python app/scripts/check_sources.py` | do the cited URLs still resolve? (needs network) |
+| 11 | `python app/scripts/verify_ledger.py --all` | every run's hash chain |
+| 12 | `python app/scripts/verify_ledger.py --tamper-demo <ledger>` | **flip one character, watch the chain catch it** |
+| 13 | `python app/scripts/rubric_audit.py` | 18 rubric checks → `docs/rubric_status.html` |
 
 Add `--strict` to `rubric_audit.py` or `showcase.py` to make a *waived* check fail too — the
 mode to use when you want the state with no allowances made.
@@ -112,15 +140,15 @@ mode. Two ways in — pick either:
 ```bash
 # A. Local — the ITU Sandbox reference stack. NO API KEY, just Ollama running.
 ollama pull qwen2.5:14b && ollama pull nomic-embed-text
-CHAKRAVYUH_LLM_MODE=record python scripts/run_demo.py --tier llm
+CHAKRAVYUH_LLM_MODE=record python app/scripts/run_demo.py --tier llm
 
 # B. Hosted — one model, for the showcase run only. Needs that provider's key.
 export CHAKRAVYUH_HOSTED_MODEL=anthropic/claude-sonnet-5
 export ANTHROPIC_API_KEY=sk-ant-...
-CHAKRAVYUH_LLM_MODE=record python scripts/run_demo.py --tier llm --hosted
+CHAKRAVYUH_LLM_MODE=record python app/scripts/run_demo.py --tier llm --hosted
 
 # Then replay forever, offline and identical every time, with no key and no provider:
-python scripts/run_demo.py --tier llm
+python app/scripts/run_demo.py --tier llm
 ```
 
 | What you want | Variable | Key needed |
@@ -150,7 +178,7 @@ documents every variable, and a test asserts it stays in sync with what the code
 **70.1 % of the corpus is now the instrument's own words**, up from 0 %. Each real record carries
 its page, a hash of the text, and `source_pdf_sha256` — the hash of the PDF itself, which pins the
 document even if the link rots. Both eGazette URLs verify as HTTP 200 `application/pdf`.
-`scripts/check_sources.py` checks every URL in the store: **0 dead**.
+`app/scripts/check_sources.py` checks every URL in the store: **0 dead**.
 
 ITU's own India README asks for clause-wise chunking of the Acts because Indian statute text is
 section-numbered. ITU's reference ingest splits on ~256-word paragraph boundaries and records no
@@ -359,31 +387,54 @@ the data/model marketplace.
 
 ## Repository
 
+Everything executable lives under `app/`. Beside it sit the three things that are not code:
+what goes in (`data/`), what a person reads (`docs/`), and the proof (`tests/`). A test fails the
+build if anything else appears at the root.
+
 ```
-chakravyuh/
-  schemas.py          all Pydantic models          y3172.py   node registry -> generated map
-  kb/      ingest · clause_store · retrieve · tree_index
-  policy/  compiler · engine          (engine imports nothing from llm/, enforced by test)
-  world/   state · dynamics           (dynamics is the only writer to the world)
-  sim/     events · bus · game_master · runner
-  agents/  base · roles · rule_agents · llm_agent · adviser
-  fuzz/    properties · mutations · machine · shrink_report
-  analysis/ gaps · compare · gap_register
-  audit/   ledger · trace            llm/  client (record/replay)
-  alerts/  cap        (CAP 1.2 / ITU-T X.1303 envelopes; no model, so replay is identical)
-app/streamlit_app.py   scripts/   tests/
-web/      Next.js 16 static site; renders artefacts, computes nothing
-  app/{,simulation,agents,failures,gaps,evidence,standards}   lib/types.ts = the data contract
-data/{sources,packs,scenarios,eval,gaps}   inputs only — see data/README.md
+app/
+  chakravyuh/   the engine — the only thing that decides anything
+    schemas.py        all Pydantic models        y3172.py  node registry -> generated map
+    kb/       ingest · clause_store · retrieve · tree_index
+    policy/   compiler · engine        (engine imports nothing from llm/, enforced by test)
+    world/    state · dynamics         (dynamics is the only writer to the world)
+    sim/      events · bus · game_master · runner
+    agents/   base · roles · rule_agents · llm_agent · adviser
+    fuzz/     properties · mutations · machine · shrink_report
+    analysis/ gaps · compare · gap_register
+    audit/    ledger · trace           llm/  client (record/replay)
+    alerts/   cap   (CAP 1.2 / ITU-T X.1303 envelopes; no model, so replay is identical)
+  scripts/      the pipeline, one CLI per stage; showcase.py runs them in dependency order
+  api/          read-only FastAPI over the artefacts  (decides nothing, enforced by test)
+  web/          Next.js 16 static site                (computes nothing, enforced by test)
+    app/{,simulation,agents,failures,gaps,evidence,standards}
+    lib/types.ts    the contract between the exporter and the UI
+  ui/           streamlit operator view, for driving a live run
+  dev.py        starts the backend and the frontend together
+
+data/     inputs only — see data/README.md
 docs/     the five documents the ITU architecture names; everything else is generated
-outputs/  generated data: gap_register.csv · audit_sample.jsonl · comparison.json
-runs/     generated ledgers, one per (scenario, pack, tier, seed)
+tests/    every acceptance gate
+
+outputs/  generated: gap_register.csv · audit_sample.jsonl · comparison.json   (gitignored)
+runs/     generated ledgers, one per (scenario, pack, tier, seed)              (gitignored)
 ```
 
 Generators write straight to their final home — `docs/` for what a judge reads, `outputs/` for
 machine-readable data — so there is no intermediate build directory and no copy step. Only
-sources are committed: `outputs/`, `runs/`, `data/clauses/` and `web/public/data/` are all
-regenerated by `python scripts/showcase.py`, and `.gitignore` says so at each one.
+sources are committed: `outputs/`, `runs/`, `data/clauses/` and `app/web/public/data/` are all
+regenerated by `make artefacts`, and `.gitignore` says so at each one.
+
+### The one rule that holds the layers apart
+
+Each tier may only read the one below it, and a test enforces every arrow:
+
+```
+app/web      renders artefacts            ->  may not compute a number
+app/api      serves artefacts, verifies   ->  may not import the simulator
+app/scripts  run the engine, write files  ->  the only writers
+app/chakravyuh/policy/engine.py           ->  may not reach a model, transitively
+```
 
 ## Future work
 

@@ -5,7 +5,7 @@
 > **Agents propose. Deterministic code decides.**
 
 An agent — LLM or rule-based — can only emit a `Proposal`. It cannot change the world, grant
-itself a power, or invent a clause. Legality is decided by `chakravyuh/policy/engine.py`, a pure
+itself a power, or invent a clause. Legality is decided by `app/chakravyuh/policy/engine.py`, a pure
 function over the compiled policy pack with no I/O, no randomness and **no model**. That last
 property is enforced by a test that walks the whole import graph on every run, not by convention.
 
