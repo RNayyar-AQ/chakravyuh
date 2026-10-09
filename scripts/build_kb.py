@@ -2,7 +2,7 @@
 """Build the knowledge base: clause store + chunks + ITU reference Chroma collections.
 
 Y.3172 nodes: SRC -> C. Writes data/clauses/{clauses.jsonl,chunks.jsonl,clauses.sqlite} and
-out/kb_report.md (spec §9.1).
+docs/kb_report.md (spec §9.1).
 
   python scripts/build_kb.py                 # clause store + chunks, Chroma if installed
   python scripts/build_kb.py --no-chroma     # skip the vector index entirely
@@ -20,7 +20,8 @@ from chakravyuh.kb import ingest
 from chakravyuh.kb.clause_store import ClauseStore, DEFAULT_DB
 from chakravyuh.policy.compiler import compile_all, compile_report
 
-OUT = Path("out")
+DOCS = Path("docs")
+DATA = Path("outputs")
 
 
 def kb_report(result: dict, packs_report: dict) -> str:
@@ -34,7 +35,7 @@ def kb_report(result: dict, packs_report: dict) -> str:
         f"- Clauses: **{integ['total']}**",
         f"- Has a source URL: **{integ['with_source_url']}/{integ['total']}** "
         f"({integ['pct_with_source_url']}%) — *has one*, not *verified against one*; "
-        f"see `out/source_check.md`",
+        f"see `docs/source_check.md`",
         f"- SHA-256 hash matches stored text: **{integ['hash_matching']}/{integ['total']}** "
         f"({integ['pct_hash_matching']}%)",
         f"- Verbatim text verified against the primary source: "
@@ -63,7 +64,7 @@ def kb_report(result: dict, packs_report: dict) -> str:
         ">",
         "> What this does NOT affect: exact lookup, the hash chain, the compiler's",
         "> clause-resolution check, the policy engine, the four properties, gap classification,",
-        "> cross-pack comparison and the ledger. Every result in `out/` is a true statement about",
+        "> cross-pack comparison and the ledger. Every generated result is a true statement about",
         "> *the encoded packs*.",
         ">",
         "> See `data/sources/CLAUSES_PROVENANCE.md` for the verification procedure, the priority",
@@ -114,7 +115,7 @@ def kb_report(result: dict, packs_report: dict) -> str:
         lines.append(f"\n- Embedder: `{chroma.get('embedder', 'n/a')}`")
     else:
         lines += ["", "No vector index was built in this run. Retrieval falls back to BM25 over the",
-                  "same chunks, so every other component still works; see `out/retrieval_eval.md`",
+                  "same chunks, so every other component still works; see `docs/retrieval_eval.md`",
                   "for what that costs."]
 
     lines += [
@@ -165,11 +166,12 @@ def main() -> int:
     report = compile_report(packs.values())
     print(f"packs compiled: {', '.join(sorted(packs))}")
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "kb_report.md").write_text(kb_report(result, report), encoding="utf-8")
-    (OUT / "kb_report.json").write_text(
+    DOCS.mkdir(parents=True, exist_ok=True)
+    DATA.mkdir(parents=True, exist_ok=True)
+    (DOCS / "kb_report.md").write_text(kb_report(result, report), encoding="utf-8")
+    (DATA / "kb_report.json").write_text(
         json.dumps({"ingest": result, "packs": report}, indent=2, sort_keys=True), encoding="utf-8")
-    print(f"wrote {OUT / 'kb_report.md'}")
+    print(f"wrote {DOCS / 'kb_report.md'}")
 
     integ = result["integrity"]
     if integ["pct_hash_matching"] < 100.0:
@@ -179,7 +181,7 @@ def main() -> int:
         print(f"NOTE: {integ['verbatim_verified']}/{integ['total']} clauses "
               f"({integ['pct_verbatim_verified']}%) carry the instrument's own words; "
               f"{integ['total'] - integ['verbatim_verified']} remain model-written summaries. "
-              f"See out/kb_report.md and data/sources/CLAUSES_PROVENANCE.md.")
+              f"See docs/kb_report.md and data/sources/CLAUSES_PROVENANCE.md.")
     return 0
 
 

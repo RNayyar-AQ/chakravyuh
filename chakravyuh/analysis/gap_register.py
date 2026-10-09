@@ -29,7 +29,7 @@ from ..kb.clause_store import ClauseStore
 from ..schemas import GapFinding, PolicyPack
 from ..y3172 import node
 
-OUT_DIR = Path("out")
+OUT_DIR = Path("outputs")
 DOCUMENT_GAPS = Path("data/gaps/document_gaps.yaml")
 
 # The rubric's required column set, in its order, first. Everything after `itu_hook` is ours:

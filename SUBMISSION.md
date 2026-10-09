@@ -23,7 +23,7 @@ bash scripts/replay_demo.sh          # no network required
 | Criterion | Evidence a judge can open | Command to reproduce |
 |---|---|---|
 | **1. Knowledge base quality** | [`data/sources/MANIFEST.yaml`](data/sources/MANIFEST.yaml) · [`docs/kb_report.md`](docs/kb_report.md) · [`docs/retrieval_eval.md`](docs/retrieval_eval.md) | `python scripts/build_kb.py && pytest tests/test_p1_clause_store.py` |
-| **2. Agent capability in error scenarios** | [`docs/architecture.md`](docs/architecture.md) · [`runs/`](runs/) · [`docs/adviser_eval.md`](docs/adviser_eval.md) · video 01:40–03:40 | `bash scripts/replay_demo.sh` |
+| **2. Agent capability in error scenarios** | [`docs/architecture.md`](docs/architecture.md) · [`runs/`](runs/) · [`docs/adviser_eval.md`](docs/adviser_eval.md) | `bash scripts/replay_demo.sh` |
 | **3. Gap identification** (global + neighbour examples) | [`docs/gap_register.md`](docs/gap_register.md) — 11 gaps, each with an Indian clause, a neighbour and a global example | `python scripts/run_demo.py --seed 0` |
 | **4. Auditability** | [`outputs/audit_sample.jsonl`](outputs/audit_sample.jsonl) · the **Why?** tab in the UI | `python scripts/verify_ledger.py --all` then `--tamper-demo <ledger>` |
 | **5. ITU standards alignment** | [`docs/y3172_map.md`](docs/y3172_map.md) · [`docs/ai_readiness_map.md`](docs/ai_readiness_map.md) | `python scripts/gen_y3172_map.py && python scripts/gen_ai_readiness_map.py` |
@@ -80,7 +80,7 @@ Two, both argued rather than overlooked:
 
 ## 7. Known gaps in the submission itself
 
-- `docs/report.pdf`, `docs/slides.pdf` and the demo video are **not in the repo yet**. Script and shot list: [`docs/demo_flow.md`](docs/demo_flow.md); section-by-section source map: [`docs/submission_checklist.md`](docs/submission_checklist.md).
+- `docs/report.pdf`, `docs/slides.pdf` and the demo video are **not in the repo yet**.
 - Three primary sources are still missing and each blocks a finding from reaching `certain`: the **complete** Telecom Cyber Security Rules 2024, the **Telecom Cyber Security Amendment Rules 2025** (G.S.R. 771(E), 22 Oct 2025), and **DoT SOP-2020**. Tracked with status and blocking reason in [`data/sources/MANIFEST.yaml`](data/sources/MANIFEST.yaml).
 
 ## Acknowledgements

@@ -95,7 +95,7 @@ def test_y3172_map_is_generated_from_the_code():
 def test_build_kb_script_runs_and_writes_report():
     res = _script("build_kb.py", "--no-chroma")
     assert res.returncode == 0, res.stderr
-    report = ROOT / "out/kb_report.md"
+    report = ROOT / "docs/kb_report.md"
     assert report.exists()
     body = report.read_text(encoding="utf-8")
     assert "do not edit" in body
@@ -114,16 +114,19 @@ def test_build_kb_script_runs_and_writes_report():
 def test_gen_y3172_map_script_writes_the_map():
     res = _script("gen_y3172_map.py")
     assert res.returncode == 0, res.stderr
-    assert (ROOT / "out/y3172_map.md").exists()
+    assert (ROOT / "docs/y3172_map.md").exists()
 
 
 @pytest.mark.slow
 def test_run_demo_script_produces_register_and_report():
     res = _script("run_demo.py")
     assert res.returncode == 0, res.stderr
-    for name in ("gap_register.csv", "demo_report.md", "comparison.json"):
-        assert (ROOT / "out" / name).exists(), name
-    comparison = json.loads((ROOT / "out/comparison.json").read_text(encoding="utf-8"))
+    # Documents a judge reads land in docs/; machine-readable data lands in outputs/.
+    for name in ("gap_register.md", "demo_report.md"):
+        assert (ROOT / "docs" / name).exists(), name
+    for name in ("gap_register.csv", "comparison.json"):
+        assert (ROOT / "outputs" / name).exists(), name
+    comparison = json.loads((ROOT / "outputs/comparison.json").read_text(encoding="utf-8"))
     assert comparison["divergences"], "the three packs must disagree somewhere"
 
 
@@ -131,7 +134,7 @@ def test_run_demo_script_produces_register_and_report():
 def test_eval_retrieval_script_reports_a_table():
     res = _script("eval_retrieval.py")
     assert res.returncode == 0, res.stderr
-    body = (ROOT / "out/retrieval_eval.md").read_text(encoding="utf-8")
+    body = (ROOT / "docs/retrieval_eval.md").read_text(encoding="utf-8")
     assert "recall@5" in body
     assert "saturated score is not a validated method" in body
 
@@ -140,7 +143,7 @@ def test_eval_retrieval_script_reports_a_table():
 def test_eval_adviser_script_reports_mechanical_criteria():
     res = _script("eval_adviser.py")
     assert res.returncode == 0, res.stderr
-    data = json.loads((ROOT / "out/adviser_eval.json").read_text(encoding="utf-8"))
+    data = json.loads((ROOT / "outputs/adviser_eval.json").read_text(encoding="utf-8"))
     n = data["summary"]["cases"]
     assert n >= 20, "the rubric calls for at least 20 mid-scenario questions"
     assert data["summary"]["c4_no_invented_clause"] == n, \
@@ -170,19 +173,19 @@ def test_verify_ledger_script_detects_tampering(tmp_path, scenario, india_pack):
 @pytest.mark.slow
 def test_check_sources_script_runs_offline_from_saved_results():
     """The URL check must be reportable without a network, so CI and demos are not flaky."""
-    saved = ROOT / "out/source_check.json"
+    saved = ROOT / "outputs/source_check.json"
     if not saved.exists():
-        pytest.skip("run scripts/check_sources.py once with network to seed out/source_check.json")
+        pytest.skip("run scripts/check_sources.py once with network to seed outputs/source_check.json")
     res = _script("check_sources.py", "--offline")
     assert res.returncode == 0, res.stderr
-    body = (ROOT / "out/source_check.md").read_text(encoding="utf-8")
+    body = (ROOT / "docs/source_check.md").read_text(encoding="utf-8")
     assert "what it does not" in body.lower()
     assert "recalled rather than copied" in body
 
 
 @pytest.mark.slow
 def test_dead_urls_are_reported_against_the_records_that_cite_them():
-    saved = ROOT / "out/source_check.json"
+    saved = ROOT / "outputs/source_check.json"
     if not saved.exists():
         pytest.skip("run scripts/check_sources.py once with network")
     data = json.loads(saved.read_text(encoding="utf-8"))
@@ -195,6 +198,6 @@ def test_dead_urls_are_reported_against_the_records_that_cite_them():
     # so no dead link can sit in the corpus without a named list of affected clause records.
     if dead_urls:
         assert dead_recs, "dead URLs found but no clause records attributed to them"
-        body = (ROOT / "out/source_check.md").read_text(encoding="utf-8")
+        body = (ROOT / "docs/source_check.md").read_text(encoding="utf-8")
         for cid in dead_recs:
             assert cid in body, f"{cid} cites a dead URL but is not named in the report"

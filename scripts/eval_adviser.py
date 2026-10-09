@@ -31,7 +31,8 @@ from chakravyuh.agents.adviser import Adviser
 from chakravyuh.kb.clause_store import ClauseStore
 from chakravyuh.llm.client import CacheMiss, LLMClient, extract_json, missing_credential
 
-OUT = Path("out")
+DOCS = Path("docs")
+DATA = Path("outputs")
 CASES = Path("data/eval/adviser_cases.jsonl")
 
 JUDGE_SYSTEM = """You score a legal adviser's answer against a rubric. You are not the adviser.
@@ -151,13 +152,14 @@ def main() -> int:
         "human_checked": 0,
     }
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "adviser_eval.json").write_text(json.dumps({"summary": summary, "rows": rows}, indent=2),
+    DOCS.mkdir(parents=True, exist_ok=True)
+    DATA.mkdir(parents=True, exist_ok=True)
+    (DATA / "adviser_eval.json").write_text(json.dumps({"summary": summary, "rows": rows}, indent=2),
                                            encoding="utf-8")
-    (OUT / "adviser_eval.md").write_text(report(summary, rows), encoding="utf-8")
+    (DOCS / "adviser_eval.md").write_text(report(summary, rows), encoding="utf-8")
     print(f"\nC1 {summary['c1_correct_clause']}/{n}  C4 {summary['c4_no_invented_clause']}/{n}  "
           f"judged {summary['judged']}/{n}  human-checked 0/{n}")
-    print(f"wrote {OUT / 'adviser_eval.md'}")
+    print(f"wrote {DOCS / 'adviser_eval.md'}")
     return 0
 
 

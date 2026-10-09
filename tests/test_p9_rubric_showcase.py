@@ -153,7 +153,7 @@ def test_every_document_gap_has_a_valid_type_and_three_instances():
 
 
 def test_gap_register_has_the_rubric_columns_first_and_enough_rows():
-    path = ROOT / "out/gap_register.csv"
+    path = ROOT / "outputs/gap_register.csv"
     if not path.exists():
         pytest.skip("no register; python scripts/run_demo.py")
     rows = list(csv.DictReader(path.open(encoding="utf-8")))
@@ -167,7 +167,7 @@ def test_gap_register_has_the_rubric_columns_first_and_enough_rows():
 
 
 def test_gap_types_cover_all_four_of_the_rubrics_classes():
-    path = ROOT / "out/gap_register.csv"
+    path = ROOT / "outputs/gap_register.csv"
     if not path.exists():
         pytest.skip("no register")
     rows = list(csv.DictReader(path.open(encoding="utf-8")))
@@ -281,7 +281,7 @@ def test_the_eval_set_has_answerable_and_unanswerable_questions():
 
 
 def test_retrieval_eval_reports_abstention_separability():
-    path = ROOT / "out/retrieval_eval.json"
+    path = ROOT / "outputs/retrieval_eval.json"
     if not path.exists():
         pytest.skip("no eval; python scripts/eval_retrieval.py")
     results = json.loads(path.read_text(encoding="utf-8"))

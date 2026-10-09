@@ -4,7 +4,7 @@
 Why this document exists. The brief's eighth perspective is digital infrastructure and energy,
 and the usual way to address it is a paragraph claiming efficiency. This measures it instead:
 every run records its wall time, its LLM call count and its token usage in the ledger's
-RUN_HEADER and in out/comparison.json, and the numbers are read back here.
+RUN_HEADER and in outputs/comparison.json, and the numbers are read back here.
 
 The honest headline is that the deterministic tier costs no tokens at all, which is the actual
 engineering claim: the legality decision is code, so the expensive component is optional and is
@@ -20,8 +20,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-COMPARISON = Path("out/comparison.json")
-FUZZ = Path("out/fuzz_summary.json")
+COMPARISON = Path("outputs/comparison.json")
+FUZZ = Path("outputs/fuzz_summary.json")
 OUT = Path("docs/run_stats.md")
 
 

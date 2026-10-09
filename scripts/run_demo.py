@@ -6,7 +6,7 @@
   python scripts/run_demo.py --tier llm               # LLM agents (needs a populated replay cache)
   python scripts/run_demo.py --ask "Who can order a suspension?"
 
-Writes out/demo_report.md, out/gap_register.csv, out/comparison.json and one ledger per run under
+Writes docs/demo_report.md, outputs/gap_register.csv, outputs/comparison.json and one ledger per run under
 runs/. Every number in the report comes from a run that happened; nothing is hand-entered.
 """
 from __future__ import annotations
@@ -31,7 +31,8 @@ from chakravyuh.llm.client import (CacheMiss, LLMClient, LLMUnavailable,
 from chakravyuh.policy.compiler import compile_all
 from chakravyuh.sim.events import load_scenario
 
-OUT = Path("out")
+DOCS = Path("docs")
+DATA = Path("outputs")
 
 
 def agent_factory_for(tier: str, client: LLMClient | None = None):
@@ -81,7 +82,7 @@ def demo_report(scenario, results, table, divs, findings_by_pack, base_pack: str
         "- Policy packs are **encodings of selected clauses for simulation. They are not legal",
         "  advice** and they are not a complete statement of any jurisdiction's law.",
         "- Clause records whose `verbatim_status` is `unverified_summary` carry an accurate summary",
-        "  with a real source URL, **not the verbatim text of the instrument**. See `out/kb_report.md`.",
+        "  with a real source URL, **not the verbatim text of the instrument**. See `docs/kb_report.md`.",
         "- Units are illustrative (cells, minutes, percentages). No money, no casualties, no",
         "  confidence intervals.",
         "",
@@ -207,22 +208,23 @@ def main() -> int:
             adviser_qa.append(ans)
             print(f"\nQ: {q}\n  mode={ans.mode} cited={ans.cited_clause_ids}")
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    DOCS.mkdir(parents=True, exist_ok=True)
+    DATA.mkdir(parents=True, exist_ok=True)
     # The register's `confidence` column is computed from clause provenance, so it needs the
     # store. Without it every row would read `likely`, which would be wrong in the safe direction
     # but would stop the column meaning anything.
     reg = write_register(findings, packs, base_pack=base_pack, store=ClauseStore(),
                          scenario_id=scenario.scenario_id)
-    (OUT / "gap_register.md").write_text(register_doc(reg), encoding="utf-8")
-    (OUT / "comparison.json").write_text(json.dumps(
+    (DOCS / "gap_register.md").write_text(register_doc(reg), encoding="utf-8")
+    (DATA / "comparison.json").write_text(json.dumps(
         {"table": table, "divergences": divs,
          "runs": {k: v.model_dump() for k, v in results.items()},
          "gaps": {k: [f.model_dump() for f in v] for k, v in findings.items()}},
         indent=2, sort_keys=True, default=str), encoding="utf-8")
-    (OUT / "demo_report.md").write_text(
+    (DOCS / "demo_report.md").write_text(
         demo_report(scenario, results, table, divs, findings, base_pack, adviser_qa), encoding="utf-8")
-    print(f"\nwrote {reg}, {OUT / 'gap_register.md'}, {OUT / 'demo_report.md'}, "
-          f"{OUT / 'comparison.json'}")
+    print(f"\nwrote {reg}, {DOCS / 'gap_register.md'}, {DOCS / 'demo_report.md'}, "
+          f"{DATA / 'comparison.json'}")
 
     bad = [r.ledger_path for r in results.values() if not verify(r.ledger_path)[0]]
     if bad:

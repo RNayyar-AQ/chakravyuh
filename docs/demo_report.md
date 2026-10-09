@@ -17,7 +17,7 @@ Horizon 7500 min, 15-minute ticks, 15 scripted events (7 from the source release
 - Policy packs are **encodings of selected clauses for simulation. They are not legal
   advice** and they are not a complete statement of any jurisdiction's law.
 - Clause records whose `verbatim_status` is `unverified_summary` carry an accurate summary
-  with a real source URL, **not the verbatim text of the instrument**. See `out/kb_report.md`.
+  with a real source URL, **not the verbatim text of the instrument**. See `docs/kb_report.md`.
 - Units are illustrative (cells, minutes, percentages). No money, no casualties, no
   confidence intervals.
 
@@ -61,6 +61,6 @@ Gap classes under `india_current`: policy 4
 
 | Pack | Run id | Ticks | Wall (s) | LLM calls | Ledger head |
 |---|---|---|---|---|---|
-| `bangladesh` | `amphan_2020__bangladesh__rule__seed0` | 501 | 0.3072 | 0 | `ebfded95d0a7347a...` |
-| `fcc_mdri` | `amphan_2020__fcc_mdri__rule__seed0` | 501 | 0.1915 | 0 | `c30e57aca8ed6906...` |
+| `bangladesh` | `amphan_2020__bangladesh__rule__seed0` | 501 | 0.3142 | 0 | `ebfded95d0a7347a...` |
+| `fcc_mdri` | `amphan_2020__fcc_mdri__rule__seed0` | 501 | 0.1827 | 0 | `c30e57aca8ed6906...` |
 | `india_current` | `amphan_2020__india_current__rule__seed0` | 501 | 0.0732 | 0 | `7292efb8de09e93a...` |

@@ -27,7 +27,7 @@ seed, only the law changes:
 
 Margin is signed slack in each property's own illustrative unit; negative means violated.
 India's four failures classify as **policy** gaps, each citing the clauses responsible. See
-`out/gap_register.csv`.
+`outputs/gap_register.csv`.
 
 **Bangladesh also fails P4, and for a different reason** — a *coordination* gap the real timeline
 exposed. Sites went down in Balasore and only the operator knew; under both the Indian and
@@ -67,11 +67,11 @@ anything that fails can be re-run on its own:
 
 | # | Command | What it produces |
 |---|---|---|
-| 1 | `python scripts/build_kb.py` | clause store (157 records), chunks, Chroma `kb_main`, compiled packs → `out/kb_report.md` |
-| 2 | `python scripts/eval_retrieval.py` | BM25 / vector / hybrid / hybrid+rerank / tree, with abstention separability → `out/retrieval_eval.md` |
-| 3 | `python scripts/eval_adviser.py` | Adviser scored against 23 hand-labelled cases → `out/adviser_eval.md` |
-| 4 | `python scripts/run_demo.py --seed 0` | replays Amphan under all three packs → `out/demo_report.md`, `out/gap_register.{csv,md}`, `out/comparison.json` |
-| 5 | `python scripts/run_fuzz.py` | mutates the scenario until a property breaks, then shrinks it → `out/failure_atlas.md` |
+| 1 | `python scripts/build_kb.py` | clause store (157 records), chunks, Chroma `kb_main`, compiled packs → `docs/kb_report.md` |
+| 2 | `python scripts/eval_retrieval.py` | BM25 / vector / hybrid / hybrid+rerank / tree, with abstention separability → `docs/retrieval_eval.md` |
+| 3 | `python scripts/eval_adviser.py` | Adviser scored against 23 hand-labelled cases → `docs/adviser_eval.md` |
+| 4 | `python scripts/run_demo.py --seed 0` | replays Amphan under all three packs → `docs/demo_report.md`, `docs/gap_register.md + outputs/gap_register.csv`, `outputs/comparison.json` |
+| 5 | `python scripts/run_fuzz.py` | mutates the scenario until a property breaks, then shrinks it → `docs/failure_atlas.md` |
 | 6 | `python scripts/export_audit_sample.py` | first 50 ledger entries, self-verifying → `outputs/audit_sample.jsonl` |
 | 7 | `python scripts/gen_y3172_map.py` | Y.3172 node map, generated from the `@node` decorators |
 | 8 | `python scripts/gen_ai_readiness_map.py` | AI Readiness 2.0 map, labels read from ITU's `dimensions.json` |
@@ -170,11 +170,11 @@ Verification was not cosmetic. It found a substantive error in the pack:
 
 | Rubric criterion | Feature that scores it | Demo evidence |
 |---|---|---|
-| **KB quality** — completeness, accuracy, structure; retrieval under query | Clause store (1 record/clause, URL, SHA-256) + ITU Chroma KB + BM25/vector/hybrid/tree comparison | `out/kb_report.md`, `out/retrieval_eval.md` |
-| **Agent capability** — relevant, accurate responses in error scenarios; adheres to laws and mandates | Policy & Legal Adviser queryable mid-scenario; role-bound agents citing rule IDs; Game Master enforcement | `out/adviser_eval.md`; ask the Adviser at T+90 in the UI |
-| **Gap identification** — unclear responsibilities, legislative gaps, coordination problems; **global + neighbouring examples (critical)** | Deterministic gap classifier (policy / coordination / execution / standards) + cross-pack replay, merged with gaps read from the instruments themselves. `confidence` is **computed from clause provenance**, never asserted | `docs/gap_register.md` — 11 rows, each with an Indian clause, a neighbour and a global example; `out/failure_atlas.md` |
+| **KB quality** — completeness, accuracy, structure; retrieval under query | Clause store (1 record/clause, URL, SHA-256) + ITU Chroma KB + BM25/vector/hybrid/tree comparison | `docs/kb_report.md`, `docs/retrieval_eval.md` |
+| **Agent capability** — relevant, accurate responses in error scenarios; adheres to laws and mandates | Policy & Legal Adviser queryable mid-scenario; role-bound agents citing rule IDs; Game Master enforcement | `docs/adviser_eval.md`; ask the Adviser at T+90 in the UI |
+| **Gap identification** — unclear responsibilities, legislative gaps, coordination problems; **global + neighbouring examples (critical)** | Deterministic gap classifier (policy / coordination / execution / standards) + cross-pack replay, merged with gaps read from the instruments themselves. `confidence` is **computed from clause provenance**, never asserted | `docs/gap_register.md` — 11 rows, each with an Indian clause, a neighbour and a global example; `docs/failure_atlas.md` |
 | **Auditability** — logs, chain-of-thought traces, source attribution | Hash-chained JSONL ledger; every proposal stores `reasoning`, `cited_rule_ids` **and `cited_clause_ids`** (resolved by the Game Master from the pack, not claimed by the agent); every LLM call stores prompt hash, retrieved chunk IDs, raw output | `verify_ledger.py --tamper-demo` breaks a chain on camera; **Why?** tab; `outputs/audit_sample.jsonl` |
-| **Alignment with ITU standards** — Y.3172 pipeline + AI Readiness | `@node(...)` decorators on every entry point; map generated from the source. AI Readiness labels read from ITU's own `dimensions.json`, never retyped | `out/y3172_map.md`, `docs/ai_readiness_map.md` |
+| **Alignment with ITU standards** — Y.3172 pipeline + AI Readiness | `@node(...)` decorators on every entry point; map generated from the source. AI Readiness labels read from ITU's own `dimensions.json`, never retyped | `docs/y3172_map.md`, `docs/ai_readiness_map.md` |
 | **Rubric traceability itself** | 18 checks over the repo, each PASS / WAIVED-with-a-reason / FAIL, measured on every run | `docs/rubric_status.html` |
 
 ### The brief's mandatory items
@@ -292,7 +292,7 @@ and the thresholds live in the scenario YAML where anyone can change them and re
 
 ## Standards alignment
 
-**ITU-T Y.3172** — every module declares its pipeline node, and `out/y3172_map.md` is generated from
+**ITU-T Y.3172** — every module declares its pipeline node, and `docs/y3172_map.md` is generated from
 the `@node(...)` decorators, so it cannot drift from the code. The P node is where this architecture
 earns the citation: the policy node constrains the model node's output before it reaches the network,
 which is exactly what Y.3172 specifies and exactly what the engine-purity test enforces.
@@ -315,7 +315,7 @@ the data/model marketplace.
 | Contextualisation | Indian instruments, Odisha/West Bengal/Khulna areas, Odia and Bengali alert requirements |
 | Cross-domain | Telecom × disaster management × cyber (CERT-In) × data protection (DPDP) in one rulebook |
 | Human supervision | `NEEDS_HUMAN` on irreversible acts, with the gate's automatic approvals logged as automatic |
-| Policy opportunity identification | `out/gap_register.csv`, classified and cross-compared |
+| Policy opportunity identification | `outputs/gap_register.csv`, classified and cross-compared |
 | Social inclusion | P3 fails unless the alert is in a language of that area — English alone does not discharge the duty — and each CAP envelope's `info/language` is that district's own tag, local-language-first (`or-IN`, `bn-IN`, `bn-BD`) |
 | Digital infrastructure & energy | A three-pack sweep is ~0.5 s and **zero tokens**: the legality decision is code, so inference is optional and confined to the Adviser. Battery drain is modelled and gated on actual grid loss. Measured per run in [`docs/run_stats.md`](docs/run_stats.md) |
 
@@ -342,8 +342,7 @@ docs/     submission surface: rubric_status · ai_readiness_map · judge_qa · r
 outputs/  submission data: gap_register.csv · audit_sample.jsonl · comparison.json
 ```
 
-`docs/` and `outputs/` are published from `out/` by `scripts/showcase.py`; the mapping is in
-[docs/artefact_manifest.md](docs/artefact_manifest.md). Edit the generator, not the copy.
+`docs/` and `outputs/` are published from `docs/` by `scripts/showcase.py`; the mapping is in
 
 ## Future work
 

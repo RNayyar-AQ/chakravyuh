@@ -208,7 +208,7 @@ def a5_eval_set() -> Result:
 
 
 def a6_retrieval_eval() -> Result:
-    path = Path("out/retrieval_eval.json")
+    path = Path("outputs/retrieval_eval.json")
     if not path.exists():
         return _no(f"{path} is missing; run scripts/eval_retrieval.py")
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -267,7 +267,7 @@ def b2_uneven_information() -> Result:
 
 
 def b3_adviser_citations() -> Result:
-    path = Path("out/adviser_eval.json")
+    path = Path("outputs/adviser_eval.json")
     if not path.exists():
         return _no(f"{path} is missing; run scripts/eval_adviser.py")
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -365,7 +365,7 @@ def b5_engine_purity() -> Result:
 # ================================================================= gap register (C)
 def c1_gap_register() -> Result:
     from chakravyuh.analysis.gap_register import RUBRIC_COLUMNS, VALID_GAP_TYPES
-    path = Path("out/gap_register.csv")
+    path = Path("outputs/gap_register.csv")
     if not path.exists():
         return _no(f"{path} is missing; run scripts/run_demo.py")
     rows = list(csv.DictReader(path.open(encoding="utf-8")))
@@ -454,7 +454,7 @@ def d2_trace_fields() -> Result:
 
 # =========================================================== ITU alignment (E)
 def e1_y3172() -> Result:
-    for path in (Path("out/y3172_map.md"), Path("docs/y3172_map.md")):
+    for path in (Path("docs/y3172_map.md"), Path("docs/y3172_map.md")):
         if path.exists():
             text = path.read_text(encoding="utf-8")
             nodes = [n for n in ("SRC", "C", "PP", "M", "P", "D", "SINK")

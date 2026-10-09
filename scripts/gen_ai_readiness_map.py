@@ -37,7 +37,7 @@ CLAIMS: dict[int, dict[str, str]] = {
          "claim": "The whole system is a policy simulator: three jurisdictions' instruments are "
                   "compiled into executable packs and the same cyclone is replayed under each, so "
                   "a policy's effect is measured rather than argued.",
-         "evidence": "data/packs/*.yaml, chakravyuh/policy/engine.py, out/comparison.json"},
+         "evidence": "data/packs/*.yaml, chakravyuh/policy/engine.py, outputs/comparison.json"},
     4:  {"rank": "primary",
          "claim": "Contextualised to the actual region and event: real IMD Amphan timings, the "
                   "real warned districts of Odisha and West Bengal, Khulna across the border, and "
@@ -47,7 +47,7 @@ CLAIMS: dict[int, dict[str, str]] = {
          "claim": "One rulebook spans telecom, disaster management, cyber incident reporting and "
                   "data protection, so a conflict between two regimes surfaces as a verdict "
                   "rather than being filed under a different ministry.",
-         "evidence": "data/clauses/clauses.jsonl, out/kb_report.md"},
+         "evidence": "data/clauses/clauses.jsonl, docs/kb_report.md"},
     8:  {"rank": "primary",
          "claim": "Agents only propose; deterministic code decides. Irreversible actions return "
                   "NEEDS_HUMAN and wait at a gate that records whether the approval was a human's "
@@ -62,7 +62,7 @@ CLAIMS: dict[int, dict[str, str]] = {
          "claim": "Site power is modelled as the thing that sets outage duration -- battery drain "
                   "runs only while mains power is actually lost -- and the register carries the "
                   "finding that no instrument states a numeric backup requirement.",
-         "evidence": "chakravyuh/world/dynamics.py, out/gap_register.csv (G5)"},
+         "evidence": "chakravyuh/world/dynamics.py, outputs/gap_register.csv (G5)"},
     2:  {"rank": "secondary",
          "claim": "Generated content is handled as an adversary, not a feature: the rumour and the "
                   "forged suspension order are labelled synthetic in the scenario and the forged "
@@ -76,7 +76,7 @@ CLAIMS: dict[int, dict[str, str]] = {
          "claim": "The clause store is a reusable artefact in its own right: one record per "
                   "clause with verbatim text, SHA-256, page and source URL, which is the metadata "
                   "ITU's reference ingest does not record.",
-         "evidence": "data/clauses/clauses.jsonl, out/kb_report.md"},
+         "evidence": "data/clauses/clauses.jsonl, docs/kb_report.md"},
 }
 
 # Dimensions we deliberately do not claim, with the reason. Listed so the map is a complete

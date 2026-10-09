@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import chakravyuh
 from chakravyuh.y3172 import REGISTRY, render_map
 
-OUT = Path("out/y3172_map.md")
+OUT = Path("docs/y3172_map.md")
 
 # Modules whose imports need optional dependencies; skipped with a note rather than crashing.
 OPTIONAL = {"chakravyuh.fuzz.machine": "hypothesis"}

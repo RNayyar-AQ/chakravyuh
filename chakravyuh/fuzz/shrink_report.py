@@ -20,7 +20,7 @@ from ..sim.runner import context_for, run
 from ..y3172 import node
 from .mutations import apply_mutations
 
-OUT_DIR = Path("out/failures")
+OUT_DIR = Path("outputs/failures")
 
 
 def failure_id(pack_id: str, property_id: str, mutations: Sequence[dict]) -> str:

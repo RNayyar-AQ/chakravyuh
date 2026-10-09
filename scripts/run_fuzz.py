@@ -33,7 +33,8 @@ from chakravyuh.fuzz.shrink_report import build_card, card_markdown, dedupe, wri
 from chakravyuh.policy.compiler import compile_all
 from chakravyuh.sim.events import load_scenario
 
-OUT = Path("out")
+DOCS = Path("docs")
+DATA = Path("outputs")
 
 
 def fuzz_pack(scenario, pack, packs, max_examples: int, steps: int, runs_dir: str) -> dict:
@@ -120,13 +121,14 @@ def main() -> int:
                 print(f"    {c.failure_id}: {c.violated_property} margin={c.margin:+g} "
                       f"({c.gap_class}) via {[m['op'] for m in c.mutations]}")
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    DOCS.mkdir(parents=True, exist_ok=True)
+    DATA.mkdir(parents=True, exist_ok=True)
     paths = write_cards(all_cards)
-    (OUT / "fuzz_summary.json").write_text(json.dumps(rows, indent=2, sort_keys=True, default=str),
+    (DATA / "fuzz_summary.json").write_text(json.dumps(rows, indent=2, sort_keys=True, default=str),
                                            encoding="utf-8")
-    (OUT / "failure_atlas.md").write_text(atlas(rows, all_cards), encoding="utf-8")
-    print(f"\nwrote {OUT / 'failure_atlas.md'}, {OUT / 'fuzz_summary.json'}, "
-          f"{len(paths)} card file(s) under out/failures/")
+    (DOCS / "failure_atlas.md").write_text(atlas(rows, all_cards), encoding="utf-8")
+    print(f"\nwrote {DOCS / 'failure_atlas.md'}, {DATA / 'fuzz_summary.json'}, "
+          f"{len(paths)} card file(s) under outputs/failures/")
     return 0
 
 
@@ -136,7 +138,7 @@ def atlas(rows: list[dict], cards: list) -> str:
         "",
         "Hypothesis stateful fuzzing over mutations of the base scenario, with rule-based agent",
         "twins. Each campaign asserts only the properties its pack already passes unmutated, so",
-        "these are **new** failures, not the baseline ones in `out/gap_register.csv`.",
+        "these are **new** failures, not the baseline ones in `outputs/gap_register.csv`.",
         "",
         "## Mutation families",
         "",
@@ -169,7 +171,7 @@ def atlas(rows: list[dict], cards: list) -> str:
 
 
 def replay_card(failure_id: str, scenario, packs) -> int:
-    path = Path("out/failures") / f"{failure_id}.json"
+    path = Path("outputs/failures") / f"{failure_id}.json"
     if not path.exists():
         print(f"no card at {path}", file=sys.stderr)
         return 2

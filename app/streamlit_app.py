@@ -271,7 +271,7 @@ with tab_atlas:
 
     st.divider()
     st.subheader("Failure cards from fuzzing")
-    index = Path("out/failures/index.json")
+    index = Path("outputs/failures/index.json")
     if index.exists():
         cards = json.loads(index.read_text(encoding="utf-8"))
         if cards:

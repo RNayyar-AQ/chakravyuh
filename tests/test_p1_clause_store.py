@@ -161,7 +161,7 @@ def test_no_pack_rule_cites_the_uso_fund_section_for_priority_routing(built_kb, 
 def test_kb_report_carries_the_provenance_warning(built_kb):
     """A reader who only ever opens kb_report.md must still learn where the clauses came from."""
     from pathlib import Path
-    report = Path(__file__).resolve().parents[1] / "out/kb_report.md"
+    report = Path(__file__).resolve().parents[1] / "docs/kb_report.md"
     if not report.exists():
         import pytest
         pytest.skip("run scripts/build_kb.py first")

@@ -1,0 +1,132 @@
+{
+  "ingest": {
+    "chroma": {
+      "counts": {},
+      "reason": "disabled",
+      "status": "skipped"
+    },
+    "chunks": 266,
+    "clauses": 157,
+    "integrity": {
+      "hash_matching": 157,
+      "pct_hash_matching": 100.0,
+      "pct_quotable": 52.9,
+      "pct_verbatim_verified": 70.1,
+      "pct_with_source_url": 100.0,
+      "per_instrument": {
+        "47 CFR 4.17 \u2014 Mandatory Disaster Response Initiative (United States)": 3,
+        "47 CFR Part 4 -- Disruptions to Communications (United States)": 1,
+        "BTRC international roaming directive (Bangladesh)": 1,
+        "Bangladesh National Emergency Telecommunication Service (NETS) initiative": 1,
+        "Bangladesh Standing Orders on Disaster (SOD) 2019": 1,
+        "Bangladesh Telecommunication Regulation Act 2001": 2,
+        "Bhutan Standard Operating Procedure for Telecommunication Services during Disaster": 1,
+        "CERT-In Directions under s.70B(6) IT Act, 28 April 2022 (India)": 2,
+        "Constitution of the International Telecommunication Union": 1,
+        "Cyclone Preparedness Programme standing order (Bangladesh)": 1,
+        "Digital Personal Data Protection Act, 2023 (Act 22 of 2023)": 46,
+        "Disaster Management Act 2005 (India)": 5,
+        "Disaster Management Act 2012 (Bangladesh)": 2,
+        "DoT Standard Operating Procedure 2020 for Telecommunication Services for responding to Disasters (India)": 2,
+        "FCC Disaster Information Reporting System (United States)": 1,
+        "FCC Wireless Emergency Alerts rules (United States)": 1,
+        "GSMA guidance on mobile network operator disaster response": 1,
+        "IMD Cyclone Warning Services standard operating procedure (India)": 1,
+        "ITU-D Guidelines for National Emergency Telecommunication Plans (2020)": 1,
+        "ITU-T Recommendation E.106, International Emergency Preference Scheme for disaster relief operations": 1,
+        "ITU-T Recommendation Q.3057 (signature-based calling party identity authentication)": 1,
+        "ITU-T Recommendation X.1303, Common Alerting Protocol (CAP 1.1)": 1,
+        "ITU-T Recommendation Y.3172, Architectural framework for machine learning in future networks including IMT-2020": 1,
+        "ITU-T Recommendation Y.3173, Framework for evaluating intelligence levels of future networks including IMT-2020": 1,
+        "NDMA Common Alerting Protocol / SACHET Integrated Alert System (India)": 1,
+        "Sendai Framework for Disaster Risk Reduction 2015-2030": 1,
+        "Tampere Convention on the Provision of Telecommunication Resources for Disaster Mitigation and Relief Operations, 1998": 3,
+        "Telecommunications (Telecom Cyber Security) Rules 2024 (India)": 2,
+        "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)": 6,
+        "Telecommunications Act, 2023 (Act 44 of 2023)": 64,
+        "Unified Licence, Department of Telecommunications (India)": 1
+      },
+      "per_jurisdiction": {
+        "BD": 8,
+        "BT": 1,
+        "IN": 130,
+        "INTL": 12,
+        "US": 6
+      },
+      "per_provenance": {
+        "gazette_pdf": 106,
+        "gazette_pdf_subsection": 4,
+        "model_written": 29,
+        "secondary_source": 18
+      },
+      "per_verbatim_status": {
+        "unverified_summary": 47,
+        "verified": 83,
+        "verified_with_artifacts": 27
+      },
+      "quotable": 83,
+      "total": 157,
+      "verbatim_verified": 110,
+      "with_source_pdf_hash": 110,
+      "with_source_url": 157
+    },
+    "real": {
+      "derived": 4,
+      "files": [
+        {
+          "expected": 62,
+          "matches_expected": true,
+          "path": "data/telecom_act_2023.jsonl",
+          "records": 62
+        },
+        {
+          "expected": 44,
+          "matches_expected": true,
+          "path": "data/dpdp_act_2023.jsonl",
+          "records": 44
+        }
+      ],
+      "missing_files": [],
+      "sections": 106,
+      "superseded_model_written": [],
+      "with_artifacts": 26
+    }
+  },
+  "packs": {
+    "packs": [
+      {
+        "distinct_clauses_cited": 12,
+        "jurisdiction": "BD",
+        "mode": "blocking",
+        "obligations": 5,
+        "pack_id": "bangladesh",
+        "permits": 9,
+        "prohibitions": 3,
+        "rules": 17,
+        "rules_requiring_authenticated_order": 1
+      },
+      {
+        "distinct_clauses_cited": 12,
+        "jurisdiction": "US",
+        "mode": "blocking",
+        "obligations": 6,
+        "pack_id": "fcc_mdri",
+        "permits": 6,
+        "prohibitions": 0,
+        "rules": 12,
+        "rules_requiring_authenticated_order": 0
+      },
+      {
+        "distinct_clauses_cited": 23,
+        "jurisdiction": "IN",
+        "mode": "blocking",
+        "obligations": 3,
+        "pack_id": "india_current",
+        "permits": 10,
+        "prohibitions": 2,
+        "rules": 15,
+        "rules_requiring_authenticated_order": 0
+      }
+    ]
+  }
+}

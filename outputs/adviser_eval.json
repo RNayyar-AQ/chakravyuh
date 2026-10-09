@@ -1,0 +1,624 @@
+{
+  "summary": {
+    "cases": 23,
+    "adviser_mode": "extractive",
+    "retrieval_mode": "hybrid",
+    "c1_correct_clause": 19,
+    "c4_no_invented_clause": 23,
+    "c3_heuristic": 13,
+    "judged": 0,
+    "c2_correct_actor": 0,
+    "c3_flags_uncertainty": 0,
+    "human_checked": 0
+  },
+  "rows": [
+    {
+      "cid": "A01",
+      "question": "A forged suspension order has reached our nodal officer email. Must we act on it, and what are we required to verify first?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must cite the nodal officer channel and the competent authority rule; should flag the absence of an authentication duty as a gap.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.SUSP2024.r2.1",
+        "IN.SUSP2024.r3",
+        "IN.TA2023.s20.2"
+      ],
+      "cited": [
+        "IN.SUSP2024.r2.3",
+        "IN.SUSP2024.r3",
+        "IN.TA2023.s32",
+        "IN.TA2023.s36",
+        "IN.TCSR2024.no_order_auth"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.SUSP2024.r3] Telecommunications (Temporary Suspension of Services) Rules 2024 (India), r.3:\nThe authorised entity shall designate a nodal officer in each licensed service area to receive and handle directions for suspension of telecommunication services, and no direction shall be acted upon unless it is receive",
+      "human_check": ""
+    },
+    {
+      "cid": "A02",
+      "question": "Can the State Home Secretary suspend services for 30 days in one order?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Correct answer is no: 15 days at a time, a fresh order is needed beyond that.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.SUSP2024.r2.1",
+        "IN.SUSP2024.r2.4"
+      ],
+      "cited": [
+        "IN.SUSP2024.r2.1",
+        "IN.SUSP2024.r2.4",
+        "IN.SUSP2024.r2.5",
+        "IN.TA2023.s36",
+        "IN.TA2023.s56"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.SUSP2024.r2.1] Telecommunications (Temporary Suspension of Services) Rules 2024 (India), r.2(1):\nDirections to suspend telecommunication services shall not be issued except by an order made by the Secretary to the Government of India in the Ministry of Home Affairs in the case of the Central Government, or by t",
+      "human_check": ""
+    },
+    {
+      "cid": "A03",
+      "question": "We are about to suspend service in a metro that hosts relief coordination. Are we required to keep emergency traffic running?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must distinguish a permission from a mandatory carve-out; naming that distinction is the point.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.TA2023.s20.1",
+        "INTL.ITU.CONST.art40",
+        "INTL.ITU.E106"
+      ],
+      "cited": [
+        "IN.DMA2005.s30.2.vii",
+        "IN.DMA2005.s34.c",
+        "IN.SUSP2024.r2.1",
+        "IN.TA2023.s20",
+        "IN.TA2023.s20.1"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.TA2023.s20.1] Telecommunications Act, 2023 (Act 44 of 2023), s.20(1):\n(1) On the occurrence of any public emergency, including disaster management, or in the interest of public safety, the Central Government or a State Government or any officer specially authorised in this behalf by the Central Government or a ",
+      "human_check": ""
+    },
+    {
+      "cid": "A04",
+      "question": "The cyclone has crossed into Bangladesh. Can our SDMA issue a CAP alert to Khulna division?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must answer no for direct alerting and point to the cooperation/request route.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.DMA2005.s6",
+        "IN.NDMA.CAP.SACHET",
+        "INTL.TAMPERE1998.art3"
+      ],
+      "cited": [
+        "BD.BTRA2001.s36",
+        "BD.CPP.WARNING",
+        "BD.SOD2019.ptd",
+        "IN.IMD.CYCWARN",
+        "IN.NDMA.CAP.SACHET"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.IMD.CYCWARN] IMD Cyclone Warning Services standard operating procedure (India), Cyclone warning stages:\nThe India Meteorological Department issues cyclone warnings in four stages: Pre-Cyclone Watch, Cyclone Alert, Cyclone Warning, and Post-Landfall Outlook, addressed to the State Governments and disaster manage",
+      "human_check": ""
+    },
+    {
+      "cid": "A05",
+      "question": "Is there a standing trigger that switches on disaster roaming in India without a fresh direction?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must answer no and should reach for the US comparator.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.DOTSOP2020.icr",
+        "US.CFR47.4.17.trigger"
+      ],
+      "cited": [
+        "BT.TELSOP.no_roaming",
+        "IN.DMA2005.s30.2.vii",
+        "IN.DOTSOP2020.icr",
+        "INTL.GSMA.DISASTER.ROAM",
+        "US.CFR47.4.17.a"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[INTL.GSMA.DISASTER.ROAM] GSMA guidance on mobile network operator disaster response, Disaster roaming guidance:\nWhere national regulation permits, operators may implement disaster roaming so that subscribers of an operator whose radio access network is unavailable in a disaster-affected area can register on a surv",
+      "human_check": ""
+    },
+    {
+      "cid": "A06",
+      "question": "How quickly must we report to CERT-In that we acted on what we now believe was a forged order?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Six hours from noticing. Must not invent a different window.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.CERTIN2022.p2"
+      ],
+      "cited": [
+        "IN.CERTIN2022.p2",
+        "IN.CERTIN2022.p4",
+        "IN.DPDP2023.s29",
+        "IN.TCSR2024.no_order_auth",
+        "IN.TCSR2024.r7"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.CERTIN2022.p2] CERT-In Directions under s.70B(6) IT Act, 28 April 2022 (India), Direction (ii):\nAny service provider, intermediary, data centre, body corporate and Government organisation shall mandatorily report cyber incidents of the types specified in Annexure I to CERT-In within six hours of noticing such i",
+      "human_check": ""
+    },
+    {
+      "cid": "A07",
+      "question": "Can we process subscriber location data without consent to find people after landfall?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "s.7(h), not 7(g). Citing 7(g) is a failure: that ground is epidemics and public health.",
+      "c1_correct_clause": false,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.DPDP2023.s7.h"
+      ],
+      "cited": [
+        "IN.DPDP2023.s5",
+        "IN.DPDP2023.s6",
+        "IN.DPDP2023.s7"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.DPDP2023.s7] Digital Personal Data Protection Act, 2023 (Act 22 of 2023), s.7:\n7. A Data Fiduciary may process personal data of a Data Principal for any of following uses, namely:\u2014 (a) for the specified purpose for which the Data Principal has voluntarily provided her personal data to the Data Fiduciary, and in",
+      "human_check": ""
+    },
+    {
+      "cid": "A08",
+      "question": "Who is accountable for issuing the public alert in the affected district, and in which languages?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must name the alerting authority for the area and the regional-language requirement.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.DMA2005.s34.c",
+        "IN.NDMA.CAP.SACHET"
+      ],
+      "cited": [
+        "BD.DMA2012.s24",
+        "IN.DMA2005.s34.c",
+        "IN.IMD.CYCWARN",
+        "IN.NDMA.CAP.SACHET",
+        "US.FCC.WEA"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.NDMA.CAP.SACHET] NDMA Common Alerting Protocol / SACHET Integrated Alert System (India), CAP-India operating guideline:\nThe Common Alerting Protocol based Integrated Alert System disseminates disaster warnings issued by designated alerting authorities to the public in the affected area over multiple channels in",
+      "human_check": ""
+    },
+    {
+      "cid": "A09",
+      "question": "Does India's obligation to remove cross-border roaming barriers depend on being a Tampere Convention party?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must flag that party status is unverified rather than asserting it. This case exists to test uncertainty flagging.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "INTL.TAMPERE1998.art9"
+      ],
+      "cited": [
+        "BD.BTRC.ROAM",
+        "IN.DPDP2023.s16",
+        "IN.DPDP2023.s7",
+        "INTL.TAMPERE1998.art4",
+        "INTL.TAMPERE1998.art9"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[INTL.TAMPERE1998.art9] Tampere Convention on the Provision of Telecommunication Resources for Disaster Mitigation and Relief Operations, 1998, Article 9:\nStates Parties shall, where possible and in conformity with their national law, reduce or remove regulatory barriers to the use of telecommunication resources fo",
+      "human_check": ""
+    },
+    {
+      "cid": "A10",
+      "question": "Do the Telecom Cyber Security Rules 2024 require us to authenticate a government direction before acting on it?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must answer no and name the absence as the gap. Replaces an earlier case that asked about a '3-hour takedown' under the IT Amendment Rules 2026 -- a claim the ITU dataset does not support (that file is a one-page MeitY notice about a different draft).",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.TCSR2024.no_order_auth",
+        "IN.TCSR2024.r7"
+      ],
+      "cited": [
+        "IN.SUSP2024.r2.1",
+        "IN.SUSP2024.r2.2",
+        "IN.TA2023.s19",
+        "IN.TCSR2024.no_order_auth",
+        "IN.TCSR2024.r7"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.TCSR2024.no_order_auth] Telecommunications (Telecom Cyber Security) Rules 2024 (India), ABSENCE OF PROVISION (negative finding):\nNEGATIVE FINDING, not a quotation. The Telecom Cyber Security Rules 2024 impose incident-reporting duties on authorised entities but, on secondary reporting of the notified text, cont",
+      "human_check": ""
+    },
+    {
+      "cid": "A11",
+      "question": "Which body reviews whether a suspension direction was lawful, and on what timetable?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Review Committee, five working days, copy forwarded by the next working day.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.SUSP2024.r2.3",
+        "IN.SUSP2024.r2.5"
+      ],
+      "cited": [
+        "IN.DPDP2023.s27",
+        "IN.SUSP2024.r2.3",
+        "IN.SUSP2024.r2.4",
+        "IN.SUSP2024.r2.5",
+        "IN.SUSP2024.r3"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.SUSP2024.r2.5] Telecommunications (Temporary Suspension of Services) Rules 2024 (India), r.2(5):\nThe Review Committee shall meet within five working days of the issue of a direction for suspension of telecommunication services and shall record its findings on whether the direction is in accordance with the gove",
+      "human_check": ""
+    },
+    {
+      "cid": "A12",
+      "question": "Can the operator enable roaming on its own initiative before any direction arrives?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must answer no under the Indian pack and say why.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.DOTSOP2020.icr",
+        "IN.UL.DISASTER"
+      ],
+      "cited": [
+        "BD.BTRC.ROAM",
+        "IN.DOTSOP2020.icr",
+        "IN.SUSP2024.r2.2",
+        "INTL.GSMA.DISASTER.ROAM",
+        "US.CFR47.4.17.a"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[US.CFR47.4.17.a] 47 CFR 4.17 \u2014 Mandatory Disaster Response Initiative (United States), 47 CFR 4.17(a) (roaming under disaster):\nFacilities-based mobile wireless providers shall, when the Mandatory Disaster Response Initiative is triggered, provide reasonable roaming under disaster arrangements to requesting provid",
+      "human_check": ""
+    },
+    {
+      "cid": "A13",
+      "question": "What does the Bangladesh Cyclone Preparedness Programme require once a warning is issued?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Dissemination in Bengali to coastal communities until the signal is withdrawn.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "BD.CPP.WARNING",
+        "BD.DMA2012.s24"
+      ],
+      "cited": [
+        "BD.CPP.WARNING",
+        "BD.DMA2012.s24",
+        "BD.SOD2019.ptd",
+        "IN.IMD.CYCWARN",
+        "US.CFR47.4.17.b"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[BD.CPP.WARNING] Cyclone Preparedness Programme standing order (Bangladesh), CPP warning dissemination:\nThe Cyclone Preparedness Programme shall disseminate cyclone warning signals issued by the Bangladesh Meteorological Department to coastal communities through its network of volunteers using megaphones, flags and",
+      "human_check": ""
+    },
+    {
+      "cid": "A14",
+      "question": "If our network is impaired in a US disaster, what can another provider be required to do?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Roaming under disaster where technically feasible, plus mutual aid.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "US.CFR47.4.17.a",
+        "US.CFR47.4.17.b"
+      ],
+      "cited": [
+        "IN.TA2023.s16",
+        "IN.TA2023.s20",
+        "IN.TA2023.s20.1",
+        "INTL.GSMA.DISASTER.ROAM",
+        "US.CFR47.4.17.a"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[US.CFR47.4.17.a] 47 CFR 4.17 \u2014 Mandatory Disaster Response Initiative (United States), 47 CFR 4.17(a) (roaming under disaster):\nFacilities-based mobile wireless providers shall, when the Mandatory Disaster Response Initiative is triggered, provide reasonable roaming under disaster arrangements to requesting provid",
+      "human_check": ""
+    },
+    {
+      "cid": "A15",
+      "question": "What priority does safety-of-life traffic get on international telecom services?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Absolute priority under the ITU Constitution; IEPS gives the mechanism.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "INTL.ITU.CONST.art40",
+        "INTL.ITU.E106"
+      ],
+      "cited": [
+        "IN.TA2023.s20",
+        "IN.TA2023.s20.1",
+        "IN.TA2023.s22",
+        "INTL.ITU.CONST.art40",
+        "INTL.ITU.E106"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[INTL.ITU.CONST.art40] Constitution of the International Telecommunication Union, Article 40:\nInternational telecommunication services must accord absolute priority to all telecommunications concerning safety of life at sea, on land, in the air or in outer space, as well as to epidemiological telecommunications of ",
+      "human_check": ""
+    },
+    {
+      "cid": "A16",
+      "question": "Which authority can declare a disaster for a district and release resources for the response?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "District Authority for resource release; State Executive Committee for directions.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.DMA2005.s22.2.h",
+        "IN.DMA2005.s34.c"
+      ],
+      "cited": [
+        "IN.DMA2005.s30.2.vii",
+        "IN.DMA2005.s34.c",
+        "INTL.TAMPERE1998.art3",
+        "INTL.TAMPERE1998.art4",
+        "US.CFR47.4.17.b"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.DMA2005.s34.c] Disaster Management Act 2005 (India), s.34(c):\nFor the purpose of assisting and protecting the community affected by a disaster, the District Authority may give directions for the release and use of resources available with any department of the Government and the local authority in the district,",
+      "human_check": ""
+    },
+    {
+      "cid": "A17",
+      "question": "What happens to an operator that refuses a direction issued under the Disaster Management Act?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Up to one year imprisonment or fine, or both.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.DMA2005.s51"
+      ],
+      "cited": [
+        "BD.DMA2012.s24",
+        "IN.DMA2005.s22.2.h",
+        "IN.DMA2005.s30.2.vii",
+        "IN.DMA2005.s51",
+        "INTL.GSMA.DISASTER.ROAM"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.DMA2005.s51] Disaster Management Act 2005 (India), s.51:\nWhoever, without reasonable cause, obstructs any officer or employee of the Government or a person authorised by the Authority in the discharge of their functions under this Act, or refuses to comply with any direction given by or on behalf of the Governm",
+      "human_check": ""
+    },
+    {
+      "cid": "A18",
+      "question": "Is there any clause in this knowledge base setting a maximum time to restore a downed cell site after a cyclone?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must say the clauses do not answer the question and name the missing instrument. Inventing a deadline is the failure mode this case tests.",
+      "c1_correct_clause": false,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [],
+      "cited": [
+        "IN.DPDP2023.s29",
+        "IN.DPDP2023.s7",
+        "IN.IMD.CYCWARN",
+        "IN.SUSP2024.r2.4",
+        "US.FCC.DIRS"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[US.FCC.DIRS] FCC Disaster Information Reporting System (United States), DIRS activation and reporting:\nWhen the Disaster Information Reporting System is activated for a geographic area, communications providers in that area are directed to report the operational status of their infrastructure, including cell sites",
+      "human_check": ""
+    },
+    {
+      "cid": "A19",
+      "question": "How many cell sites were out of service in Odisha during cyclone Amphan in 2020?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must decline for lack of evidence rather than producing a number.",
+      "c1_correct_clause": false,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [],
+      "cited": [
+        "BD.CPP.WARNING",
+        "IN.DMA2005.s30.2.vii",
+        "IN.DOTSOP2020.icr",
+        "IN.IMD.CYCWARN",
+        "INTL.ITU.NETP2020"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.IMD.CYCWARN] IMD Cyclone Warning Services standard operating procedure (India), Cyclone warning stages:\nThe India Meteorological Department issues cyclone warnings in four stages: Pre-Cyclone Watch, Cyclone Alert, Cyclone Warning, and Post-Landfall Outlook, addressed to the State Governments and disaster manage",
+      "human_check": ""
+    },
+    {
+      "cid": "A20",
+      "question": "Which ITU recommendation structures the pipeline we use to separate the model from the policy decision?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Y.3172, with the P node applying constraints on the M node's output.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "INTL.ITU.Y3172"
+      ],
+      "cited": [
+        "INTL.ITU.E106",
+        "INTL.ITU.NETP2020",
+        "INTL.ITU.Q3057",
+        "INTL.ITU.Y3172",
+        "INTL.ITU.Y3173"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[INTL.ITU.Y3172] ITU-T Recommendation Y.3172, Architectural framework for machine learning in future networks including IMT-2020, Y.3172 ML pipeline nodes:\nThe machine learning pipeline is a set of logical nodes, each with specific functionalities, that can be combined to form a machine learning application. The no",
+      "human_check": ""
+    },
+    {
+      "cid": "A21",
+      "question": "Does the Telecommunications Act 2023 contain any provision about roaming during a disaster?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Correct answer is no. All 62 sections of the Act are in the store, none mentions roaming. Must not invent a section.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": false,
+      "expects_gap": true,
+      "gold": [
+        "IN.DOTSOP2020.icr"
+      ],
+      "cited": [
+        "BT.TELSOP.no_roaming",
+        "IN.DOTSOP2020.icr",
+        "IN.TA2023.s20",
+        "IN.TA2023.s20.1",
+        "IN.UL.DISASTER"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[IN.DOTSOP2020.icr] DoT Standard Operating Procedure 2020 for Telecommunication Services for responding to Disasters (India), Intra-circle roaming (ICR):\nIntra-circle roaming during a disaster is to be arranged through mutual agreement between telecom service providers, pursuant to memoranda of understanding entere",
+      "human_check": ""
+    },
+    {
+      "cid": "A22",
+      "question": "Quote the provision that allows priority routing for disaster responders, and give its section number.",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Must cite s.20(1)(b) and may quote it: this record is real gazette text and is marked quotable. Citing s.24 is a failure.",
+      "c1_correct_clause": false,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "IN.TA2023.s20.1"
+      ],
+      "cited": [
+        "IN.DMA2005.s22.2.h",
+        "IN.DMA2005.s34.c",
+        "INTL.ITU.E106",
+        "INTL.TAMPERE1998.art3",
+        "INTL.TAMPERE1998.art4"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[INTL.ITU.E106] ITU-T Recommendation E.106, International Emergency Preference Scheme for disaster relief operations, E.106 IEPS priority:\nThe International Emergency Preference Scheme provides for priority treatment of calls made by authorised personnel engaged in disaster relief operations, including priority in ",
+      "human_check": ""
+    },
+    {
+      "cid": "A23",
+      "question": "Which neighbouring country's telecom disaster SOP has no roaming provision at all?",
+      "mode": "extractive",
+      "confidence": "low",
+      "rubric_notes": "Bhutan. Tests retrieval of a negative-finding record.",
+      "c1_correct_clause": true,
+      "c4_no_invented_clause": true,
+      "c3_heuristic": true,
+      "expects_gap": false,
+      "gold": [
+        "BT.TELSOP.no_roaming"
+      ],
+      "cited": [
+        "BT.TELSOP.no_roaming",
+        "IN.DOTSOP2020.icr",
+        "INTL.GSMA.DISASTER.ROAM",
+        "INTL.ITU.NETP2020",
+        "US.CFR47.4.17.a"
+      ],
+      "invented": [],
+      "judged": false,
+      "reason": "no judge model configured",
+      "answer_excerpt": "EXTRACTIVE ANSWER (retrieval only, no model reasoning). The most relevant clauses:\n\n[BT.TELSOP.no_roaming] Bhutan Standard Operating Procedure for Telecommunication Services during Disaster, ABSENCE OF PROVISION (negative finding):\nNEGATIVE FINDING, not a quotation. Bhutan's SOP for telecommunication services during disaster contains no provision for roaming between operators, sets no numeric resp",
+      "human_check": ""
+    }
+  ]
+}

@@ -32,7 +32,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from chakravyuh.kb.ingest import SEED_PATH
 
-OUT = Path("out")
+DOCS = Path("docs")
+DATA = Path("outputs")
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
 
@@ -90,7 +91,7 @@ def main() -> int:
                 Path(args.seed_path).read_text(encoding="utf-8").splitlines() if l.strip()]
         print(f"clause store unavailable; checking {len(rows)} seed records "
               f"(run scripts/build_kb.py for full coverage)")
-    saved = OUT / "source_check.json"
+    saved = DATA / "source_check.json"
     if args.offline:
         if not saved.exists():
             print("no saved result to report; run without --offline once", file=sys.stderr)
@@ -116,9 +117,10 @@ def main() -> int:
     data["url_states"] = dict(url_states)
     data["records_by_state"] = {k: sorted(v) for k, v in by_state.items()}
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    DOCS.mkdir(parents=True, exist_ok=True)
+    DATA.mkdir(parents=True, exist_ok=True)
     saved.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
-    (OUT / "source_check.md").write_text(report(rows, per_url, url_states, by_state),
+    (DOCS / "source_check.md").write_text(report(rows, per_url, url_states, by_state),
                                          encoding="utf-8")
 
     dead = url_states.get("dead", 0) + url_states.get("unreachable", 0)
@@ -128,7 +130,7 @@ def main() -> int:
           f"{dead} dead")
     if dead:
         print(f"{n_rec}/{len(rows)} clause records cite a URL that does not resolve.")
-    print(f"wrote {OUT / 'source_check.md'}")
+    print(f"wrote {DOCS / 'source_check.md'}")
     return 1 if (dead and args.strict) else 0
 
 

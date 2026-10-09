@@ -3,7 +3,7 @@
 ## Clause store (structured layer)
 
 - Clauses: **157**
-- Has a source URL: **157/157** (100.0%) — *has one*, not *verified against one*; see `out/source_check.md`
+- Has a source URL: **157/157** (100.0%) — *has one*, not *verified against one*; see `docs/source_check.md`
 - SHA-256 hash matches stored text: **157/157** (100.0%)
 - Verbatim text verified against the primary source: **110/157** (70.1%)
 
@@ -30,7 +30,7 @@
 >
 > What this does NOT affect: exact lookup, the hash chain, the compiler's
 > clause-resolution check, the policy engine, the four properties, gap classification,
-> cross-pack comparison and the ledger. Every result in `out/` is a true statement about
+> cross-pack comparison and the ledger. Every generated result is a true statement about
 > *the encoded packs*.
 >
 > See `data/sources/CLAUSES_PROVENANCE.md` for the verification procedure, the priority
@@ -104,15 +104,11 @@
 ## Retrieval layer
 
 - Chunks written: **266**
-- ChromaDB status: **ok**
+- ChromaDB status: **skipped** (disabled)
 
-| ITU reference collection | Documents |
-|---|---|
-| `kb_decisions` | 4 |
-| `kb_framework` | 5 |
-| `kb_main` | 257 |
-
-- Embedder: `chroma-default (Ollama ollama/nomic-embed-text unreachable)`
+No vector index was built in this run. Retrieval falls back to BM25 over the
+same chunks, so every other component still works; see `docs/retrieval_eval.md`
+for what that costs.
 
 ### What we add to the ITU reference ingest
 

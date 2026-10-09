@@ -31,3 +31,10 @@ runs/
 # data/sources/MANIFEST.yaml. Not redistributed: several have licence terms we have
 # not cleared, and all are re-fetchable from their official URL.
 kb_raw/
+
+# Working material: build specs, the video script, judge Q&A prep, the motion brief.
+# Useful to the team, not part of what ITU asks for, so it stays out of the submission.
+prep/
+
+# Throwaway: the tamper demo writes a deliberately corrupted copy of a ledger here.
+outputs/tamper/

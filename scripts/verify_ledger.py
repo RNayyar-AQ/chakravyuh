@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from chakravyuh.audit.ledger import verify
 
-TAMPER_DIR = Path("out/tamper")
+TAMPER_DIR = Path("outputs/tamper")
 
 
 def tamper_demo(path: Path, out_dir: Path = TAMPER_DIR) -> int:
