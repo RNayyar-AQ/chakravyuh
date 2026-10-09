@@ -28,6 +28,11 @@ build:           ## Produce the static site in app/web/out
 	$(MAKE) artefacts
 	cd app/web && npm run build
 
+deploy-check:    ## Build exactly as Vercel does: no Python, straight from committed files
+	npm --prefix app/web ci
+	npm --prefix app/web run build
+	@echo "built app/web/out -- this is what Vercel serves"
+
 test:            ## Run the Python suite
 	$(PY) -m pytest -q
 

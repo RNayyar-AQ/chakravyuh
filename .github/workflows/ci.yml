@@ -54,6 +54,15 @@ jobs:
       - name: Export the UI data bundle
         run: python app/scripts/export_web.py
 
+      # The bundle is committed so Vercel can build without Python. That is only safe while it
+      # is identical to a fresh run, so regenerate it here and fail on any drift.
+      - name: The committed bundle must match a fresh export
+        run: |
+          if ! git diff --exit-code --stat -- app/web/public/data; then
+            echo "::error::app/web/public/data is stale. Run 'make artefacts' and commit it."
+            exit 1
+          fi
+
       - uses: actions/setup-node@v4
         with:
           node-version: "22"

@@ -82,6 +82,34 @@ python app/dev.py                                     # the same thing make dev 
 | `make api` / `make web` | one half on its own |
 | `make clean` | delete every generated artefact |
 
+### Deploying
+
+The site is a static export, so it deploys anywhere that serves a folder. `vercel.json` carries
+the whole configuration: import the repository on Vercel, change nothing, and every push to `main`
+rebuilds and redeploys.
+
+```bash
+make deploy-check     # build exactly as Vercel does: npm only, no Python
+```
+
+Vercel runs `npm ci` and `next build` against `app/web` and serves `app/web/out`. It never runs
+the Python pipeline, which is why **`app/web/public/data/` is committed** -- the one deliberate
+exception to "we commit sources, not derivatives".
+
+That exception is safe because the export is byte-for-byte reproducible: the bundle carries
+`fingerprint`, the head hash of the India ledger, rather than a build timestamp, so re-running
+`make artefacts` changes nothing unless the underlying run changed. CI regenerates the bundle on
+every push and fails if one byte differs, and a test asserts the same thing locally. The committed
+artefact is therefore either identical to a fresh run, or the build is red -- it cannot quietly
+become a second source of truth.
+
+After changing anything the pipeline produces:
+
+```bash
+make artefacts        # regenerate
+git add app/web/public/data && git commit
+```
+
 ### Three interfaces, deliberately different jobs
 
 **`app/web/`** is the submission UI: a Next.js static export over the sealed artefacts. It

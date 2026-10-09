@@ -130,7 +130,7 @@ def test_no_other_build_product_is_committed():
     """The exception stops at the data bundle. Everything else stays out."""
     offenders = _tracked("app/web/out", "app/web/node_modules", "app/web/.next",
                          "outputs", "runs", "data/clauses", "data/chroma")
-    assert not offenders, f"build products are tracked:\n" + "\n".join(offenders)
+    assert not offenders, "build products are tracked:\n" + "\n".join(offenders)
 
 
 def test_the_committed_bundle_matches_a_fresh_export():
