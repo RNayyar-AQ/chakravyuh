@@ -165,3 +165,25 @@ sources:
     wanted_from:
       - "dot.gov.in/disaster-management (official copy not located this session)"
       - "https://dehradun.nic.in/document/standard-operating-proceduresop-2020-for-telecommunications-services-for-responding-to-disasters/ (NIC mirror, ~5 MB, may be scanned)"
+
+  # ------------------------------------------------- redistributed, not a PDF
+  - id: ITU-AI-READINESS-DIMENSIONS
+    instrument: "ITU AI Readiness 2.0 framework definition (dimensions.json)"
+    gazette: "ITU AI Ready - Analysis Towards a Standardized Readiness Framework, Report 2.0, Jan 2026"
+    jurisdiction: INTL
+    instrument_type: standard
+    url: "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/data/framework/dimensions.json"
+    official: true
+    bilingual: false
+    status: held
+    local_path: data/sources/INTL/02_ITU_AI_Readiness_dimensions.json
+    sha256: a3cc9bfd2b09c7b5ce430d31def63279cd0ab3d8371fbbd8db06a0d50c8b7165
+    fetched: "2026-10-09"
+    feeds: [E2]
+    must_contain:
+      - "Data/Model Marketplace"
+      - "framework_version"
+    # This one IS committed (MIT-licensed, small, and the AI Readiness map is generated from it
+    # at build time). Committing it is what stops an ITU label from ever being retyped by us:
+    # an earlier draft of our proposal called D1 "Open Source"; the file says D1 is the
+    # "Data/Model Marketplace" and open source is a *factor*. See NOTICE.

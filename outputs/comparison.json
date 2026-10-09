@@ -545,7 +545,7 @@
       "scenario_id": "amphan_2020",
       "seed": 0,
       "tick_count": 501,
-      "wall_seconds": 0.3142
+      "wall_seconds": 0.3256
     },
     "fcc_mdri": {
       "agent_tier": "rule",
@@ -713,7 +713,7 @@
       "scenario_id": "amphan_2020",
       "seed": 0,
       "tick_count": 501,
-      "wall_seconds": 0.1827
+      "wall_seconds": 0.184
     },
     "india_current": {
       "agent_tier": "rule",
@@ -916,7 +916,7 @@
       "scenario_id": "amphan_2020",
       "seed": 0,
       "tick_count": 501,
-      "wall_seconds": 0.0732
+      "wall_seconds": 0.074
     }
   },
   "table": [

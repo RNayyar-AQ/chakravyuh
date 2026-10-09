@@ -10,7 +10,6 @@ docs/kb_report.md (spec §9.1).
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from pathlib import Path
 
@@ -21,7 +20,6 @@ from chakravyuh.kb.clause_store import ClauseStore, DEFAULT_DB
 from chakravyuh.policy.compiler import compile_all, compile_report
 
 DOCS = Path("docs")
-DATA = Path("outputs")
 
 
 def kb_report(result: dict, packs_report: dict) -> str:
@@ -167,10 +165,7 @@ def main() -> int:
     print(f"packs compiled: {', '.join(sorted(packs))}")
 
     DOCS.mkdir(parents=True, exist_ok=True)
-    DATA.mkdir(parents=True, exist_ok=True)
     (DOCS / "kb_report.md").write_text(kb_report(result, report), encoding="utf-8")
-    (DATA / "kb_report.json").write_text(
-        json.dumps({"ingest": result, "packs": report}, indent=2, sort_keys=True), encoding="utf-8")
     print(f"wrote {DOCS / 'kb_report.md'}")
 
     integ = result["integrity"]

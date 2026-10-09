@@ -61,6 +61,6 @@ Gap classes under `india_current`: policy 4
 
 | Pack | Run id | Ticks | Wall (s) | LLM calls | Ledger head |
 |---|---|---|---|---|---|
-| `bangladesh` | `amphan_2020__bangladesh__rule__seed0` | 501 | 0.3142 | 0 | `ebfded95d0a7347a...` |
-| `fcc_mdri` | `amphan_2020__fcc_mdri__rule__seed0` | 501 | 0.1827 | 0 | `c30e57aca8ed6906...` |
-| `india_current` | `amphan_2020__india_current__rule__seed0` | 501 | 0.0732 | 0 | `7292efb8de09e93a...` |
+| `bangladesh` | `amphan_2020__bangladesh__rule__seed0` | 501 | 0.3256 | 0 | `ebfded95d0a7347a...` |
+| `fcc_mdri` | `amphan_2020__fcc_mdri__rule__seed0` | 501 | 0.184 | 0 | `c30e57aca8ed6906...` |
+| `india_current` | `amphan_2020__india_current__rule__seed0` | 501 | 0.074 | 0 | `7292efb8de09e93a...` |
