@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  const { generated_utc, scenario } = getBundle();
+  const { fingerprint, scenario } = getBundle();
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               CHAKRAVYUH · Team Quantum QAI · ITU AI for Good Sandbox Build-a-thon 5.0, New Delhi
             </p>
             <p className="font-mono">
-              scenario {scenario.scenario_id} · artefacts built {generated_utc}
+              scenario {scenario.scenario_id} · run {fingerprint.slice(0, 16)}
             </p>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-8 text-[11px] leading-relaxed text-faint/80 sm:px-6">

@@ -1,0 +1,17 @@
+[
+ {
+  "pack_id": "bangladesh",
+  "file": "timeline.bangladesh.json",
+  "items": 3961
+ },
+ {
+  "pack_id": "fcc_mdri",
+  "file": "timeline.fcc_mdri.json",
+  "items": 2064
+ },
+ {
+  "pack_id": "india_current",
+  "file": "timeline.india_current.json",
+  "items": 463
+ }
+]

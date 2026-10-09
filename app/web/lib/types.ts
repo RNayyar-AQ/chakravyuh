@@ -102,7 +102,7 @@ export interface RetrievalResult {
 export type GapRow = Record<string, string>;
 
 export interface Bundle {
-  generated_utc: string;
+  fingerprint: string;
   scenario: {
     scenario_id: string;
     title: string;

@@ -12,7 +12,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "app" / "web"
-BUNDLE = WEB / "public" / "data" / "bundle.json"
+DATA = WEB / "public" / "data"
+BUNDLE = DATA / "bundle.json"
 EXPORTER = ROOT / "app" / "scripts" / "export_web.py"
 
 
@@ -110,11 +111,39 @@ def test_the_ui_declares_every_bundle_key(bundle):
     assert not missing, f"bundle keys absent from lib/types.ts: {missing}"
 
 
-def test_generated_data_is_not_committed():
-    """Same rule as outputs/ and data/clauses/: we commit sources, not derivatives."""
-    out = subprocess.run(["git", "ls-files", "app/web/public/data", "app/web/out", "app/web/node_modules"],
-                         cwd=ROOT, capture_output=True, text=True, check=False)
-    assert out.stdout.strip() == "", f"build products are tracked:\n{out.stdout}"
+def _tracked(*paths: str) -> list[str]:
+    out = subprocess.run(["git", "ls-files", *paths], cwd=ROOT,
+                         capture_output=True, text=True, check=False)
+    return [line for line in out.stdout.splitlines() if line]
+
+
+def test_the_data_bundle_is_committed_so_vercel_can_build_it():
+    """The one deliberate exception to "sources, not derivatives": Vercel builds from git."""
+    tracked = _tracked("app/web/public/data")
+    assert any(p.endswith("bundle.json") for p in tracked), (
+        "app/web/public/data/bundle.json is not tracked; a Vercel build would have nothing "
+        "to render. Run `make artefacts` and commit it.")
+    assert any("timeline." in p for p in tracked), "no timelines tracked"
+
+
+def test_no_other_build_product_is_committed():
+    """The exception stops at the data bundle. Everything else stays out."""
+    offenders = _tracked("app/web/out", "app/web/node_modules", "app/web/.next",
+                         "outputs", "runs", "data/clauses", "data/chroma")
+    assert not offenders, f"build products are tracked:\n" + "\n".join(offenders)
+
+
+def test_the_committed_bundle_matches_a_fresh_export():
+    """A stale bundle would be a second source of truth. Regenerate and compare, byte for byte."""
+    if not BUNDLE.exists():
+        pytest.skip("no bundle")
+    before = {p: p.read_bytes() for p in sorted(DATA.glob("*.json"))}
+    proc = subprocess.run([sys.executable, str(EXPORTER)], cwd=ROOT,
+                          capture_output=True, text=True, check=False)
+    assert proc.returncode == 0, proc.stderr
+    drifted = [p.name for p, data in before.items() if p.read_bytes() != data]
+    assert not drifted, (
+        f"the committed bundle is stale: {drifted}. Run `make artefacts` and commit the result.")
 
 
 def test_exporter_reruns_cleanly(tmp_path):
@@ -126,6 +155,7 @@ def test_exporter_reruns_cleanly(tmp_path):
                           capture_output=True, text=True, check=False)
     assert proc.returncode == 0, proc.stderr
     after = BUNDLE.read_bytes()
-    before_doc, after_doc = json.loads(before), json.loads(after)
-    before_doc.pop("generated_utc"), after_doc.pop("generated_utc")
-    assert before_doc == after_doc
+    assert before == after, "the export is not byte-for-byte reproducible"
+
+    for path in sorted(DATA.glob("timeline.*.json")):
+        assert path.stat().st_size > 0

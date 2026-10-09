@@ -5,7 +5,6 @@ import csv
 import json
 import sys
 from collections import Counter
-from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -297,6 +296,15 @@ def timeline_for(path: Path) -> dict:
     }
 
 
+def fingerprint() -> str:
+    """Head hash of the India run: identifies this bundle's content, and is reproducible."""
+    path = RUNS / f"{SCENARIO}__india_current__rule__seed0.jsonl"
+    if not path.exists():
+        return ""
+    rows = list(read(path))
+    return getattr(rows[-1], "hash", "") if rows else ""
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     comparison = _load_json(OUTPUTS / "comparison.json", {}) or {}
@@ -304,7 +312,7 @@ def main() -> int:
     adviser = _load_json(OUTPUTS / "adviser_eval.json", {}) or {}
 
     bundle = {
-        "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "fingerprint": fingerprint(),
         "scenario": _yaml_scenario(),
         "packs": packs_meta(),
         "roles": roles_meta(),
@@ -327,7 +335,7 @@ def main() -> int:
         tl = timeline_for(path)
         pack = tl["header"].get("pack_id") or path.stem
         dest = OUT / f"timeline.{pack}.json"
-        dest.write_text(json.dumps(tl, indent=1, sort_keys=True))
+        dest.write_text(json.dumps(tl, separators=(",", ":"), sort_keys=True))
         index.append({"pack_id": pack, "file": dest.name, "items": len(tl["items"])})
         print(f"wrote {dest}  ({len(tl['items'])} items)")
     (OUT / "timelines.json").write_text(json.dumps(index, indent=1))

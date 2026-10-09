@@ -14,6 +14,7 @@ ALLOWED_ROOT_DIRS = {"app", "data", "docs", "tests", ".github", ".git"}
 ALLOWED_ROOT_FILES = {
     "README.md", "SUBMISSION.md", "LICENSE", "NOTICE", "CITATION.cff",
     "pyproject.toml", "requirements.lock", "Makefile", ".gitignore", ".env.example",
+    "vercel.json",
 }
 
 

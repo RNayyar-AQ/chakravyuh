@@ -1,0 +1,1298 @@
+{
+ "adviser": {
+  "adviser_mode": "extractive",
+  "c1_correct_clause": 19,
+  "c2_correct_actor": 0,
+  "c3_flags_uncertainty": 0,
+  "c3_heuristic": 13,
+  "c4_no_invented_clause": 23,
+  "cases": 23,
+  "human_checked": 0,
+  "judged": 0,
+  "retrieval_mode": "hybrid"
+ },
+ "fingerprint": "7292efb8de09e93aafc42992757d43de46b5d65249c01fc2c61a5b19caadacea",
+ "fuzz": {
+  "cards": [
+   {
+    "failure_id": "F-P3-e1666bd00c",
+    "gap_class": "execution",
+    "margin": -7140.0,
+    "mutations": [
+     {
+      "args": {
+       "area": "OD-COAST",
+       "cells_down": 2,
+       "seq": 0,
+       "t": 0
+      },
+      "created_event_id": "fz-damage-OD-COAST-0-0",
+      "family": "damage",
+      "op": "escalate_damage"
+     }
+    ],
+    "pack_id": "bangladesh",
+    "passes_under_packs": [],
+    "replay_cmd": "python app/scripts/run_fuzz.py --replay F-P3-e1666bd00c --pack bangladesh --scenario amphan_2020",
+    "responsible_clause_ids": [
+     "BD.CPP.WARNING",
+     "BD.DMA2012.s24",
+     "BD.SOD2019.ptd",
+     "INTL.ITU.X1303"
+    ],
+    "seed": 0,
+    "violated_property": "P3"
+   },
+   {
+    "failure_id": "F-P3-0f20fcbe57",
+    "gap_class": "execution",
+    "margin": -7140.0,
+    "mutations": [
+     {
+      "args": {
+       "area": "OD-COAST",
+       "cells_down": 2,
+       "seq": 0,
+       "t": 0
+      },
+      "created_event_id": "fz-damage-OD-COAST-0-0",
+      "family": "damage",
+      "op": "escalate_damage"
+     }
+    ],
+    "pack_id": "fcc_mdri",
+    "passes_under_packs": [],
+    "replay_cmd": "python app/scripts/run_fuzz.py --replay F-P3-0f20fcbe57 --pack fcc_mdri --scenario amphan_2020",
+    "responsible_clause_ids": [
+     "INTL.ITU.X1303",
+     "US.FCC.WEA"
+    ],
+    "seed": 0,
+    "violated_property": "P3"
+   }
+  ],
+  "runs": [
+   {
+    "asserted_properties": [
+     "P1",
+     "P2",
+     "P3"
+    ],
+    "baseline": {
+     "P1": true,
+     "P2": true,
+     "P3": true,
+     "P4": false
+    },
+    "excluded_at_baseline": [
+     "P4"
+    ],
+    "found": true,
+    "max_examples": 300,
+    "pack_id": "bangladesh",
+    "runs_completed": 310,
+    "unique_minimal_failures": 1,
+    "wall_seconds": 88.41
+   },
+   {
+    "asserted_properties": [
+     "P1",
+     "P2",
+     "P3",
+     "P4"
+    ],
+    "baseline": {
+     "P1": true,
+     "P2": true,
+     "P3": true,
+     "P4": true
+    },
+    "excluded_at_baseline": [],
+    "found": true,
+    "max_examples": 300,
+    "pack_id": "fcc_mdri",
+    "runs_completed": 302,
+    "unique_minimal_failures": 1,
+    "wall_seconds": 4.8
+   },
+   {
+    "asserted_properties": [],
+    "baseline": {
+     "P1": false,
+     "P2": false,
+     "P3": false,
+     "P4": false
+    },
+    "excluded_at_baseline": [
+     "P1",
+     "P2",
+     "P3",
+     "P4"
+    ],
+    "found": null,
+    "max_examples": 300,
+    "pack_id": "india_current",
+    "runs_completed": 0,
+    "unique_minimal_failures": 0,
+    "wall_seconds": 0.0
+   }
+  ]
+ },
+ "gaps": [
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: A suspension direction carries no mandatory carve-out for relief and emergency traffic, and priority routing is permitted rather than obliged, so a lawful suspension can switch off the very traffic the response depends on.",
+   "evidence": "run amphan_2020__india_current__rule__seed0",
+   "gap_id": "P1-policy-India(WB-KOLKATA)",
+   "gap_type": "policy",
+   "global_clause_ids": "",
+   "global_example": "United States (FCC Mandatory Disaster Response Initiative + DIRS): PASSES the same seed",
+   "india_clause_ids": "IN.TA2023.s20.1 INTL.ITU.CONST.art40 INTL.ITU.E106",
+   "india_instance": "India (WB-KOLKATA) -- IN.TA2023.s20.1 INTL.ITU.CONST.art40 INTL.ITU.E106",
+   "itu_hook": "ITU-T E.106 International Emergency Preference Scheme",
+   "margin_india": "-60.0",
+   "negative_finding": "",
+   "neighbour_clause_ids": "",
+   "neighbour_instance": "Bangladesh (BTRA 2001 + DM Act 2012 + CPP standing order): PASSES the same seed",
+   "passes_under_packs": "bangladesh fcc_mdri",
+   "replay_cmd": "python app/scripts/run_demo.py --pack india_current --scenario data/scenarios/amphan_2020.yaml --seed 0",
+   "source": "simulation",
+   "unverified_clause_ids": "INTL.ITU.CONST.art40 INTL.ITU.E106",
+   "violated_property": "P1"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: No instrument requires an operator to authenticate a service-suspension direction before giving effect to it, so a forged direction executes exactly like a genuine one and the irreversible act is complete before any verification occurs.",
+   "evidence": "run amphan_2020__india_current__rule__seed0",
+   "gap_id": "P2-policy-India(WB-KOLKATA)",
+   "gap_type": "policy",
+   "global_clause_ids": "",
+   "global_example": "United States (FCC Mandatory Disaster Response Initiative + DIRS): PASSES the same seed",
+   "india_clause_ids": "IN.SUSP2024.r3 IN.TA2023.s20.2 IN.TCSR2024.no_order_auth",
+   "india_instance": "India (WB-KOLKATA) -- IN.SUSP2024.r3 IN.TA2023.s20.2 IN.TCSR2024.no_order_auth",
+   "itu_hook": "ITU-T SG11 (Q.3057/Q.3062/Q.3063); ITU-T SG17 (X.509)",
+   "margin_india": "-1.0",
+   "negative_finding": "",
+   "neighbour_clause_ids": "",
+   "neighbour_instance": "Bangladesh (BTRA 2001 + DM Act 2012 + CPP standing order): PASSES the same seed",
+   "passes_under_packs": "bangladesh fcc_mdri",
+   "replay_cmd": "python app/scripts/run_demo.py --pack india_current --scenario data/scenarios/amphan_2020.yaml --seed 0",
+   "source": "simulation",
+   "unverified_clause_ids": "IN.SUSP2024.r3 IN.TCSR2024.no_order_auth",
+   "violated_property": "P2"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: No standing cross-border trigger: no instrument empowers any actor to issue a public alert across the border in time, and the domestic alerting/roaming power is scoped to domestic areas only.",
+   "evidence": "run amphan_2020__india_current__rule__seed0",
+   "gap_id": "P3-policy-India-Bangladesh(BD-KHULNA)",
+   "gap_type": "policy",
+   "global_clause_ids": "",
+   "global_example": "United States (FCC Mandatory Disaster Response Initiative + DIRS): PASSES the same seed",
+   "india_clause_ids": "IN.DMA2005.s6 IN.NDMA.CAP.SACHET",
+   "india_instance": "India-Bangladesh (BD-KHULNA) -- IN.DMA2005.s6 IN.NDMA.CAP.SACHET",
+   "itu_hook": "ITU-T X.1303 Common Alerting Protocol",
+   "margin_india": "-7140.0",
+   "negative_finding": "",
+   "neighbour_clause_ids": "",
+   "neighbour_instance": "Bangladesh (BTRA 2001 + DM Act 2012 + CPP standing order): PASSES the same seed",
+   "passes_under_packs": "bangladesh fcc_mdri",
+   "replay_cmd": "python app/scripts/run_demo.py --pack india_current --scenario data/scenarios/amphan_2020.yaml --seed 0",
+   "source": "simulation",
+   "unverified_clause_ids": "IN.DMA2005.s6 IN.NDMA.CAP.SACHET",
+   "violated_property": "P3"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: No standing cross-border trigger: no instrument empowers any actor to enable disaster roaming across the border in time, and the domestic alerting/roaming power is scoped to domestic areas only.",
+   "evidence": "run amphan_2020__india_current__rule__seed0",
+   "gap_id": "P4-policy-India-Bangladesh(BD-KHULNA)",
+   "gap_type": "policy",
+   "global_clause_ids": "",
+   "global_example": "United States (FCC Mandatory Disaster Response Initiative + DIRS): PASSES the same seed",
+   "india_clause_ids": "IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "india_instance": "India-Bangladesh (BD-KHULNA) -- IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "itu_hook": "ITU-D Guidelines for National Emergency Telecommunication Plans",
+   "margin_india": "-855.0",
+   "negative_finding": "",
+   "neighbour_clause_ids": "",
+   "neighbour_instance": "Bangladesh (BTRA 2001 + DM Act 2012 + CPP standing order): also fails (coordination gap)",
+   "passes_under_packs": "fcc_mdri",
+   "replay_cmd": "python app/scripts/run_demo.py --pack india_current --scenario data/scenarios/amphan_2020.yaml --seed 0",
+   "source": "simulation",
+   "unverified_clause_ids": "IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "violated_property": "P4"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: disaster roaming has no standing, automatically triggered obligation; it is arranged between operators and switched on by request, so the clock starts only once somebody asks.",
+   "evidence": "documents: IN.DOTSOP2020.icr IN.UL.DISASTER; reproduced as P4 on run amphan_2020__india_current__rule__seed0",
+   "gap_id": "G1",
+   "gap_type": "policy",
+   "global_clause_ids": "US.CFR47.4.17.trigger US.CFR47.4.17.a US.FCC.DIRS",
+   "global_example": "47 CFR 4.17 makes roaming-under-disaster-arrangements a standing obligation on a provider whose network is impaired, triggered by the event rather than by a request. [US.CFR47.4.17.trigger* US.CFR47.4.17.a* US.FCC.DIRS*]",
+   "india_clause_ids": "IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "india_instance": "DoT SOP-2020 routes intra-circle roaming through MoUs between TSPs on mutually agreed terms; activation is requested through DoT rather than triggered by the disaster itself. [IN.DOTSOP2020.icr* IN.UL.DISASTER*]",
+   "itu_hook": "ITU-D Guidelines for National Emergency Telecommunication Plans (2020)",
+   "margin_india": "",
+   "negative_finding": "no",
+   "neighbour_clause_ids": "BT.TELSOP.no_roaming",
+   "neighbour_instance": "Bhutan's SOP for Telecom Services during Disaster contains no roaming provision at all. [BT.TELSOP.no_roaming*]",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "violated_property": "P4"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: a national emergency telecommunication plan is not operational, so disaster-time telecom coordination rests on standing committees rather than on a plan with owners and deadlines.",
+   "evidence": "documents: IN.DOTSOP2020.committees",
+   "gap_id": "G2",
+   "gap_type": "coordination",
+   "global_clause_ids": "INTL.ITU.NETP2020",
+   "global_example": "The ITU-D guidelines set out what an NETP contains and who owns each part of it. [INTL.ITU.NETP2020*]",
+   "india_clause_ids": "IN.DOTSOP2020.committees",
+   "india_instance": "SOP-2020 establishes committees and nodal officers; it is an SOP, not a costed national plan. [IN.DOTSOP2020.committees*]",
+   "itu_hook": "ITU-D NETP Guidelines; ITU target of an NETP in every country",
+   "margin_india": "",
+   "negative_finding": "no",
+   "neighbour_clause_ids": "BD.NETS.gap",
+   "neighbour_instance": "Bangladesh's National Emergency Telecommunication Service initiative has run since Sep 2022 with funds available and, as reported, no plan in place. [BD.NETS.gap*]",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.DOTSOP2020.committees",
+   "violated_property": ""
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: orders to operators are not cryptographically authenticated, so a forged direction is indistinguishable from a genuine one at the moment the operator must act.",
+   "evidence": "documents: IN.SUSP2024.r3 IN.TCSR2024.no_order_auth IN.TA2023.s20.2; reproduced as P2 on run amphan_2020__india_current__rule__seed0",
+   "gap_id": "G3",
+   "gap_type": "standards",
+   "global_clause_ids": "INTL.ITU.Q3057",
+   "global_example": "ITU-T Q.3057 standardises certificate-based authentication of calling identity in signalling. There is no equivalent recommendation for authenticating an emergency order to an operator -- the standards gap is the absence, not a weaker alternative. [INTL.ITU.Q3057*]",
+   "india_clause_ids": "IN.SUSP2024.r3 IN.TCSR2024.no_order_auth IN.TA2023.s20.2",
+   "india_instance": "The Suspension Rules route a direction to a nodal officer by electronic means; neither they nor the Telecom Cyber Security Rules impose a duty to verify where it came from. [IN.SUSP2024.r3* IN.TCSR2024.no_order_auth* IN.TA2023.s20.2]",
+   "itu_hook": "ITU-T SG11 (Q.3057/Q.3062/Q.3063); ITU-T SG17 (X.509)",
+   "margin_india": "",
+   "negative_finding": "yes",
+   "neighbour_clause_ids": "",
+   "neighbour_instance": "none found in the instruments held for Bangladesh, Bhutan or Bangladesh SOD 2019",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.SUSP2024.r3 IN.TCSR2024.no_order_auth",
+   "violated_property": "P2"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: suspension safeguards carry no mandatory carve-out for response and relief traffic, so a lawful suspension can switch off the traffic the response depends on.",
+   "evidence": "documents: IN.TA2023.s20.1 IN.TA2023.s20.2 IN.SUSP2024.r2.1; reproduced as P1 on run amphan_2020__india_current__rule__seed0",
+   "gap_id": "G4",
+   "gap_type": "policy",
+   "global_clause_ids": "INTL.ITU.E106 INTL.ITU.CONST.art40",
+   "global_example": "E.106 and ITU Constitution Art. 40 give safety-of-life traffic absolute priority on international services. EU EECC Art. 110 is NOT cited: we hold no text for it. [INTL.ITU.E106* INTL.ITU.CONST.art40*]",
+   "india_clause_ids": "IN.TA2023.s20.1 IN.TA2023.s20.2 IN.SUSP2024.r2.1",
+   "india_instance": "s.20(1)(b) ENABLES priority routing for authorised responders; it does not oblige it, and the 2024 Rules' safeguards address duration, review and who may order -- not a carve-out. [IN.TA2023.s20.1 IN.TA2023.s20.2 IN.SUSP2024.r2.1*]",
+   "itu_hook": "ITU-T E.106 International Emergency Preference Scheme",
+   "margin_india": "",
+   "negative_finding": "yes",
+   "neighbour_clause_ids": "BD.CPP.WARNING",
+   "neighbour_instance": "Bangladesh's CPP standing order keeps the warning chain running independently of any suspension, which is why the same seed passes under the Bangladesh pack. [BD.CPP.WARNING*]",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.SUSP2024.r2.1",
+   "violated_property": "P1"
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: outage duration is set by site power backup, and no instrument states a numeric backup requirement, so the recovery clock is an engineering accident.",
+   "evidence": "documents: IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "gap_id": "G5",
+   "gap_type": "execution",
+   "global_clause_ids": "US.CFR47.4.17.b",
+   "global_example": "47 CFR 4.17 obliges mutual aid and asset sharing between providers, which is a different lever on the same failure: it shortens outage without specifying a battery. [US.CFR47.4.17.b*]",
+   "india_clause_ids": "IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "india_instance": "Neither the SOP nor the licence condition we hold states a minimum backup duration; the Amphan outages were driven by grid loss (COAI, as reported). [IN.DOTSOP2020.icr* IN.UL.DISASTER*]",
+   "itu_hook": "ITU-D NETP Guidelines (resilience and power)",
+   "margin_india": "",
+   "negative_finding": "yes",
+   "neighbour_clause_ids": "BD.SOD2019.ptd",
+   "neighbour_instance": "Bangladesh SOD 2019 assigns PTD/BTRC/BTCL duties; tower batteries reported at 4-8 h. [BD.SOD2019.ptd*]",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.DOTSOP2020.icr IN.UL.DISASTER",
+   "violated_property": ""
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: disaster telecom SOPs carry no numeric timelines, so \"immediately\" is the only deadline and nothing is measurable after the event.",
+   "evidence": "documents: IN.DOTSOP2020.committees IN.DOTSOP2020.icr",
+   "gap_id": "G6",
+   "gap_type": "policy",
+   "global_clause_ids": "US.CFR47.4.17.b US.FCC.DIRS",
+   "global_example": "47 CFR 4.17 sets a 60-day reporting deadline and an annual roaming test; DIRS sets the reporting cadence during the event. [US.CFR47.4.17.b* US.FCC.DIRS*]",
+   "india_clause_ids": "IN.DOTSOP2020.committees IN.DOTSOP2020.icr",
+   "india_instance": "SOP-2020 as held: committees, nodal officers and reporting, no numeric deadline. [IN.DOTSOP2020.committees* IN.DOTSOP2020.icr*]",
+   "itu_hook": "",
+   "margin_india": "",
+   "negative_finding": "yes",
+   "neighbour_clause_ids": "BT.TELSOP.no_roaming",
+   "neighbour_instance": "Bhutan's SOP as held: \"immediately\" plus daily reporting. [BT.TELSOP.no_roaming*]",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.DOTSOP2020.committees IN.DOTSOP2020.icr",
+   "violated_property": ""
+  },
+  {
+   "confidence": "likely",
+   "domain_gap": "Emergency telecom: cross-border alerting has no defined path, so a CAP alert cannot reach the population on the far side of a border that the same cyclone is about to cross.",
+   "evidence": "documents: IN.NDMA.CAP.SACHET IN.DMA2005.s6; reproduced as P3 on run amphan_2020__india_current__rule__seed0",
+   "gap_id": "G7",
+   "gap_type": "coordination",
+   "global_clause_ids": "INTL.ITU.X1303 INTL.TAMPERE1998.art9",
+   "global_example": "X.1303 already carries multilingual, polygon-scoped alerts across any boundary; the gap is institutional, not technical. Tampere Art. 9 addresses regulatory barriers to relief telecoms. Party status per country is NOT asserted: we hold no treaty-status page. [INTL.ITU.X1303* INTL.TAMPERE1998.art9*]",
+   "india_clause_ids": "IN.NDMA.CAP.SACHET IN.DMA2005.s6",
+   "india_instance": "SACHET's CAP feeds are national and state-scoped; the alerting power is domestic. [IN.NDMA.CAP.SACHET* IN.DMA2005.s6*]",
+   "itu_hook": "ITU-T X.1303 (CAP) -- multilingual, area-polygon alerting",
+   "margin_india": "",
+   "negative_finding": "no",
+   "neighbour_clause_ids": "BD.CPP.WARNING BD.SOD2019.ptd",
+   "neighbour_instance": "Bangladesh's warning chain runs on BMD cyclone signals through CPP volunteers -- a different channel, with no defined interface to SACHET. [BD.CPP.WARNING* BD.SOD2019.ptd*]",
+   "passes_under_packs": "",
+   "replay_cmd": "",
+   "source": "document",
+   "unverified_clause_ids": "IN.NDMA.CAP.SACHET IN.DMA2005.s6",
+   "violated_property": "P3"
+  }
+ ],
+ "kb": {
+  "jurisdiction": {
+   "BD": 8,
+   "BT": 1,
+   "IN": 130,
+   "INTL": 12,
+   "US": 6
+  },
+  "provenance": {
+   "gazette_pdf": 106,
+   "gazette_pdf_subsection": 4,
+   "model_written": 29,
+   "secondary_source": 18
+  },
+  "total": 157,
+  "verbatim_status": {
+   "unverified_summary": 47,
+   "verified": 83,
+   "verified_with_artifacts": 27
+  }
+ },
+ "ledger": {
+  "runs": [
+   {
+    "entries": 7996,
+    "head_hash": "ebfded95d0a7347a661e2d252c0ae1b7cd9b7ba24ed1fba3512245c89791c562",
+    "kinds": {
+     "DELIVERY": 313,
+     "EFFECT": 223,
+     "EVENT": 17,
+     "PROPERTY": 4,
+     "PROPOSAL": 3719,
+     "VERDICT": 3720
+    },
+    "message": "OK: 7996 entries, head ebfded95d0a7347a...",
+    "path": "runs/amphan_2020__bangladesh__rule__seed0.jsonl",
+    "run_id": "amphan_2020__bangladesh__rule__seed0",
+    "verified": true
+   },
+   {
+    "entries": 4198,
+    "head_hash": "c30e57aca8ed69069a4074232c5de7a48c9288bcf392e11382e35a4f921d293d",
+    "kinds": {
+     "DELIVERY": 289,
+     "EFFECT": 202,
+     "EVENT": 17,
+     "PROPERTY": 4,
+     "PROPOSAL": 1843,
+     "VERDICT": 1843
+    },
+    "message": "OK: 4198 entries, head c30e57aca8ed6906...",
+    "path": "runs/amphan_2020__fcc_mdri__rule__seed0.jsonl",
+    "run_id": "amphan_2020__fcc_mdri__rule__seed0",
+    "verified": true
+   },
+   {
+    "entries": 928,
+    "head_hash": "7292efb8de09e93aafc42992757d43de46b5d65249c01fc2c61a5b19caadacea",
+    "kinds": {
+     "DELIVERY": 69,
+     "EFFECT": 51,
+     "EVENT": 17,
+     "PROPERTY": 4,
+     "PROPOSAL": 393,
+     "VERDICT": 394
+    },
+    "message": "OK: 928 entries, head 7292efb8de09e93a...",
+    "path": "runs/amphan_2020__india_current__rule__seed0.jsonl",
+    "run_id": "amphan_2020__india_current__rule__seed0",
+    "verified": true
+   }
+  ],
+  "tamper": [
+   {
+    "message": "payload tampered at seq 72: hash mismatch",
+    "run_id": "amphan_2020__bangladesh__rule__seed0.tampered",
+    "verified": false
+   },
+   {
+    "message": "payload tampered at seq 45: hash mismatch",
+    "run_id": "amphan_2020__india_current__rule__seed0.tampered",
+    "verified": false
+   }
+  ]
+ },
+ "packs": [
+  {
+   "blurb": "BTRA 2001 + DM Act 2012 + CPP standing order",
+   "jurisdiction": "BD",
+   "label": "Bangladesh",
+   "mode": "blocking",
+   "pack_id": "bangladesh",
+   "rule_count": 17,
+   "version": "2026.10"
+  },
+  {
+   "blurb": "FCC Mandatory Disaster Response Initiative + DIRS",
+   "jurisdiction": "US",
+   "label": "United States",
+   "mode": "blocking",
+   "pack_id": "fcc_mdri",
+   "rule_count": 12,
+   "version": "2026.10"
+  },
+  {
+   "blurb": "Current Indian law as it stands",
+   "jurisdiction": "IN",
+   "label": "India",
+   "mode": "blocking",
+   "pack_id": "india_current",
+   "rule_count": 15,
+   "version": "2026.10"
+  }
+ ],
+ "properties": {
+  "P1": "During any suspension, relief/emergency traffic in affected cells stays reachable",
+  "P2": "No irreversible action executes on an unauthenticated (forged) order",
+  "P3": "Every affected area, including across the border, gets a public alert within T_alert of the warning, in a local language",
+  "P4": "Disaster roaming is active in affected circles within T_roam of landfall"
+ },
+ "retrieval": [
+  {
+   "abstention_questions": 5,
+   "abstention_separability": 0.921,
+   "mean_top_score_answerable": 32.8605,
+   "mean_top_score_unanswerable": 17.5693,
+   "mode": "bm25",
+   "mrr": 0.907,
+   "questions": 48,
+   "recall_at_k": 0.979
+  },
+  {
+   "abstention_questions": 5,
+   "abstention_separability": 0.921,
+   "mean_top_score_answerable": 0.7072,
+   "mean_top_score_unanswerable": 0.5388,
+   "mode": "vector",
+   "mrr": 0.894,
+   "questions": 48,
+   "recall_at_k": 0.979
+  },
+  {
+   "abstention_questions": 5,
+   "abstention_separability": 0.956,
+   "mean_top_score_answerable": 0.0327,
+   "mean_top_score_unanswerable": 0.0311,
+   "mode": "hybrid",
+   "mrr": 0.908,
+   "questions": 48,
+   "recall_at_k": 0.979
+  },
+  {
+   "abstention_questions": 5,
+   "abstention_separability": 0.956,
+   "mean_top_score_answerable": 0.0327,
+   "mean_top_score_unanswerable": 0.0311,
+   "mode": "hybrid_rerank",
+   "mrr": 0.908,
+   "note": "reranker absent (sentence-transformers not installed): same as hybrid",
+   "questions": 48,
+   "recall_at_k": 0.979
+  },
+  {
+   "abstention_questions": 5,
+   "abstention_separability": 0.792,
+   "mean_top_score_answerable": 0.6278,
+   "mean_top_score_unanswerable": 0.4323,
+   "mode": "tree",
+   "mrr": 0.299,
+   "questions": 48,
+   "recall_at_k": 0.312
+  }
+ ],
+ "roles": [
+  {
+   "analogue": "Union/State Home Secretary under Telecom Act 2023 s.20 + Suspension Rules 2024",
+   "boundaries": "You do not see cell-level telemetry and you cannot verify a report yourself. You cannot operate the network; you can only order.",
+   "channel_latency_min": 0,
+   "inbox_types": [
+    "IMD_WARNING",
+    "LANDFALL",
+    "DAMAGE_REPORT",
+    "RUMOUR",
+    "ORDER",
+    "SUSPICIOUS_ORDER",
+    "DISASTER_DECLARED",
+    "CROSS_BORDER_REQUEST"
+   ],
+   "mandate": "Maintain public order and public safety while keeping the State's emergency response functioning. You answer for both an unnecessary suspension and a failure to act.",
+   "name": "Competent Authority (Home Department)",
+   "priority": 0,
+   "role_id": "competent_authority"
+  },
+  {
+   "analogue": "NDMA/SDMA under DM Act 2005, CAP alerts via SACHET",
+   "boundaries": "You do not see network telemetry or cyber incidents. You cannot compel an operator to do anything.",
+   "channel_latency_min": 0,
+   "inbox_types": [
+    "IMD_WARNING",
+    "LANDFALL",
+    "DAMAGE_REPORT",
+    "DISASTER_DECLARED",
+    "CROSS_BORDER_REQUEST"
+   ],
+   "mandate": "Get an accurate, intelligible warning to every person in every area at risk, in a language they read, before the hazard arrives.",
+   "name": "State Disaster Management Authority (alerting)",
+   "priority": 1,
+   "role_id": "sdma_alerts"
+  },
+  {
+   "analogue": "Telecom operator network operations centre",
+   "boundaries": "You do not receive meteorological warnings directly and you cannot verify whether an order you received is genuine. You cannot issue public alerts.",
+   "channel_latency_min": 0,
+   "inbox_types": [
+    "SITE_DOWN",
+    "POWER_LOSS",
+    "DAMAGE_REPORT",
+    "ORDER",
+    "ORDER_DISASTER_ROAMING",
+    "SUSPICIOUS_ORDER",
+    "DISASTER_DECLARED",
+    "LANDFALL",
+    "CYBER_INCIDENT"
+   ],
+   "mandate": "Keep the network carrying traffic, above all emergency and relief traffic, and comply with lawful directions you receive through your nodal officer.",
+   "name": "Telecom Service Provider NOC (5G network and services)",
+   "priority": 2,
+   "role_id": "tsp_network"
+  },
+  {
+   "analogue": "CERT-In, Directions of 28 April 2022, six-hour reporting",
+   "boundaries": "You see incident reports only. You do not see meteorological warnings, damage reports or public alerts, and you cannot order anything on the network.",
+   "channel_latency_min": 0,
+   "inbox_types": [
+    "INCIDENT_REPORT",
+    "CYBER_INCIDENT",
+    "SUSPICIOUS_ORDER",
+    "ORDER"
+   ],
+   "mandate": "Detect and call out forged or tampered directions and reportable cyber incidents affecting telecom networks.",
+   "name": "CERT-In (national computer emergency response team)",
+   "priority": 3,
+   "role_id": "cert_in"
+  },
+  {
+   "analogue": "Bangladesh regulator / Department of Disaster Management",
+   "boundaries": "You reach everything through the cross-border channel, which is slow. You cannot see the other State's internal orders or telemetry.",
+   "channel_latency_min": 75,
+   "inbox_types": [
+    "CROSS_BORDER_REQUEST",
+    "LANDFALL",
+    "DAMAGE_REPORT"
+   ],
+   "mandate": "Protect the population on your side of the border. You act on your own legal powers, not on a foreign authority's order.",
+   "name": "Neighbouring State authority",
+   "priority": 4,
+   "role_id": "neighbour_authority"
+  },
+  {
+   "analogue": "Standing legal/policy adviser to the response",
+   "boundaries": "Advisory only. Every claim must cite a clause_id present in the retrieved context. If the clauses do not answer the question, say so and name the gap.",
+   "channel_latency_min": 0,
+   "inbox_types": [
+    "*"
+   ],
+   "mandate": "Answer questions about who may lawfully do what, citing clauses. You hold no powers and you propose no actions.",
+   "name": "Policy & Legal Adviser",
+   "priority": 5,
+   "role_id": "adviser"
+  }
+ ],
+ "scenario": {
+  "areas": [
+   "OD-JAGATSINGHPUR",
+   "OD-KENDRAPARA",
+   "OD-BHADRAK",
+   "OD-BALASORE",
+   "WB-EAST-MEDINIPUR",
+   "WB-SOUTH-24-PARGANAS",
+   "WB-NORTH-24-PARGANAS",
+   "WB-KOLKATA",
+   "BD-KHULNA"
+  ],
+  "description": "Super Cyclonic Storm Amphan over the Bay of Bengal. IMD issues a pre-cyclone watch 104 hours before landfall and escalates through watch, alert, warning and post-landfall outlook. Landfall near the Sundarbans on the West Bengal-Bangladesh coast on 20 May. Networks in the affected districts fall to 65-70% of capacity. A forged suspension order is injected as an adversarial test.",
+  "horizon_min": 7500,
+  "scenario_id": "amphan_2020",
+  "tick_min": 15,
+  "title": "Cyclone Amphan, 16-20 May 2020 \u2014 Odisha / West Bengal / Bangladesh coast"
+ },
+ "scorecard": {
+  "properties": [
+   {
+    "fails_under": [
+     "india_current"
+    ],
+    "margins": {
+     "bangladesh": 40.0,
+     "fcc_mdri": 40.0,
+     "india_current": -60.0
+    },
+    "passes_under": [
+     "bangladesh",
+     "fcc_mdri"
+    ],
+    "property_id": "P1",
+    "text": "During any suspension, relief/emergency traffic in affected cells stays reachable"
+   },
+   {
+    "fails_under": [
+     "india_current"
+    ],
+    "margins": {
+     "bangladesh": 0.0,
+     "fcc_mdri": 0.0,
+     "india_current": -1.0
+    },
+    "passes_under": [
+     "bangladesh",
+     "fcc_mdri"
+    ],
+    "property_id": "P2",
+    "text": "No irreversible action executes on an unauthenticated (forged) order"
+   },
+   {
+    "fails_under": [
+     "india_current"
+    ],
+    "margins": {
+     "bangladesh": 345.0,
+     "fcc_mdri": 345.0,
+     "india_current": -7140.0
+    },
+    "passes_under": [
+     "bangladesh",
+     "fcc_mdri"
+    ],
+    "property_id": "P3",
+    "text": "Every affected area, including across the border, gets a public alert within T_alert of the warning, in a local language"
+   },
+   {
+    "fails_under": [
+     "bangladesh",
+     "india_current"
+    ],
+    "margins": {
+     "bangladesh": -855.0,
+     "fcc_mdri": 345.0,
+     "india_current": -855.0
+    },
+    "passes_under": [
+     "fcc_mdri"
+    ],
+    "property_id": "P4",
+    "text": "Disaster roaming is active in affected circles within T_roam of landfall"
+   }
+  ]
+ },
+ "sources": [
+  {
+   "feeds": [
+    "P1",
+    "P2",
+    "G3",
+    "G4"
+   ],
+   "gazette": "G.S.R. 724(E), Gazette Extraordinary No. 665, 22 Nov 2024",
+   "id": "IN-SUSP-2024",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules, 2024",
+   "jurisdiction": "IN",
+   "official": true,
+   "pages": 6,
+   "reason": "",
+   "sha256": "f60ca6db4d91b116",
+   "status": "held",
+   "url": "https://eservices.dot.gov.in/sites/default/files/circular-notifications/temporary-suspension-of-services-rules-2024.pdf"
+  },
+  {
+   "feeds": [
+    "G3"
+   ],
+   "gazette": "No. 20(3)/2022-CERT-In, 28 Apr 2022",
+   "id": "IN-CERTIN-2022",
+   "instrument": "CERT-In Directions under s.70B(6) IT Act 2000",
+   "jurisdiction": "IN",
+   "official": true,
+   "pages": 9,
+   "reason": "",
+   "sha256": "202c2f3953d792dc",
+   "status": "held",
+   "url": "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf"
+  },
+  {
+   "feeds": [
+    "P4",
+    "G1",
+    "G6"
+   ],
+   "gazette": "DITT / MoIC, Royal Government of Bhutan",
+   "id": "BT-SOP",
+   "instrument": "SOP for Telecommunication Services During Disasters (Bhutan)",
+   "jurisdiction": "BT",
+   "official": true,
+   "pages": 26,
+   "reason": "",
+   "sha256": "8a75b10510140088",
+   "status": "held",
+   "url": "https://tech.gov.bt/wp-content/uploads/2024/09/Final-SoP-for-Telecom-service-during-Disaster.pdf"
+  },
+  {
+   "feeds": [
+    "G2",
+    "G7"
+   ],
+   "gazette": "Ministry of Disaster Management and Relief",
+   "id": "BD-SOD-2019",
+   "instrument": "Standing Orders on Disaster 2019 (Bangladesh)",
+   "jurisdiction": "BD",
+   "official": false,
+   "pages": 440,
+   "reason": "",
+   "sha256": "e562f8fb28f9bb8b",
+   "status": "held",
+   "url": "https://www.adrc.asia/documents/dm_information/BGD_SOD2019_English_FINAL.pdf"
+  },
+  {
+   "feeds": [
+    "P4",
+    "G1",
+    "G6"
+   ],
+   "gazette": "FCC 22-50, Federal Register Vol. 87 No. 189, 30 Sep 2022, p. 59340",
+   "id": "US-MDRI",
+   "instrument": "47 CFR 4.17 Mandatory Disaster Response Initiative",
+   "jurisdiction": "US",
+   "official": true,
+   "pages": 3,
+   "reason": "",
+   "sha256": "cf2dce9870f1fe65",
+   "status": "held",
+   "url": "https://govinfo.gov/content/pkg/FR-2022-09-30/pdf/2022-21295.pdf"
+  },
+  {
+   "feeds": [
+    "P2",
+    "G3"
+   ],
+   "gazette": "G.S.R. 720(E), 21 Nov 2024",
+   "id": "IN-TCS-2024",
+   "instrument": "Telecommunications (Telecom Cyber Security) Rules, 2024",
+   "jurisdiction": "IN",
+   "official": false,
+   "pages": null,
+   "reason": "The only copy obtained is a composite. Its first six pages are gazette pages 8-13 carrying TCS Rules 4-8 only; rules 1-3 and anything after rule 8 are absent. Its last three pages are gazette pages 5-7 of a DIFFERENT instrument (G.S.R. 771(E), 22 Oct 2025 - see IN-TCS-AMEND-2025). Searching this file for authentication terms returns 0 hits, but that result is WORTHLESS as evidence of absence because the file is missing most of the rules.",
+   "sha256": "16f93fbc5e1bbdbd",
+   "status": "partial",
+   "url": "https://www.thc.nic.in/Central%20Governmental%20Rules/Telecommunications%20(Telecom%20Cyber%20Security)%20Rules,%202024.pdf"
+  },
+  {
+   "feeds": [
+    "P2",
+    "G3"
+   ],
+   "gazette": "G.S.R. 771(E), 22 Oct 2025",
+   "id": "IN-TCS-AMEND-2025",
+   "instrument": "Telecommunications (Telecom Cyber Security) Amendment Rules, 2025",
+   "jurisdiction": "IN",
+   "official": false,
+   "pages": null,
+   "reason": [
+    "dot.gov.in - G.S.R. 771(E) of 22 Oct 2025"
+   ],
+   "sha256": "",
+   "status": "wanted",
+   "url": null
+  },
+  {
+   "feeds": [
+    "P4",
+    "G1",
+    "G2",
+    "G5",
+    "G6"
+   ],
+   "gazette": "Department of Telecommunications, 14 Dec 2020",
+   "id": "IN-SOP-2020",
+   "instrument": "DoT SOP-2020 for Telecommunication Services for Responding to Disasters",
+   "jurisdiction": "IN",
+   "official": false,
+   "pages": null,
+   "reason": [
+    "dot.gov.in/disaster-management (official copy not located this session)",
+    "https://dehradun.nic.in/document/standard-operating-proceduresop-2020-for-telecommunications-services-for-responding-to-disasters/ (NIC mirror, ~5 MB, may be scanned)"
+   ],
+   "sha256": "",
+   "status": "wanted",
+   "url": null
+  },
+  {
+   "feeds": [
+    "E2"
+   ],
+   "gazette": "ITU AI Ready - Analysis Towards a Standardized Readiness Framework, Report 2.0, Jan 2026",
+   "id": "ITU-AI-READINESS-DIMENSIONS",
+   "instrument": "ITU AI Readiness 2.0 framework definition (dimensions.json)",
+   "jurisdiction": "INTL",
+   "official": true,
+   "pages": null,
+   "reason": "",
+   "sha256": "a3cc9bfd2b09c7b5",
+   "status": "held",
+   "url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/data/framework/dimensions.json"
+  }
+ ],
+ "y3172": [
+  {
+   "count": 8,
+   "description": "Data source: acts, rules, registers, scenario definitions",
+   "members": [
+    [
+     "chakravyuh.fuzz.mutations",
+     "apply_mutations",
+     "Replay a mutation list onto the base scenario. This is what makes a FailureCard reproducible."
+    ],
+    [
+     "chakravyuh.fuzz.mutations",
+     "delay_channel",
+     "Add latency to one role's channel. This is the mutation that manufactures coordination gaps."
+    ],
+    [
+     "chakravyuh.fuzz.mutations",
+     "delay_event_for_role",
+     "Delay one fact for one role: the finest-grained way to make information uneven."
+    ],
+    [
+     "chakravyuh.fuzz.mutations",
+     "escalate_damage",
+     "Add a damage report for an area, which also marks that area affected."
+    ],
+    [
+     "chakravyuh.fuzz.mutations",
+     "inject_forged_order",
+     "Add an order no authority issued. `authentic=False` is ground truth no agent can read."
+    ],
+    [
+     "chakravyuh.fuzz.mutations",
+     "inject_rumour",
+     "Add an unverified claim visible to the competent authority. No world effect by construction."
+    ],
+    [
+     "chakravyuh.fuzz.mutations",
+     "shift_event",
+     "Move one event in time. Release order changes, so who-knows-what-when changes with it."
+    ],
+    [
+     "chakravyuh.sim.events",
+     "load_scenario",
+     "Load and validate a scenario YAML. Event ids must be unique and times non-negative."
+    ]
+   ],
+   "node": "SRC"
+  },
+  {
+   "count": 6,
+   "description": "Collector: ingest of source documents into the knowledge base",
+   "members": [
+    [
+     "chakravyuh.kb.ingest",
+     "build",
+     "Full ingest: real gazette clauses + model-written seed -> store, clauses.jsonl, chunks.jsonl."
+    ],
+    [
+     "chakravyuh.kb.ingest",
+     "chunk_clauses",
+     "One chunk per clause; split only clauses longer than window_chars, on sentence bounds."
+    ],
+    [
+     "chakravyuh.kb.ingest",
+     "ingest_to_chroma",
+     "Push chunks into the ITU reference Chroma collections. Returns per-collection counts."
+    ],
+    [
+     "chakravyuh.kb.real_sources",
+     "clean_gazette_text",
+     "Remove structural debris only. Returns cleaned text plus what was found and left behind."
+    ],
+    [
+     "chakravyuh.kb.real_sources",
+     "load_real_clauses",
+     "Load the gazette-derived corpora into Clause records, with provenance intact."
+    ],
+    [
+     "chakravyuh.kb.real_sources",
+     "split_subsections",
+     "Split a section into its top-level subsections."
+    ]
+   ],
+   "node": "C"
+  },
+  {
+   "count": 8,
+   "description": "Pre-processor: clause structuring, policy-pack compilation, retrieval",
+   "members": [
+    [
+     "chakravyuh.alerts.cap",
+     "build_cap",
+     "Return a CAP 1.2 / X.1303 envelope as a plain dict (one `info` block)."
+    ],
+    [
+     "chakravyuh.kb.clause_store",
+     "ClauseStore",
+     "Exact-lookup clause store over SQLite (stdlib sqlite3)."
+    ],
+    [
+     "chakravyuh.kb.clause_store",
+     "ClauseStore.get_clause",
+     "Exact lookup by clause_id. Raises ClauseNotFound -- never a fuzzy match."
+    ],
+    [
+     "chakravyuh.kb.clause_store",
+     "ClauseStore.verify_verbatim",
+     "Hash-match check used by the policy compiler: does the cited text still hash as recorded?"
+    ],
+    [
+     "chakravyuh.kb.retrieve",
+     "Retriever",
+     "Hybrid clause retriever over the ingested chunks."
+    ],
+    [
+     "chakravyuh.kb.retrieve",
+     "Retriever.search",
+     "Retrieve k chunks. `hybrid` fuses BM25 and vector ranks with RRF."
+    ],
+    [
+     "chakravyuh.policy.compiler",
+     "compile_all",
+     "Compile every *.yaml in packs_dir. Returns {pack_id: PolicyPack}."
+    ],
+    [
+     "chakravyuh.policy.compiler",
+     "compile_pack",
+     "Load, validate and return a PolicyPack. Raises PackCompileError on any defect."
+    ]
+   ],
+   "node": "PP"
+  },
+  {
+   "count": 15,
+   "description": "Model: agents that propose actions (LLM or rule-based twins)",
+   "members": [
+    [
+     "chakravyuh.agents.adviser",
+     "Adviser",
+     "Retrieve -> answer -> verify citations. Holds no powers and proposes no actions."
+    ],
+    [
+     "chakravyuh.agents.adviser",
+     "Adviser.ask",
+     "Answer a question with cited clauses. Falls back to extractive when no model is usable."
+    ],
+    [
+     "chakravyuh.agents.llm_agent",
+     "LLMAgent",
+     "Role-bound LLM agent. Deterministic via the record/replay cache + temperature 0."
+    ],
+    [
+     "chakravyuh.agents.llm_agent",
+     "LLMAgent.observe",
+     "One LLM call per tick. Returns at most one proposal; NOOP when nothing is new."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "AdviserTwin",
+     "The adviser proposes nothing; it answers questions. See agents/adviser.py."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "CertInTwin",
+     "Flags orders reported to it as suspicious. Sees incident reports only."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "CompetentAuthorityTwin",
+     "Orders what the law lets it order, as soon as it hears something that justifies it."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "NeighbourAuthorityTwin",
+     "Acts on its own powers when a cross-border request finally reaches it."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "RuleAgent.observe",
+     "Record how much the twin knows, then decide. Subclasses override _decide."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "SdmaAlertsTwin",
+     "Alerts every area it is told about, in that area's languages, and asks the neighbour."
+    ],
+    [
+     "chakravyuh.agents.rule_agents",
+     "TspNetworkTwin",
+     "Complies with orders it receives, restores sites, and prioritises relief when it may."
+    ],
+    [
+     "chakravyuh.fuzz.machine",
+     "PolicyFuzzMachine",
+     "Mutate the scenario, re-run, assert P1-P4. Hypothesis shrinks the failing mutation list."
+    ],
+    [
+     "chakravyuh.llm.client",
+     "LLMClient",
+     "Deterministic-by-cache LLM client (LiteLLM -> Ollama or a hosted model)."
+    ],
+    [
+     "chakravyuh.llm.client",
+     "LLMClient.complete",
+     "Return a completion. In replay mode a cache miss raises CacheMiss."
+    ],
+    [
+     "chakravyuh.llm.client",
+     "resolve_model",
+     "Pick the model id: an explicit one wins, then the hosted/local env var, then the default."
+    ]
+   ],
+   "node": "M"
+  },
+  {
+   "count": 2,
+   "description": "Policy: deterministic legality decision over proposals",
+   "members": [
+    [
+     "chakravyuh.policy.engine",
+     "evaluate",
+     "Decide ALLOW | BLOCK | NEEDS_HUMAN for one proposal. Pure function: no I/O, no randomness."
+    ],
+    [
+     "chakravyuh.policy.engine",
+     "obligations_due",
+     "Obligations whose deadline has passed without the obliged action having happened."
+    ]
+   ],
+   "node": "P"
+  },
+  {
+   "count": 10,
+   "description": "Distributor: message bus, event release, Game Master resolution",
+   "members": [
+    [
+     "chakravyuh.sim.bus",
+     "Bus",
+     "Per-role inbox delivery with configurable latency."
+    ],
+    [
+     "chakravyuh.sim.bus",
+     "Bus.publish",
+     "Queue the event for every role that can see it. Returns the scheduled deliveries."
+    ],
+    [
+     "chakravyuh.sim.events",
+     "EventQueue",
+     "Priority queue of events by release time. Ties break on event_id, so release is total-ordered."
+    ],
+    [
+     "chakravyuh.sim.game_master",
+     "GameMaster",
+     "The single authority over world state. No agent holds a reference to the world."
+    ],
+    [
+     "chakravyuh.sim.game_master",
+     "GameMaster.resolve_tick",
+     "Resolve every proposal for this tick in (t, role priority, proposal_id) order."
+    ],
+    [
+     "chakravyuh.sim.runner",
+     "run",
+     "Execute one full simulation and return its RunResult (properties included)."
+    ],
+    [
+     "chakravyuh.world.dynamics",
+     "apply_action",
+     "Apply an executing action. Returns (effect description, derived events to re-inject)."
+    ],
+    [
+     "chakravyuh.world.dynamics",
+     "apply_exogenous",
+     "Apply what the world does on its own: warnings, landfall, site damage, power loss."
+    ],
+    [
+     "chakravyuh.world.dynamics",
+     "derive_events",
+     "Turn an executed communicative act into a fact other agents can receive and cite."
+    ],
+    [
+     "chakravyuh.world.dynamics",
+     "step",
+     "Advance the clock and apply time-driven world behaviour (suspension expiry, battery drain)."
+    ]
+   ],
+   "node": "D"
+  },
+  {
+   "count": 23,
+   "description": "Sink: ledger, failure atlas, gap register, UI",
+   "members": [
+    [
+     "chakravyuh.analysis.compare",
+     "comparison_table",
+     "One row per (pack, property) with pass/fail and margin: the comparison board in the UI."
+    ],
+    [
+     "chakravyuh.analysis.compare",
+     "divergences",
+     "Properties where the packs disagree. These are the findings worth reporting."
+    ],
+    [
+     "chakravyuh.analysis.compare",
+     "gap_findings_across",
+     "Classified gaps per pack, with each finding's cross-pack result attached."
+    ],
+    [
+     "chakravyuh.analysis.compare",
+     "passes_under",
+     "Pack ids under which this property passes. The `passes_under_packs` field of a FailureCard."
+    ],
+    [
+     "chakravyuh.analysis.compare",
+     "run_across_packs",
+     "Run the same scenario+seed under each pack. Returns {pack_id: RunResult}."
+    ],
+    [
+     "chakravyuh.analysis.gap_register",
+     "register_doc",
+     "Render the full register as Markdown, read back from the CSV it was written to."
+    ],
+    [
+     "chakravyuh.analysis.gap_register",
+     "register_markdown",
+     "The simulation-derived rows as a compact Markdown table, for the demo report."
+    ],
+    [
+     "chakravyuh.analysis.gap_register",
+     "write_register",
+     "Write the register: simulation rows first, then document rows. Returns the path."
+    ],
+    [
+     "chakravyuh.analysis.gaps",
+     "classify",
+     "Classify one violated property. Returns None for a property that passed."
+    ],
+    [
+     "chakravyuh.analysis.gaps",
+     "classify_run",
+     "Classify every violated property in a finished run."
+    ],
+    [
+     "chakravyuh.audit.ledger",
+     "Ledger",
+     "Append-only hash-chained run ledger."
+    ],
+    [
+     "chakravyuh.audit.ledger",
+     "verify",
+     "Recompute the chain. Returns (ok, message); message names the first bad sequence number."
+    ],
+    [
+     "chakravyuh.audit.trace",
+     "llm_trace_payload",
+     "Build the LLM_TRACE payload. The prompt itself is stored out-of-band by sha."
+    ],
+    [
+     "chakravyuh.audit.trace",
+     "store_prompt",
+     "Write a prompt to traces/<sha>.txt and return its sha256."
+    ],
+    [
+     "chakravyuh.fuzz.properties",
+     "check_all",
+     "Run P1-P4 in order. Pure: reads the finished world, mutates nothing."
+    ],
+    [
+     "chakravyuh.fuzz.properties",
+     "check_p1",
+     "P1 margin = (min % of affected cells reachable for relief during a suspension) - threshold."
+    ],
+    [
+     "chakravyuh.fuzz.properties",
+     "check_p2",
+     "P2 margin = threshold - (count of irreversible executions traced to authentic=False)."
+    ],
+    [
+     "chakravyuh.fuzz.properties",
+     "check_p3",
+     "P3 margin = T_alert - (max delay from first warning to a valid local-language alert)."
+    ],
+    [
+     "chakravyuh.fuzz.properties",
+     "check_p4",
+     "P4 margin = T_roam - (max delay from landfall to disaster roaming active in an affected area)."
+    ],
+    [
+     "chakravyuh.fuzz.shrink_report",
+     "build_card",
+     "Re-run the minimal case, classify it, compare across packs, return the card."
+    ],
+    [
+     "chakravyuh.fuzz.shrink_report",
+     "card_markdown",
+     "A failure card as the demo shows it: what broke, which law, and how to reproduce it."
+    ],
+    [
+     "chakravyuh.fuzz.shrink_report",
+     "dedupe",
+     "Keep one card per (property, gap class, minimal mutation set), worst margin first."
+    ],
+    [
+     "chakravyuh.fuzz.shrink_report",
+     "write_cards",
+     ""
+    ]
+   ],
+   "node": "SINK"
+  }
+ ]
+}
