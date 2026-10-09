@@ -41,7 +41,7 @@ lint:            ## Ruff over Python, ESLint and tsc over the frontend
 	cd app/web && npm run lint && npx tsc --noEmit
 
 api:             ## Run only the backend
-	$(PY) -m uvicorn app.api.main:app --reload --port 8000
+	$(PY) -m uvicorn app.backend.main:app --reload --port 8000
 
 web:             ## Run only the frontend (static artefacts, no backend)
 	$(PY) app/dev.py --no-backend

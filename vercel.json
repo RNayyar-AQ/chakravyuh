@@ -1,9 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "installCommand": "npm --prefix app/web ci",
-  "buildCommand": "npm --prefix app/web run build",
-  "outputDirectory": "app/web/out",
+  "services": {
+    "web": {
+      "root": "app/web",
+      "framework": "nextjs",
+      "buildCommand": "NEXT_PUBLIC_HAS_API=1 next build"
+    },
+    "api": {
+      "root": ".",
+      "framework": "fastapi",
+      "entrypoint": "api/index.py"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": { "service": "api" } },
+    { "source": "/(.*)", "destination": { "service": "web" } }
+  ],
   "cleanUrls": true,
   "trailingSlash": false,
   "github": { "silent": true },

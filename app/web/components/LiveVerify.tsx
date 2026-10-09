@@ -78,7 +78,9 @@ export function LiveVerify() {
             >
               {result.chains_intact} of {result.chains_checked} chains intact
             </Pill>
-            <span className="font-mono text-[10.5px] text-faint">at {result.checked_utc}</span>
+            <span className="font-mono text-[10.5px] text-faint">
+              at {result.checked_utc} · {result.scope}
+            </span>
           </div>
           <div className="mt-2.5 grid gap-1">
             {result.results.map((r) => (

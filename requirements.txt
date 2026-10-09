@@ -1,0 +1,6 @@
+# Vercel builds the serverless function from this file. It is deliberately tiny: the API only
+# serves artefacts and re-walks a hash chain, so it needs the web framework and the schema
+# library and nothing else. The simulator's own dependencies are not installed here, and a test
+# asserts the API cannot import the simulator.
+fastapi>=0.115
+pydantic>=2.6

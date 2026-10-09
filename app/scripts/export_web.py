@@ -296,6 +296,27 @@ def timeline_for(path: Path) -> dict:
     }
 
 
+# Shipped so a deployed build can verify a hash chain live instead of reporting a number baked
+# in at build time. Only the India pair: it is the run the site foregrounds, and at ~1.1 MB the
+# two files cost a fraction of what all five would.
+SHIPPED_LEDGERS = (
+    RUNS / f"{SCENARIO}__india_current__rule__seed0.jsonl",
+    OUTPUTS / "tamper" / f"{SCENARIO}__india_current__rule__seed0.tampered.jsonl",
+)
+
+
+def copy_ledgers() -> None:
+    """Copy the verifiable ledger pair into the bundle, byte for byte."""
+    dest_dir = OUT / "ledgers"
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    for stale in dest_dir.glob("*.jsonl"):
+        stale.unlink()
+    for src in SHIPPED_LEDGERS:
+        if src.exists():
+            (dest_dir / src.name).write_bytes(src.read_bytes())
+            print(f"wrote {dest_dir / src.name}")
+
+
 def fingerprint() -> str:
     """Head hash of the India run: identifies this bundle's content, and is reproducible."""
     path = RUNS / f"{SCENARIO}__india_current__rule__seed0.jsonl"
@@ -329,6 +350,8 @@ def main() -> int:
     }
     (OUT / "bundle.json").write_text(json.dumps(bundle, indent=1, sort_keys=True))
     print(f"wrote {OUT/'bundle.json'}")
+
+    copy_ledgers()
 
     index = []
     for path in sorted(RUNS.glob(f"{SCENARIO}__*.jsonl")):

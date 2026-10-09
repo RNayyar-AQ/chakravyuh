@@ -18,6 +18,10 @@ from chakravyuh.audit.ledger import verify
 DATA = ROOT / "app" / "web" / "public" / "data"
 RUNS = ROOT / "runs"
 OUTPUTS = ROOT / "outputs"
+# Ledgers shipped inside the committed bundle. A serverless deployment has no runs/ directory,
+# so this is the only chain it can walk -- and because it is the same file locally, the endpoint
+# answers the same way in both places.
+SHIPPED = DATA / "ledgers"
 
 REBUILD = "python app/scripts/showcase.py --fast && python app/scripts/export_web.py"
 
@@ -50,8 +54,8 @@ def health() -> dict:
         "status": "ready" if bundle.exists() else "no_artefacts",
         "checked_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "bundle_present": bundle.exists(),
-        "bundle_generated_utc": (
-            json.loads(bundle.read_text()).get("generated_utc") if bundle.exists() else None
+        "bundle_fingerprint": (
+            json.loads(bundle.read_text()).get("fingerprint") if bundle.exists() else None
         ),
         "ledgers_on_disk": len(ledgers),
         "rebuild_command": REBUILD,
@@ -76,12 +80,19 @@ def timeline(pack_id: str) -> FileResponse:
 @app.post("/api/verify")
 def verify_ledgers() -> dict:
     """Re-walk every hash chain on disk, right now."""
+    seen: dict[str, Path] = {}
+    for directory in (SHIPPED, RUNS, OUTPUTS / "tamper"):
+        if not directory.is_dir():
+            continue
+        for path in sorted(directory.glob("*.jsonl")):
+            seen.setdefault(path.stem, path)
+
     results = []
-    for path in sorted(RUNS.glob("*.jsonl")) + sorted((OUTPUTS / "tamper").glob("*.jsonl")):
+    for run_id, path in sorted(seen.items()):
         ok, message = verify(path)
         results.append({
-            "run_id": path.stem,
-            "tampered_copy": path.parent.name == "tamper",
+            "run_id": run_id,
+            "tampered_copy": run_id.endswith(".tampered"),
             "verified": ok,
             "message": message,
         })
@@ -91,6 +102,7 @@ def verify_ledgers() -> dict:
     return {
         "checked_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "chains_checked": len(results),
+        "scope": "bundled" if not RUNS.is_dir() else "bundled + local runs/",
         "chains_intact": len(intact),
         "results": results,
     }

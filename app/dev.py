@@ -153,7 +153,7 @@ def main() -> int:
 
     if api_port is not None:
         procs.append(("backend", spawn(
-            [PY, "-m", "uvicorn", "app.api.main:app", "--reload",
+            [PY, "-m", "uvicorn", "app.backend.main:app", "--reload",
              "--host", "127.0.0.1", "--port", str(api_port)],
             "backend", ROOT, env)))
 

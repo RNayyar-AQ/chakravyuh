@@ -9,12 +9,15 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 APP = ROOT / "app"
 
-ALLOWED_ROOT_DIRS = {"app", "data", "docs", "tests", ".github", ".git"}
+# `api/` is the one executable thing allowed outside app/: it is the entrypoint the `api` service
+# in vercel.json names, it holds no logic beyond re-exporting app.backend.main, and the deploy
+# cannot find it anywhere else.
+ALLOWED_ROOT_DIRS = {"app", "api", "data", "docs", "tests", ".github", ".git"}
 
 ALLOWED_ROOT_FILES = {
     "README.md", "SUBMISSION.md", "LICENSE", "NOTICE", "CITATION.cff",
-    "pyproject.toml", "requirements.lock", "Makefile", ".gitignore", ".env.example",
-    "vercel.json",
+    "pyproject.toml", "requirements.lock", "requirements.txt", "Makefile",
+    ".gitignore", ".env.example", "vercel.json",
 }
 
 
@@ -37,7 +40,7 @@ def test_root_files_are_only_packaging_and_prose():
     assert not offenders, f"unexpected files at the repository root: {offenders}"
 
 
-@pytest.mark.parametrize("sub", ["chakravyuh", "scripts", "web", "api", "ui"])
+@pytest.mark.parametrize("sub", ["chakravyuh", "scripts", "web", "backend", "ui"])
 def test_app_contains_every_tier(sub):
     assert (APP / sub).is_dir(), f"app/{sub} is missing"
 
@@ -53,7 +56,7 @@ def test_one_command_runs_both_halves():
 
 def test_api_is_read_only():
     """No endpoint may run the simulator, write a ledger or shell out."""
-    source = (APP / "api" / "main.py").read_text(encoding="utf-8")
+    source = (APP / "backend" / "main.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
 
     banned_calls = {"run", "Popen", "system", "append", "write_text", "write_bytes", "unlink"}
@@ -81,7 +84,7 @@ def test_api_binds_to_localhost_only():
     """A development convenience that listens on 0.0.0.0 is a development convenience on the internet."""
     dev = (APP / "dev.py").read_text(encoding="utf-8")
     assert '"--host", "127.0.0.1"' in dev
-    api = (APP / "api" / "main.py").read_text(encoding="utf-8")
+    api = (APP / "backend" / "main.py").read_text(encoding="utf-8")
     assert "allow_origins" in api and "0.0.0.0" not in api
 
 
@@ -107,3 +110,98 @@ def test_api_is_an_optional_dependency():
         if "import fastapi" in text or "from fastapi" in text:
             offenders.append(str(path.relative_to(ROOT)))
     assert not offenders, f"the engine imports FastAPI: {offenders}"
+
+
+# Build and runtime keys belong to a service in services mode; leaving one at the top level is
+# accepted by the schema and then silently ignored, so the deploy builds the wrong thing.
+SERVICE_ONLY_KEYS = {
+    "functions", "installCommand", "buildCommand", "devCommand",
+    "ignoreCommand", "outputDirectory", "framework",
+}
+
+
+def _vercel() -> dict:
+    import json
+    return json.loads((ROOT / "vercel.json").read_text(encoding="utf-8"))
+
+
+def test_vercel_config_matches_the_repository():
+    """Every path vercel.json names must exist, or the first deploy is the one that finds out."""
+    cfg = _vercel()
+    services = cfg["services"]
+    assert set(services) == {"web", "api"}, f"unexpected services: {sorted(services)}"
+
+    stray = sorted(SERVICE_ONLY_KEYS & set(cfg))
+    assert not stray, f"build keys left at the top level in services mode: {stray}"
+
+    for name, svc in services.items():
+        root = ROOT / svc["root"]
+        assert root.is_dir(), f"service {name} has root {svc['root']!r}, which does not exist"
+
+    assert services["web"]["framework"] == "nextjs"
+    # The static export reads the API on its own origin only when this is baked in at build time.
+    assert "NEXT_PUBLIC_HAS_API=1" in services["web"]["buildCommand"]
+
+    entry = services["api"]["entrypoint"]
+    assert (ROOT / entry).exists(), f"vercel.json points at {entry}, which does not exist"
+    assert (ROOT / "requirements.txt").exists(), "the Python function has no requirements.txt"
+
+
+def test_every_service_is_reachable_or_deliberately_internal():
+    """A service with no rewrite is unreachable; a catch-all before a prefix hides it."""
+    cfg = _vercel()
+    rewrites = cfg["rewrites"]
+
+    targeted = {r["destination"]["service"] for r in rewrites
+                if isinstance(r["destination"], dict)}
+    assert targeted == set(cfg["services"]), (
+        f"services with no public route: {sorted(set(cfg['services']) - targeted)}"
+    )
+
+    catch_all = [i for i, r in enumerate(rewrites) if r["source"] == "/(.*)"]
+    assert catch_all == [len(rewrites) - 1], "the catch-all rewrite must come last"
+
+
+def test_the_api_routes_agree_with_its_public_prefix():
+    """The rewrite does not strip /api, so FastAPI must declare its routes with it."""
+    cfg = _vercel()
+    prefix = next(r["source"] for r in cfg["rewrites"]
+                  if r["destination"] == {"service": "api"}).removesuffix("(.*)")
+
+    source = (APP / "backend" / "main.py").read_text(encoding="utf-8")
+    routes = [node for node in ast.walk(ast.parse(source))
+              if isinstance(node, ast.Call)
+              and isinstance(node.func, ast.Attribute)
+              and isinstance(node.func.value, ast.Name)
+              and node.func.value.id == "app"
+              and node.args
+              and isinstance(node.args[0], ast.Constant)]
+    paths = [node.args[0].value for node in routes]
+    assert paths, "no routes found on the FastAPI app"
+    offenders = [p for p in paths if not p.startswith(prefix)]
+    assert not offenders, f"routes that the {prefix!r} rewrite will never reach: {offenders}"
+
+
+def test_the_serverless_entry_point_exposes_the_app():
+    """The entry must import without the simulator's dependencies being installed."""
+    src = (ROOT / "api" / "index.py").read_text(encoding="utf-8")
+    assert "from app.backend.main import app" in src
+    # `api/` at the repo root and a package also named `api` under app/ cannot coexist: the
+    # editable install's finder wins and shadows the one Vercel needs. The tier is `backend`.
+    assert not (APP / "api").exists(), "app/api shadows the root api/ package Vercel requires"
+
+
+def test_function_requirements_stay_minimal():
+    """The function must not quietly acquire the simulator's dependency tree."""
+    reqs = [l.strip().split(">=")[0].split("==")[0]
+            for l in (ROOT / "requirements.txt").read_text(encoding="utf-8").splitlines()
+            if l.strip() and not l.strip().startswith("#")]
+    assert set(reqs) <= {"fastapi", "pydantic"}, f"unexpected deploy dependencies: {reqs}"
+
+
+def test_the_bundle_ships_a_verifiable_ledger_pair():
+    """A deployed build has no runs/ directory, so the chains it walks must travel with it."""
+    ledgers = sorted((APP / "web" / "public" / "data" / "ledgers").glob("*.jsonl"))
+    names = [p.name for p in ledgers]
+    assert any(not n.endswith(".tampered.jsonl") for n in names), "no intact ledger shipped"
+    assert any(n.endswith(".tampered.jsonl") for n in names), "no tampered ledger shipped"

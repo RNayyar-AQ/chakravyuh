@@ -1,477 +1,292 @@
-# 🌀 CHAKRAVYUH
+# 🌀 CHAKRAVYUH — Emergency Telecom Governance, Policy Stress-Testing & Regulatory Gap Analysis
 
-**Policy fuzzing for emergency telecom governance.** Six institutional agents with different
-mandates and different information respond to a cyclone across a border. They only *propose*; a
-deterministic Game Master and policy engine decide what is lawful and what happens. Then the same
-scenario is replayed under three legal regimes, and the differences are the findings.
+<div align="center">
 
-Built for the ITU AI for Good Sandbox Build-a-thon 5.0 — *Creating innovative agents in 5G*.
+[![Tests](https://img.shields.io/badge/tests-195%20passing-2dd4a7?style=for-the-badge)](tests/)
+[![Knowledge base](https://img.shields.io/badge/clauses-157%20%7C%2070%25%20primary%20text-4aa8ff?style=for-the-badge)](data/sources/MANIFEST.yaml)
+[![Determinism](https://img.shields.io/badge/same%20seed-same%20ledger%20hash-f0b429?style=for-the-badge)](tests/test_p3_determinism.py)
+[![Standards](https://img.shields.io/badge/ITU--T-Y.3172%20%C2%B7%20Y.3173%20%C2%B7%20X.1303-c084fc?style=for-the-badge)](docs/y3172_map.md)
+[![Licence](https://img.shields.io/badge/licence-Apache--2.0-8597ad?style=for-the-badge)](LICENSE)
 
-The one-line claim: **the simulator does not opine that a law has a gap. It runs the law and
-measures what breaks.**
+**We stress-test disaster-telecom policy before the cyclone does.**
+
+One real cyclone timeline, replayed under three encoded legal regimes.
+Where an obligation fails to fire in time, the system names the clause responsible.
+
+[Quickstart](#quickstart) · [Architecture](#architecture) · [The result](#the-result) ·
+[Evidence](#evidence-and-provenance) · [Limits](#limits)
+
+</div>
 
 ---
 
-## What it produces
+## The result
 
-Running the **real Cyclone Amphan timeline** (IMD RSMC bulletins, 16–20 May 2020, real warned
-districts) under India's current law, then under two comparators — same facts, same agents, same
-seed, only the law changes:
+Cyclone Amphan, 16–20 May 2020. Nine real districts. Same agents, same seed, same events.
+**Only the rulebook changes.**
 
-| Property | India (current) | Bangladesh | US (47 CFR 4.17) |
+| Safety property | 🇮🇳 India | 🇧🇩 Bangladesh | 🇺🇸 United States |
 |---|---|---|---|
-| **P1** relief traffic survives a suspension | **FAIL** −60 % of cells | PASS +40 | PASS +40 |
-| **P2** no irreversible act on a forged order | **FAIL** −1 execution | PASS 0 | PASS 0 |
-| **P3** every area alerted in a local language | **FAIL** −7140 min | PASS +345 | PASS +345 |
-| **P4** disaster roaming active after landfall | **FAIL** −855 min | **FAIL** −855 min | PASS +345 |
+| **P1** · relief traffic survives a lawful suspension | ❌ **−60** pp | ✅ +40 | ✅ +40 |
+| **P2** · no forged order causes an irreversible act | ❌ **−1** exec | ✅ 0 | ✅ 0 |
+| **P3** · every area alerted in time, in a local language | ❌ **−7140** min | ✅ +345 | ✅ +345 |
+| **P4** · disaster roaming active within the deadline | ❌ **−855** min | ❌ −855 | ✅ +345 |
 
-Margin is signed slack in each property's own illustrative unit; negative means violated.
-India's four failures classify as **policy** gaps, each citing the clauses responsible. See
-`outputs/gap_register.csv`.
+A negative margin is distance past a threshold. **−7140** means *never*: the alert deadline is
+360 minutes and the scenario runs 7,500, so an area that is never warned scores `360 − 7500`.
+Under India's pack, BD-KHULNA is never warned — no clause grants the power to alert across
+the border, and the engine says so in as many words:
 
-**Bangladesh also fails P4, and for a different reason** — a *coordination* gap the real timeline
-exposed. Sites went down in Balasore and only the operator knew; under both the Indian and
-Bangladeshi packs only the authority can trigger roaming, and nothing told it. Under 47 CFR 4.17
-the operator owes roaming on a standing trigger and acts on what it alone knows. That is the MDRI
-contrast, measured rather than asserted.
-
-The headline gap, phrased as the brief asks — domain first, country as instance:
-
-> **Emergency telecom: no standing cross-border trigger.** No instrument empowers any actor to
-> alert or enable roaming across the border in time; the domestic power is scoped to domestic areas.
-> *Instance:* India–Bangladesh (BD-KHULNA). *Comparator:* FCC MDRI (US), which passes the same seed.
-
-Fuzzing then attacks the packs that *pass*, and finds new failures the baseline misses: escalating
-damage into a district that was never forecast puts it outside the alerting flow entirely, because
-the alert path is driven by forecasts and the damage path is not. Cards reproduce from their saved
-replay command with identical margins.
+```
+BLOCK — prohibited_by_rule: IN.R.NO_CROSS_BORDER_ALERT
+        (Domestic alerting authority holds no power to alert across an international border)
+```
 
 ---
 
 ## Quickstart
 
-Two commands. The first installs, the second runs everything.
-
 ```bash
-make install          # Python deps + app/web/node_modules
-make dev              # backend on :8000, frontend on :3000, one Ctrl-C stops both
+make install     # Python deps + app/web/node_modules
+make dev         # backend :8000 + UI :3000, one Ctrl-C stops both
 ```
 
-`make dev` builds the artefacts first if they are missing, so a fresh clone goes straight to a
-working page. If another project is already on a port, it says so and takes the next one.
-
-<details>
-<summary>Without make</summary>
-
-```bash
-python -m venv .venv && source .venv/bin/activate     # Python 3.11
-pip install -e ".[test,ui,kb,api]"                    # kb = ChromaDB; api = the HTTP tier
-cd app/web && npm install && cd ../..
-
-python app/dev.py                                     # the same thing make dev runs
-```
-</details>
+`make dev` builds the artefacts first if they are missing, and steps to the next port if another
+project holds one. Everything runs offline — no API key, no network.
 
 | Command | What it does |
 |---|---|
 | `make dev` | backend and frontend together — the one you want |
-| `make artefacts` | run the pipeline and export the UI's data bundle (~35 s, offline) |
-| `make build` | artefacts, then the static site into `app/web/out/` |
-| `make test` | the Python suite, every acceptance gate |
-| `make lint` | ruff, ESLint and `tsc` |
-| `make api` / `make web` | one half on its own |
-| `make clean` | delete every generated artefact |
-
-### Deploying
-
-The site is a static export, so it deploys anywhere that serves a folder. `vercel.json` carries
-the whole configuration: import the repository on Vercel, change nothing, and every push to `main`
-rebuilds and redeploys.
-
-```bash
-make deploy-check     # build exactly as Vercel does: npm only, no Python
-```
-
-Vercel runs `npm ci` and `next build` against `app/web` and serves `app/web/out`. It never runs
-the Python pipeline, which is why **`app/web/public/data/` is committed** -- the one deliberate
-exception to "we commit sources, not derivatives".
-
-That exception is safe because the export is byte-for-byte reproducible: the bundle carries
-`fingerprint`, the head hash of the India ledger, rather than a build timestamp, so re-running
-`make artefacts` changes nothing unless the underlying run changed. CI regenerates the bundle on
-every push and fails if one byte differs, and a test asserts the same thing locally. The committed
-artefact is therefore either identical to a fresh run, or the build is red -- it cannot quietly
-become a second source of truth.
-
-After changing anything the pipeline produces:
-
-```bash
-make artefacts        # regenerate
-git add app/web/public/data && git commit
-```
-
-### Three interfaces, deliberately different jobs
-
-**`app/web/`** is the submission UI: a Next.js static export over the sealed artefacts. It
-computes nothing, so it is identical for every judge, and `make build` produces a folder that
-works with the Wi-Fi switched off.
-
-**`app/api/`** is a read-only HTTP tier used by `make dev`. It serves the same artefacts and can
-re-walk every hash chain *on request*, so a judge asking "is that still true right now?" gets the
-answer from the chain rather than from a number baked in at build time. It decides nothing, writes
-nothing, and a test fails the build if it ever imports the simulator.
-
-**`app/ui/streamlit_app.py`** is the operator view. It drives a live run and exposes the
-human-in-the-loop approval button a static page cannot.
-
-```bash
-python app/scripts/showcase.py        # EVERYTHING, in dependency order (~4 min with fuzzing)
-python app/scripts/showcase.py --fast # same, without the fuzz campaign (~35 s)
-```
-
-`showcase.py` ends by printing the rubric scorecard and writing
-`docs/rubric_status.html`. Each stage is also a standalone command, so
-anything that fails can be re-run on its own:
-
-| # | Command | What it produces |
-|---|---|---|
-| 1 | `python app/scripts/build_kb.py` | clause store (157 records), chunks, Chroma `kb_main`, compiled packs → `docs/kb_report.md` |
-| 2 | `python app/scripts/eval_retrieval.py` | BM25 / vector / hybrid / hybrid+rerank / tree, with abstention separability → `docs/retrieval_eval.md` |
-| 3 | `python app/scripts/eval_adviser.py` | Adviser scored against 23 hand-labelled cases → `docs/adviser_eval.md` |
-| 4 | `python app/scripts/run_demo.py --seed 0` | replays Amphan under all three packs → `docs/demo_report.md`, `docs/gap_register.md + outputs/gap_register.csv`, `outputs/comparison.json` |
-| 5 | `python app/scripts/run_fuzz.py` | mutates the scenario until a property breaks, then shrinks it → `docs/failure_atlas.md` |
-| 6 | `python app/scripts/export_audit_sample.py` | first 50 ledger entries, self-verifying → `outputs/audit_sample.jsonl` |
-| 7 | `python app/scripts/gen_y3172_map.py` | Y.3172 node map, generated from the `@node` decorators |
-| 8 | `python app/scripts/gen_ai_readiness_map.py` | AI Readiness 2.0 map, labels read from ITU's `dimensions.json` |
-| 9 | `python app/scripts/gen_run_stats.py` | wall time, LLM calls and tokens per run → `docs/run_stats.md` |
-| 10 | `python app/scripts/check_sources.py` | do the cited URLs still resolve? (needs network) |
-| 11 | `python app/scripts/verify_ledger.py --all` | every run's hash chain |
-| 12 | `python app/scripts/verify_ledger.py --tamper-demo <ledger>` | **flip one character, watch the chain catch it** |
-| 13 | `python app/scripts/rubric_audit.py` | 18 rubric checks → `docs/rubric_status.html` |
-
-Add `--strict` to `rubric_audit.py` or `showcase.py` to make a *waived* check fail too — the
-mode to use when you want the state with no allowances made.
-
-**It all runs offline.** The rule-based agent twins need no model, and the Adviser falls back to
-extractive mode (quoting retrieved clauses, generating nothing) when no LLM is reachable. ChromaDB
-and LiteLLM are optional; retrieval degrades to BM25 and the demo still runs end to end.
-
-### API keys
-
-**None of the above needs an API key.** Not one command, not the UI, not the tests. The rule-based
-twins, the policy engine, the clause store, properties, gap classification, fuzzing and the
-extractive Adviser are all deterministic code.
-
-Keys matter only for the LLM agent tier and the generative Adviser, and only in `record` or `live`
-mode. Two ways in — pick either:
-
-```bash
-# A. Local — the ITU Sandbox reference stack. NO API KEY, just Ollama running.
-ollama pull qwen2.5:14b && ollama pull nomic-embed-text
-CHAKRAVYUH_LLM_MODE=record python app/scripts/run_demo.py --tier llm
-
-# B. Hosted — one model, for the showcase run only. Needs that provider's key.
-export CHAKRAVYUH_HOSTED_MODEL=openai/gpt-4o
-export OPENAI_API_KEY=sk-...
-CHAKRAVYUH_LLM_MODE=record python app/scripts/run_demo.py --tier llm --hosted
-
-# Then replay forever, offline and identical every time, with no key and no provider:
-python app/scripts/run_demo.py --tier llm
-```
-
-| What you want | Variable | Key needed |
-|---|---|---|
-| Everything in the quickstart | — | **none** |
-| Local LLM agents / Adviser | `OLLAMA_BASE_URL`, `CHAKRAVYUH_LOCAL_MODEL` | **none** (Ollama running) |
-| ITU Chroma vector KB | `CHROMA_PATH` | **none** |
-| Optional reranker | `CHAKRAVYUH_RERANKER` | **none** (local weights) |
-| Hosted showcase run | `CHAKRAVYUH_HOSTED_MODEL` + `--hosted` | `OPENAI_API_KEY` / `GEMINI_API_KEY` / `MISTRAL_API_KEY` |
-| Adviser eval's LLM judge | `--judge-model <id>` | that provider's key |
-
-Keys are read by LiteLLM, never by this code. The scripts preflight the one variable your chosen
-model needs and exit in a second naming it, rather than failing mid-recording. `.env.example`
-documents every variable, and a test asserts it stays in sync with what the code actually reads.
+| `make artefacts` | run the pipeline, export the UI bundle (~35 s) |
+| `make build` | static site into `app/web/out/` |
+| `make test` · `make lint` | 195 tests · ruff + ESLint + tsc |
+| `make deploy-check` | build exactly as Vercel does, npm only |
 
 ---
-
-## The knowledge base: what is real
-
-| Provenance | Records | What the text is |
-|---|---|---|
-| `gazette_pdf` | 106 | **The instrument's own words**, split section-by-section from the official eGazette PDFs of the Telecommunications Act 2023 (62 sections) and DPDP Act 2023 (44 sections). Counts match the Acts. |
-| `gazette_pdf_subsection` | 4 | Genuine substrings for cited subsections: s.20(1), s.20(2), s.7(g), s.7(h) |
-| `secondary_source` | 18 | Summary, but the content claim is attributed to a named source (SCC Online, eCFR, ITU) |
-| `model_written` | 29 | Summary, nothing checked |
-
-**70.1 % of the corpus is now the instrument's own words**, up from 0 %. Each real record carries
-its page, a hash of the text, and `source_pdf_sha256` — the hash of the PDF itself, which pins the
-document even if the link rots. Both eGazette URLs verify as HTTP 200 `application/pdf`.
-`app/scripts/check_sources.py` checks every URL in the store: **0 dead**.
-
-ITU's own India README asks for clause-wise chunking of the Acts because Indian statute text is
-section-numbered. ITU's reference ingest splits on ~256-word paragraph boundaries and records no
-section, page or hash. This does what the README asks: every chunk in the Chroma collection
-`kb_main` carries `clause_id`, `instrument`, `jurisdiction`, `page`, `sha256` and
-`verbatim_status`, so a retrieved chunk can be *cited*, not merely quoted.
-
-### What the real text caught
-
-Verification was not cosmetic. It found a substantive error in the pack:
-
-- `IN.TA2023.s24` is **"Establishment of Digital Bharat Nidhi"** — the USO Fund. An earlier draft
-  cited it for a priority-routing obligation. The only priority-routing provision in the Act is
-  **s.20(1)(b)**, and the rule now cites that. A regression test keeps s.24 out of it.
-- **Zero of the Act's 62 sections mention roaming.** The P4 "no standing trigger" finding is now
-  evidenced by the absence, not assumed.
-- `IN.DPDP2023.s7(h)` confirmed as the disaster-processing ground (not 7(g)), now quotable real
-  text including the Explanation that points at DM Act 2005 s.2(d).
-- A claimed "3-hour takedown under the IT Amendment Rules 2026" was **dropped**: the ITU file said
-  to support it is a one-page MeitY notice about a different draft.
-- `US.FCC.MDRI.*` renamed to `US.CFR47.4.17.*`, the MDRI's actual regulatory home.
-
-27 real records carry an interpolated marginal heading from a gazette page break. They are flagged
-`verified_with_artifacts` and excluded from `quotable` rather than auto-cleaned — a heuristic fix is
-~65 % accurate and would mangle statutory text. Full detail and the verification priority order:
-[`data/sources/CLAUSES_PROVENANCE.md`](data/sources/CLAUSES_PROVENANCE.md).
-
-## Rubric traceability
-
-| Rubric criterion | Feature that scores it | Demo evidence |
-|---|---|---|
-| **KB quality** — completeness, accuracy, structure; retrieval under query | Clause store (1 record/clause, URL, SHA-256) + ITU Chroma KB + BM25/vector/hybrid/tree comparison | `docs/kb_report.md`, `docs/retrieval_eval.md` |
-| **Agent capability** — relevant, accurate responses in error scenarios; adheres to laws and mandates | Policy & Legal Adviser queryable mid-scenario; role-bound agents citing rule IDs; Game Master enforcement | `docs/adviser_eval.md`; ask the Adviser at T+90 in the UI |
-| **Gap identification** — unclear responsibilities, legislative gaps, coordination problems; **global + neighbouring examples (critical)** | Deterministic gap classifier (policy / coordination / execution / standards) + cross-pack replay, merged with gaps read from the instruments themselves. `confidence` is **computed from clause provenance**, never asserted | `docs/gap_register.md` — 11 rows, each with an Indian clause, a neighbour and a global example; `docs/failure_atlas.md` |
-| **Auditability** — logs, chain-of-thought traces, source attribution | Hash-chained JSONL ledger; every proposal stores `reasoning`, `cited_rule_ids` **and `cited_clause_ids`** (resolved by the Game Master from the pack, not claimed by the agent); every LLM call stores prompt hash, retrieved chunk IDs, raw output | `verify_ledger.py --tamper-demo` breaks a chain on camera; **Why?** tab; `outputs/audit_sample.jsonl` |
-| **Alignment with ITU standards** — Y.3172 pipeline + AI Readiness | `@node(...)` decorators on every entry point; map generated from the source. AI Readiness labels read from ITU's own `dimensions.json`, never retyped | `docs/y3172_map.md`, `docs/ai_readiness_map.md` |
-| **Rubric traceability itself** | 18 checks over the repo, each PASS / WAIVED-with-a-reason / FAIL, measured on every run | `docs/rubric_status.html` |
-
-### The brief's mandatory items
-
-- [x] Agent roles: innovative AI solution (`tsp_network`, the 5G network agent) / policy & legal adviser / institutional participants / multi-agent coordination
-- [x] **Sequenced, chunked events released progressively; incomplete, uneven, delayed per agent** — `visible_to` + `delay_by_role`; the operator never receives a meteorological warning, the neighbour is 75+ min behind
-- [x] **Audit logging + chain-of-thought tracing** — hash-chained ledger, `reasoning` on every proposal
-- [x] Host-country documents mapped — 23 Indian clause records across 7 instruments
-- [x] Y.3172 + AI Readiness alignment
-- [x] Open-source repo + KB + published gaps
-
----
-
-### Alerts are CAP 1.2 / ITU-T X.1303 shaped
-
-Every alert the `sdma_alerts` agent issues carries a real CAP 1.2 envelope, built deterministically
-from the action's own parameters: `identifier`, `sender`, `sent`, `status`, `msgType`, `scope` and an
-`info` block with `language`, `category`, `event`, `urgency`, `severity`, `certainty` and
-`area/areaDesc`. Three details are worth knowing:
-
-- **`sent` is a real dateTime**, derived from the scenario epoch (16 May 2020 08:45 IST) plus the
-  tick — never from the wall clock, so a replayed run produces a byte-identical envelope.
-- **`status` is `Exercise`, never `Actual`.** A simulated alert claiming CAP status `Actual` would
-  be the one genuinely misleading field available, so it is the one field we pin.
-- **`info/language` is the district's own language tag**, local-language-first: `or-IN` in Odisha,
-  `bn-IN` in West Bengal, `bn-BD` across the border in Khulna. The same language takes a different
-  tag on each side of a border, and P3 is a cross-border property.
-
-**No polygons are declared.** We hold no district boundary file, and CAP makes `cap:polygon`
-optional while requiring `cap:areaDesc`. The one shape in the scenario is a `cap:circle` at
-21.65°N 88.30°E — the landfall point the IMD release states. A boundary drawn from memory would be
-fabricated geodata dressed as official, so every other area emits `areaDesc` alone.
 
 ## Architecture
 
+**Agents propose. Deterministic code decides.** DeepMind's Concordia pattern with one change:
+the Game Master is ordinary Python, not a model. That is what makes a run reproducible — and why
+a judge can re-derive every number here instead of trusting it.
+
+```mermaid
+flowchart LR
+    subgraph SRC["SRC · sources"]
+        G["Gazette PDFs<br/>SHA-256 pinned"]
+        S["Scenario<br/>real IMD timeline"]
+    end
+    subgraph M["M · propose"]
+        A["6 role-bound agents<br/>rule twins · LLM · external"]
+    end
+    subgraph P["P · decide"]
+        E["Policy engine<br/>pure function, no model"]
+    end
+    subgraph SINK["SINK · prove"]
+        L["Hash-chained ledger"]
+        R["Gap register<br/>Failure atlas"]
+    end
+
+    G --> KB["C/PP · clause store<br/>BM25 + vectors"]
+    S --> BUS["D · event bus<br/>per-role delay + redaction"]
+    KB --> A
+    BUS --> A
+    A -->|"typed proposal<br/>+ cited rules"| E
+    E -->|"ALLOW · BLOCK · NEEDS_HUMAN"| GM["D · Game Master<br/>one world, one order"]
+    GM --> L
+    L --> R
+
+    style E fill:#ff7a45,color:#fff
+    style GM fill:#1d2735,color:#fff
+    style L fill:#2dd4a7,color:#000
 ```
-SRC (acts, rules, scenario)
-  -> C    kb/ingest.py        ITU reference ingest -> Chroma; clauses -> SQLite
-  -> PP   policy/compiler.py  YAML pack -> Rules; clause IDs must exist and hash-match
-  -> M    agents/*            LLM agents or rule twins PROPOSE
-  -> P    policy/engine.py    deterministic ALLOW | BLOCK | NEEDS_HUMAN
-  -> D    sim/bus.py + sim/game_master.py   route facts, resolve in order, apply effects
-  -> SINK ledger, failure atlas, gap register, comparison board
+
+### The six agents
+
+Each sees only its own inbox — delayed, redacted, incomplete. **Powers come from the rulebook,
+never from the agent**, which is why the same six behave differently under three legal regimes
+without a line of agent code changing.
+
+```mermaid
+flowchart TB
+    IMD(["IMD warning · landfall · damage"]) --> BUS{{"Event bus<br/>per-role latency"}}
+
+    BUS --> CA["⚖️ Competent Authority<br/><i>public order vs. staying up</i>"]
+    BUS --> SD["📢 SDMA alerting<br/><i>warn everyone, in their language</i>"]
+    BUS --> TS["📡 TSP network ops<br/><i>keep traffic flowing, obey lawful orders</i>"]
+    BUS --> CE["🔐 CERT-In<br/><i>spot the forged direction</i>"]
+    BUS --> NB["🌏 Neighbour authority<br/><i>+75 min channel</i>"]
+    BUS --> AD["📖 Legal adviser<br/><i>cites clauses · holds no powers</i>"]
+
+    CA & SD & TS & CE & NB --> ENG{"Policy engine<br/>resolves in fixed order<br/>(t, priority, proposal_id)"}
+    ENG --> W[("World state")]
+    ENG --> LED[("Ledger<br/>every verdict + reasoning")]
+
+    style ENG fill:#ff7a45,color:#fff
+    style AD stroke-dasharray: 5 5
+    style LED fill:#2dd4a7,color:#000
 ```
 
-### The multi-agent framework is hand-written, on purpose
+> The adviser is dashed because it **proposes nothing**. It answers questions with clause
+> citations and is scored on never inventing one: **23/23**.
 
-No LangGraph, no AutoGen, no CrewAI. The orchestration is DeepMind's **Concordia** split — agents
-propose, a Game Master resolves — with one deliberate change: `sim/game_master.py` is ordinary
-Python, not a model. Resolution order inside a tick is fully determined by
-`(t, role priority, proposal_id)`, which is what makes "same seed, same ledger head hash" true and
-testable. A graph framework would put a scheduler we do not control between the proposal and the
-verdict, and the determinism claim would go with it.
+### Where the AI actually is
 
-What the frameworks usually provide, and where it lives here instead:
+Three places, and only one is a language model. **None of them decides anything.**
 
-| Concern | Here |
+| Layer | What it is |
 |---|---|
-| Agent protocol / tool schema | `agents/base.py` — one `Agent` Protocol, three tiers (`rule`, `llm`, `jev`) |
-| Message passing | `sim/bus.py` — per-role inboxes with redaction and channel latency |
-| Orchestration | `sim/game_master.py` — one world state, one rulebook, one order |
-| Structured output | Pydantic `Proposal`; an unparseable LLM reply becomes a logged `NOOP`, not a crash |
-| Model access | `llm/client.py` — LiteLLM with a record/replay cache, so a demo never depends on a provider |
-| Tracing | `audit/ledger.py` — a hash chain, not a dashboard |
+| **Agent reasoning** | 3 interchangeable tiers behind one protocol — deterministic rule twins, an LLM through a record/replay cache, an optional external tier. The demo runs the twins: no credential, no network. |
+| **Retrieval** | BM25 + ChromaDB vectors fused by Reciprocal Rank Fusion over 157 clause records. |
+| **Search** | Hypothesis property-based fuzzing — **612 mutated worlds**. This is the component that finds the failures. |
 
-Where the AI actually is: **agent reasoning** (the three tiers above), **retrieval** (BM25 +
-ChromaDB vectors fused by RRF), and **search** (Hypothesis property-based fuzzing — the component
-that finds the failures). None of them decides anything.
-
-Four design commitments do the real work:
-
-**The LLM never decides legality or world state.** `policy/engine.py` is pure Python over compiled
-rules. `tests/test_p2_policy_engine.py::test_engine_has_no_llm_import` walks the transitive import
-graph and fails the build if the P node can reach `llm/` at all.
-
-**Agents only propose.** No agent holds a reference to the world. The Game Master resolves every
-proposal against one world state and one rulebook in one order — `(t, role priority, proposal_id)`.
-That is what lets the agents hold genuinely partial, conflicting information (which the brief
-*requires*) without Cognition's conflicting-implicit-decisions failure mode.
-
-**An overreach is a finding, not an error.** A proposal outside a role's powers is not filtered out;
-it reaches the engine and comes back `BLOCK: ultra_vires` with the clauses that deny the power. A
-filtered overreach would be a destroyed finding.
-
-**Replay is real.** No wall clock, no `uuid4`, no unseeded RNG. The same seed reproduces an
-identical ledger head hash, asserted in `tests/test_p3_determinism.py`. LLM calls go through a
-record/replay cache keyed on `sha256(model, prompt, schema)`, because a model is not bit-deterministic
-and the cache is what makes "replay from seed" true rather than aspirational.
-
-**Legality never goes through similarity search.** Rules cite clause IDs; the engine fetches them by
-exact ID from SQLite and compares hashes. Vector and BM25 retrieval exist only for the Adviser's
-free-text questions, and §9.2 measures them rather than assuming them.
+No framework orchestrates this: no LangGraph, no AutoGen, no CrewAI. A framework's scheduler
+between the proposal and the verdict would cost the determinism claim. The policy engine has no
+model in its transitive import graph, and a test fails the build if one appears.
 
 ---
 
-## What "harm" means here
+## Evidence and provenance
 
-Property violations, not money or lives with confidence intervals. The brief's FAQ says accuracy is
-not scored, and invented casualty figures with invented error bars are an attack surface a judge can
-puncture in one question. So the units are cells, minutes and percentages, stated as illustrative,
-and the thresholds live in the scenario YAML where anyone can change them and re-run.
+Every claim about the law points at text we hold.
+
+```mermaid
+flowchart LR
+    PDF["📄 Gazette PDF"] -->|sha256 + must_contain| V{"Complete?"}
+    V -->|yes| C["Clause record<br/>verbatim · page · hash · URL"]
+    V -->|"no — composite"| PART["marked <b>partial</b><br/>finding capped"]
+    C --> CONF{"Every cited clause<br/>primary text?"}
+    CONF -->|yes| CERT["confidence: <b>certain</b>"]
+    CONF -->|no| LIKE["confidence: <b>likely</b><br/>names the clause responsible"]
+
+    style PART fill:#fb923c,color:#000
+    style CERT fill:#2dd4a7,color:#000
+    style LIKE fill:#f0b429,color:#000
+```
+
+**Confidence is computed, never asserted.** All 11 gap-register rows currently read `likely` —
+47 of 157 clause records are still summaries. The rating rises on its own as documents arrive,
+with no row rewritten.
+
+| | |
+|---|---|
+| Clause records | **157** — 110 (70%) carry the instrument's own words |
+| Source documents | 9 declared — 6 held and hash-verified, 1 partial, 2 wanted |
+| Retrieval (hybrid) | recall@5 **0.979** · MRR 0.908 · abstention separability **0.956** (n=48 + 5 unanswerable) |
+| Ledger | **13,122** entries across 3 runs, every chain verified |
+| Tamper demo | one edited field → caught at **seq 45** and **seq 72**, named exactly |
+
+A hash proves a file did not change; it does not prove it is complete. Every source therefore
+declares strings only the real instrument contains — a check that caught a composite PDF whose
+*absence* of the word "authenticate" would have falsely confirmed a finding.
+
+---
+
+## Standards
+
+Not claimed on a slide — **generated from the code.** Each entry point declares its node with a
+decorator, and `docs/y3172_map.md` is built by walking that registry: **72 registrations across
+7 nodes.** Delete a function and it leaves the map.
+
+| Recommendation | Where it lives here |
+|---|---|
+| **Y.3172** | `@node("P")` on every entry point → generated node map |
+| **Y.3173** | irreversible actions return `NEEDS_HUMAN`; the report says `auto_batch` when a gate self-released rather than claiming review |
+| **Y.3181** | the whole simulator is the sandbox; the engine has no model in its import graph |
+| **X.1303 / CAP 1.2** | real alert envelopes, region-aware: `or-IN` for Odisha, `bn-IN` for West Bengal, `bn-BD` across the border |
+| **E.106** | the obligation property P1 measures |
+| **Q.3057/62/63** | the signalling authentication property P2 measures |
+
+Aligned with and mapped to the above. **Not certified, approved or endorsed by the ITU** — and a
+test fails the build if any file claims otherwise.
+
+---
+
+## Deploying
+
+`vercel.json` carries the whole configuration. Import the repository on Vercel, change nothing,
+and every push rebuilds **both halves** — the static site and the Python API as a serverless
+function, exactly what `make dev` runs locally.
+
+The API is read-only: it serves artefacts and re-walks hash chains on request, so *"the chains
+verify"* is answerable live rather than baked in at build time. It decides nothing, and a test
+fails the build if it imports the simulator.
+
+`app/web/public/data/` is committed — the one deliberate exception to *we commit sources, not
+derivatives* — because Vercel builds from git. It is safe because the export is byte-for-byte
+reproducible (the bundle carries the ledger head hash, not a timestamp) and **CI regenerates it
+on every push and fails if one byte differs.** After changing anything the pipeline produces:
+
+```bash
+make artefacts && git add app/web/public/data && git commit
+```
+
+---
+
+## Eight perspectives
+
+The brief asks every entry to address these. Each links to where it is implemented, not asserted.
+
+| Perspective | How it shows up |
+|---|---|
+| **Open data / open source** | Repo, clause KB and gap register all published, Apache-2.0 |
+| **GenAI content ecosystem** | Eight constructed events carry `synthetic: true` and are greyed in the UI; the rumour and the forged order are adversarial tests, and the forged order is what P2 exists to catch |
+| **Contextualisation** | Indian instruments, Odisha/West Bengal/Khulna districts, Odia and Bengali alert requirements |
+| **Cross-domain** | Telecom × disaster management × cyber (CERT-In) × data protection (DPDP) in one rulebook |
+| **Human supervision** | `NEEDS_HUMAN` on irreversible acts, with a gate's automatic approvals logged as automatic |
+| **Policy opportunity** | `outputs/gap_register.csv` — 11 rows, classified and cross-compared |
+| **Social inclusion** | P3 fails unless the alert is in a language of that area. English alone does not discharge the duty, and each CAP envelope's `info/language` is that district's own tag (`or-IN`, `bn-IN`, `bn-BD`) |
+| **Digital infrastructure & energy** | A three-pack sweep is ~0.5 s and **zero tokens**: the legality decision is code, so inference is optional. Battery drain is modelled and gated on actual grid loss. Measured in `docs/run_stats.md` |
 
 ---
 
 ## Limits
 
-- The world is **synthetic**. Timings are shaped to exercise the properties, not to reconstruct any
-  real cyclone. Backtesting against documented Amphan timelines is future work.
-- Thresholds are **illustrative**, not legal or engineering standards.
-- Policy packs are **encodings of selected clauses for simulation — not legal advice**, and not a
-  complete statement of any jurisdiction's law. They omit far more than they include.
-- **The corpus is mixed, and 30 % of it is still unverified.** 110 records carry real gazette text;
-  47 are model-written summaries of instruments not yet obtained (Suspension Rules 2024, Telecom
-  Cyber Security Rules 2024, CERT-In Directions, DM Act 2005, DoT SOP-2020, 47 CFR 4.17, the
-  Bangladesh and Bhutan SOPs, the ITU Recommendations). Check `provenance` before quoting any
-  record.
-- **Three findings rest on *negative* records** — assertions that an instrument is silent on
-  something (`IN.TCSR2024.no_order_auth`, `BT.TELSOP.no_roaming`, `BD.NETS.gap`). These carry the
-  highest risk in the corpus: proving a silence needs the full notified text, and we have secondary
-  reporting. The P2 finding depends on one of them. Say so, or get the text.
-- **The network layer is synthetic and will stay so.** No public cell-site-level outage dataset
-  exists for any Indian cyclone. Cell counts are scaled from reported aggregates (~8,500 towers /
-  ~36,000 base stations across the affected districts; networks at 65–70 % capacity on day 3), and
-  per-cell outage is simulated.
-- **The forged order never happened.** No real forged-order incident is on record; it is a
-  constructed adversarial test, labelled as such in the scenario file.
-- The retrieval eval **saturates**: recall@5 = 1.000 for BM25 on 45 clauses means the eval is too
-  small to discriminate, not that the method is validated. MRR is the informative column at this size.
-- The Adviser eval's C1/C4 are decided mechanically and are trustworthy. **C2 and C3 are unjudged**
-  until a judge model is configured, and the `human_check` column ships empty on purpose — all 20
-  rows are meant to be hand-marked, because judges miss what humans catch.
-- LLM agent behaviour is **not yet measured**: no model was reachable in the build environment, so
-  every number above comes from the deterministic rule twins. The LLM path is implemented and tested
-  against a seeded cache, not against a live model.
-- The **Jev / TypeSafe AI third agent tier (spec §11) is not built.** It is waitlist-gated, no API
-  key was available, and no MVP feature depends on it — as the spec requires.
+Stated here because a judge should not have to find them.
 
----
-
-## Standards alignment
-
-**ITU-T Y.3172** — every module declares its pipeline node, and `docs/y3172_map.md` is generated from
-the `@node(...)` decorators, so it cannot drift from the code. The P node is where this architecture
-earns the citation: the policy node constrains the model node's output before it reaches the network,
-which is exactly what Y.3172 specifies and exactly what the engine-purity test enforces.
-
-**ITU-T Y.3173** — irreversible actions return `NEEDS_HUMAN` and pass through a human-in-the-loop
-gate rather than executing autonomously. In batch mode the gate auto-approves after a delay and
-**records that the approval was automatic**, so no report can claim a human reviewed it.
-
-**ITU AI Readiness 2.0** — primary **D10 AI & Policies** (policy simulation); also **D4**
-contextualisation and regional impact, **D8** collaboration with AI, **D3** cross-domain correlation,
-**D11** AI for inclusion, **D13** digital infrastructure. Open source is a *factor*, not D1 — D1 is
-the data/model marketplace.
-
-**The brief's eight perspectives**
-
-| Perspective | How it shows up |
-|---|---|
-| Open data / open source | Repo, clause KB, and gap register all published |
-| GenAI content ecosystem | Eight constructed events carry `synthetic: true` and are **greyed in the UI timeline**; the rumour and the forged order are adversarial tests, and the forged order is what P2 exists to catch. The IT Rules takedown claim was dropped rather than asserted |
-| Contextualisation | Indian instruments, Odisha/West Bengal/Khulna areas, Odia and Bengali alert requirements |
-| Cross-domain | Telecom × disaster management × cyber (CERT-In) × data protection (DPDP) in one rulebook |
-| Human supervision | `NEEDS_HUMAN` on irreversible acts, with the gate's automatic approvals logged as automatic |
-| Policy opportunity identification | `outputs/gap_register.csv`, classified and cross-compared |
-| Social inclusion | P3 fails unless the alert is in a language of that area — English alone does not discharge the duty — and each CAP envelope's `info/language` is that district's own tag, local-language-first (`or-IN`, `bn-IN`, `bn-BD`) |
-| Digital infrastructure & energy | A three-pack sweep is ~0.5 s and **zero tokens**: the legality decision is code, so inference is optional and confined to the Adviser. Battery drain is modelled and gated on actual grid loss. Measured per run in `docs/run_stats.md` |
+- **0 of 11** registered gaps are rated `certain`. Every one reads `likely`.
+- **47 of 157** clause records are summaries, not the instrument's own words.
+- **Three primary documents are missing** — the complete TCS Rules 2024, the 2025 amendment
+  (G.S.R. 771(E)), and DoT SOP-2020. Each caps a specific finding; the register names which.
+- **0 of 23** adviser cases have been checked by a human. The score is mechanical.
+- **The LLM agent tier has never been measured** against the rule twins.
+- **2 of 22** rubric checks are waived, with the reason in the check's own code.
+- It is a simulation. No money, no casualties, no confidence intervals. A margin is a distance
+  from a threshold inside this model, not a prediction about the world.
 
 ---
 
 ## Repository
 
-Everything executable lives under `app/`. Beside it sit the three things that are not code:
-what goes in (`data/`), what a person reads (`docs/`), and the proof (`tests/`). A test fails the
-build if anything else appears at the root.
+Everything executable lives under `app/`. Beside it: what goes in, what a person reads, and the
+proof. A test fails the build if anything else appears at the root.
 
 ```
 app/
   chakravyuh/   the engine — the only thing that decides anything
-    schemas.py        all Pydantic models        y3172.py  node registry -> generated map
-    kb/       ingest · clause_store · retrieve · tree_index
-    policy/   compiler · engine        (engine imports nothing from llm/, enforced by test)
-    world/    state · dynamics         (dynamics is the only writer to the world)
-    sim/      events · bus · game_master · runner
-    agents/   base · roles · rule_agents · llm_agent · adviser
-    fuzz/     properties · mutations · machine · shrink_report
-    analysis/ gaps · compare · gap_register
-    audit/    ledger · trace           llm/  client (record/replay)
-    alerts/   cap   (CAP 1.2 / ITU-T X.1303 envelopes; no model, so replay is identical)
-  scripts/      the pipeline, one CLI per stage; showcase.py runs them in dependency order
-  api/          read-only FastAPI over the artefacts  (decides nothing, enforced by test)
-  web/          Next.js 16 static site                (computes nothing, enforced by test)
-    app/{,simulation,agents,failures,gaps,evidence,standards}
-    lib/types.ts    the contract between the exporter and the UI
-  ui/           streamlit operator view, for driving a live run
-  dev.py        starts the backend and the frontend together
-
-data/     inputs only — see data/README.md
-docs/     the five documents the ITU architecture names, plus VIDEO_BRIEF.md;
-          everything else in here is generated
-tests/    every acceptance gate
-
-outputs/  generated: gap_register.csv · audit_sample.jsonl · comparison.json   (gitignored)
-runs/     generated ledgers, one per (scenario, pack, tier, seed)              (gitignored)
+  scripts/      the pipeline, one CLI per stage
+  backend/      read-only FastAPI over the artefacts   (decides nothing, enforced by test)
+  web/          Next.js 16 static site                 (computes nothing, enforced by test)
+  ui/           streamlit operator view
+  dev.py        starts both halves
+api/index.py    Vercel serverless entry point
+data/  docs/  tests/
 ```
-
-Generators write straight to their final home — `docs/` for what a judge reads, `outputs/` for
-machine-readable data — so there is no intermediate build directory and no copy step. Only
-sources are committed: `outputs/`, `runs/`, `data/clauses/` and `app/web/public/data/` are all
-regenerated by `make artefacts`, and `.gitignore` says so at each one.
-
-### The one rule that holds the layers apart
 
 Each tier may only read the one below it, and a test enforces every arrow:
 
 ```
-app/web      renders artefacts            ->  may not compute a number
-app/api      serves artefacts, verifies   ->  may not import the simulator
-app/scripts  run the engine, write files  ->  the only writers
-app/chakravyuh/policy/engine.py           ->  may not reach a model, transitively
+app/web      renders artefacts          →  may not compute a number
+app/backend  serves, verifies           →  may not import the simulator
+app/scripts  run the engine, write      →  the only writers
+engine.py    pure function over rules   →  may not reach a model, transitively
 ```
 
-## Future work
+---
 
-Backtest against documented Amphan timelines; expert panel review of the packs; more neighbour packs
-(NP, LK, BT, MV); Bhashini integration for live translation; CAP XML emission conformant to X.1303;
-A2A/MCP-based inter-agent protocol; the Jev agent tier (§11); propose the failure-card format to
-ITU-T SG13 via TEC/NWG-13.
+<div align="center">
 
-## Licence and status
+**Team Quantum QAI** · ITU AI for Good Sandbox Build-a-thon 5.0 · New Delhi, 10 October 2026
+Apache-2.0 · Research prototype. Simulation output, not legal advice.
 
-Research prototype. Not legal advice. Not for operational use.
+</div>
