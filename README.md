@@ -62,7 +62,7 @@ pytest                                # 140 tests, every acceptance gate
 ```
 
 `showcase.py` ends by printing the rubric scorecard and writing
-[docs/rubric_status.html](docs/rubric_status.html). Each stage is also a standalone command, so
+`docs/rubric_status.html`. Each stage is also a standalone command, so
 anything that fails can be re-run on its own:
 
 | # | Command | What it produces |
@@ -317,7 +317,7 @@ the data/model marketplace.
 | Human supervision | `NEEDS_HUMAN` on irreversible acts, with the gate's automatic approvals logged as automatic |
 | Policy opportunity identification | `outputs/gap_register.csv`, classified and cross-compared |
 | Social inclusion | P3 fails unless the alert is in a language of that area — English alone does not discharge the duty — and each CAP envelope's `info/language` is that district's own tag, local-language-first (`or-IN`, `bn-IN`, `bn-BD`) |
-| Digital infrastructure & energy | A three-pack sweep is ~0.5 s and **zero tokens**: the legality decision is code, so inference is optional and confined to the Adviser. Battery drain is modelled and gated on actual grid loss. Measured per run in [`docs/run_stats.md`](docs/run_stats.md) |
+| Digital infrastructure & energy | A three-pack sweep is ~0.5 s and **zero tokens**: the legality decision is code, so inference is optional and confined to the Adviser. Battery drain is modelled and gated on actual grid loss. Measured per run in `docs/run_stats.md` |
 
 ---
 

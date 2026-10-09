@@ -2,8 +2,8 @@
 
 PROVENANCE, which is the whole point of this module
 ---------------------------------------------------
-`data/telecom_act_2023.jsonl` (62 sections) and `data/dpdp_act_2023.jsonl` (44 sections) were
-produced by `data/build_clauses.py` from the eGazette PDFs that ITU ships in its India dataset.
+`data/sources/IN/telecom_act_2023.jsonl` (62 sections) and `.../dpdp_act_2023.jsonl` (44) were
+produced by `data/scripts/build_clauses.py` from the eGazette PDFs that ITU ships in its India dataset.
 Each record carries the page it came from, a SHA-256 of the extracted text, and
 `source_pdf_sha256` -- the hash of the PDF itself. That last field is the chain of custody: it
 pins exactly which document produced this text, whether or not the PDF is still on disk.
@@ -48,7 +48,7 @@ from typing import Iterable, Optional
 from ..schemas import Clause, sha256_text
 from ..y3172 import node
 
-DATA_DIR = Path("data")
+DATA_DIR = Path("data/sources/IN")
 
 # The real gazette-derived corpora, and the official source each was built from.
 REAL_SOURCES: tuple[dict, ...] = (

@@ -20,26 +20,30 @@ bash scripts/replay_demo.sh          # no network required
 
 ## 1. Rubric → evidence
 
-| Criterion | Evidence a judge can open | Command to reproduce |
-|---|---|---|
-| **1. Knowledge base quality** | [`data/sources/MANIFEST.yaml`](data/sources/MANIFEST.yaml) · [`docs/kb_report.md`](docs/kb_report.md) · [`docs/retrieval_eval.md`](docs/retrieval_eval.md) | `python scripts/build_kb.py && pytest tests/test_p1_clause_store.py` |
-| **2. Agent capability in error scenarios** | [`docs/architecture.md`](docs/architecture.md) · [`runs/`](runs/) · [`docs/adviser_eval.md`](docs/adviser_eval.md) | `bash scripts/replay_demo.sh` |
-| **3. Gap identification** (global + neighbour examples) | [`docs/gap_register.md`](docs/gap_register.md) — 11 gaps, each with an Indian clause, a neighbour and a global example | `python scripts/run_demo.py --seed 0` |
-| **4. Auditability** | [`outputs/audit_sample.jsonl`](outputs/audit_sample.jsonl) · the **Why?** tab in the UI | `python scripts/verify_ledger.py --all` then `--tamper-demo <ledger>` |
-| **5. ITU standards alignment** | [`docs/y3172_map.md`](docs/y3172_map.md) · [`docs/ai_readiness_map.md`](docs/ai_readiness_map.md) | `python scripts/gen_y3172_map.py && python scripts/gen_ai_readiness_map.py` |
+**Five documents are committed. Everything else is generated**, because the runs are
+deterministic — the same seed replays to the same ledger head hash — so a committed snapshot
+would only ever be a second source of truth to disagree with. `bash scripts/replay_demo.sh`
+rebuilds all of it in about 35 seconds, offline.
 
-**Self-audit:** [`docs/rubric_status.html`](docs/rubric_status.html) — 18 checks measured on every
-run, not asserted by hand. Currently **16 PASS · 2 WAIVED with printed reasons · 0 FAIL**.
-A waived check is one whose condition does not hold and which we decided should not, for a
-reason that lives in the check's own code. `python scripts/rubric_audit.py --strict` fails on a
-waiver too.
+| Criterion | Evidence | Where it comes from |
+|---|---|---|
+| **1. Knowledge base quality** | [`data/sources/MANIFEST.yaml`](data/sources/MANIFEST.yaml) — every source with its SHA-256 and verification status | `docs/kb_report.md`, `docs/retrieval_eval.md` ← `python scripts/build_kb.py && python scripts/eval_retrieval.py` |
+| **2. Agent capability** | [`docs/architecture.md`](docs/architecture.md) — the six agents, their blind spots, the tick loop | `docs/demo_report.md`, `docs/adviser_eval.md` ← `bash scripts/replay_demo.sh` |
+| **3. Gap identification** | **[`docs/gap_register.md`](docs/gap_register.md)** — 11 gaps, each with an Indian clause, a neighbour and a global example | `python scripts/run_demo.py --seed 0` |
+| **4. Auditability** | the ledger itself, and the **Why?** tab in the UI | `python scripts/verify_ledger.py --all`, then `--tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl` |
+| **5. ITU standards alignment** | [`docs/y3172_map.md`](docs/y3172_map.md) · [`docs/ai_readiness_map.md`](docs/ai_readiness_map.md) | generated from the `@node` decorators and from ITU's own `dimensions.json` |
+
+**Self-audit:** `docs/rubric_status.html` — 22 checks measured on every run, not asserted by
+hand. Currently **20 PASS · 2 WAIVED with printed reasons · 0 FAIL**. A waived check is one
+whose condition does not hold and which we decided should not, for a reason that lives in the
+check's own code. `python scripts/rubric_audit.py --strict` fails on a waiver too.
 
 ## 2. Mandatory brief items
 
 - [x] **Queryable policy/legal adviser that cannot act** — [`chakravyuh/agents/adviser.py`](chakravyuh/agents/adviser.py). Holds zero powers, proposes nothing. Scored 23/23 on never citing a clause outside the retrieved set.
 - [x] **Institutional actor agents + multi-agent coordination** — six roles in [`chakravyuh/agents/roles.py`](chakravyuh/agents/roles.py), resolved against one world state by the Game Master.
 - [x] **Events released progressively, chunked, uneven per agent** — [`chakravyuh/sim/bus.py`](chakravyuh/sim/bus.py) + per-event `delay_by_role`. Nine events reach two or more roles at different times; the cross-border channel runs 75 minutes behind.
-- [x] **Audit logging + reasoning traces** — hash-chained ledger, 928 entries in the India run. Every proposal carries `reasoning`, `cited_rule_ids` and `cited_clause_ids`.
+- [x] **Audit logging + reasoning traces** — hash-chained ledger, 928 entries in the India run. Every proposal carries `reasoning`, `cited_rule_ids` and `cited_clause_ids`. `scripts/export_audit_sample.py` writes the first 50 entries, which verify as a chain on their own.
 - [x] **ITU reference documents ingested into a vector KB** — ChromaDB `kb_main`, 257 chunks, each carrying `clause_id`, `instrument`, `jurisdiction`, `page`, `sha256`, `verbatim_status`.
 - [x] **AI Readiness perspectives mapped** — all 13 dimensions accounted for, labels read from ITU's own `dimensions.json`.
 

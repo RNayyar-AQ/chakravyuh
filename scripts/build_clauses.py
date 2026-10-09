@@ -1,6 +1,6 @@
 """Split Indian gazette Acts (pdftotext -layout-less output) into section-level clause records.
 
-Usage: python3 -I build_clauses.py <pdf> <instrument_id> <instrument_name> <source_url> <out.jsonl>
+Usage: python3 -I scripts/build_clauses.py <pdf> <instrument_id> <instrument_name> <source_url> <out.jsonl>
 Each record: clause_id, instrument, section, heading-free verbatim text, page, sha256, source_pdf_sha256.
 
 SCOPE, AND WHY IT HAS NOT BEEN WIDENED
