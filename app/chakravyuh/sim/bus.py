@@ -1,9 +1,4 @@
-"""Message bus with per-channel latency and per-role visibility. Y.3172 node: D.
-
-An event released at t does not arrive at t. Arrival = t + delay_by_role[role] (event-specific)
-or the scenario's channel latency for that role (structural, e.g. the cross-border channel).
-This is the mechanism that produces coordination gaps rather than merely asserting them.
-"""
+"""Message bus with per-channel latency and per-role visibility. Y.3172 node: D."""
 from __future__ import annotations
 
 import heapq
@@ -36,7 +31,6 @@ class Delivery:
 @node("D")
 class Bus:
     """Per-role inbox delivery with configurable latency."""
-
     def __init__(self, channel_latency_min: Optional[dict[str, int]] = None,
                  default_latency_min: int = 0):
         self.channel_latency_min = dict(channel_latency_min or {})

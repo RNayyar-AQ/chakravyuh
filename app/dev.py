@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""Run the whole stack with one command. Y.3172 node: SINK.
-
-    make dev                 # or: python app/dev.py
-
-Starts two processes and keeps them together:
-
-    backend   uvicorn on :8000   read-only HTTP over the artefacts
-    frontend  next dev  on :3000 the UI, pointed at that backend
-
-Both share this terminal, output is prefixed so you can tell them apart, and one Ctrl-C stops
-both -- including the grandchildren, because `next dev` spawns workers that outlive a naive kill
-and then hold port 3000 hostage.
-
-Artefacts come first: there is nothing to serve without them, so a missing bundle is built before
-anything starts rather than surfacing as an empty page thirty seconds later.
-"""
+"""Run the whole stack with one command. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import argparse
@@ -41,12 +26,7 @@ COLOURS = {"backend": "\033[36m", "frontend": "\033[35m", "setup": "\033[33m"}
 
 
 def port_free(port: int) -> bool:
-    """Ask by connecting, not by binding.
-
-    A bind test gives false negatives: a server on the IPv6 wildcard (`*:3000`, which is what
-    `next dev` uses) does not stop a bind on 127.0.0.1, so the port looks free and the child dies
-    with EADDRINUSE anyway. If anything accepts a connection on either stack, the port is taken.
-    """
+    """Ask by connecting, not by binding."""
     for family, host in ((socket.AF_INET, "127.0.0.1"), (socket.AF_INET6, "::1")):
         try:
             with socket.socket(family, socket.SOCK_STREAM) as sock:
@@ -125,8 +105,6 @@ def spawn(cmd: list[str], who: str, cwd: Path, env: dict) -> subprocess.Popen:
     proc = subprocess.Popen(
         cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
         text=True, bufsize=1,
-        # Its own process group, so Ctrl-C can take the whole tree down rather than orphaning
-        # the dev server's workers on the port.
         start_new_session=True,
     )
     threading.Thread(target=pump, args=(proc.stdout, who), daemon=True).start()
@@ -180,7 +158,6 @@ def main() -> int:
             "backend", ROOT, env)))
 
     web_env = env | {
-        # Unset in a production build, which is what keeps `next build` a pure static export.
         "NEXT_PUBLIC_API_BASE": "" if api_port is None else f"http://127.0.0.1:{api_port}",
         "PORT": str(web_port),
     }

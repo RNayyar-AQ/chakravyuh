@@ -1,23 +1,5 @@
 #!/usr/bin/env python3
-"""Run the whole rubric showcase, in dependency order. Y.3172 node: SINK.
-
-One command, to every artefact the rubric asks for:
-
-    python app/scripts/showcase.py                 # the full sequence (fuzzing is the slow part)
-    python app/scripts/showcase.py --fast           # skip the fuzz campaign (~3 min saved)
-    python app/scripts/showcase.py --audit-only     # just re-run the rubric audit
-    python app/scripts/showcase.py --strict         # a waived rubric check fails the run
-
-Generators write straight to their final home: documents a judge reads go to `docs/`,
-machine-readable data goes to `outputs/`. There is no intermediate build directory and no copy
-step, so what you read is what was generated.
-
-Stage order is the dependency order, not the rubric's phase order: the clause store has to exist
-before a pack can compile, a pack has to compile before a run, and a run has to exist before the
-gap register, the audit sample or the stats can be written. Each stage prints its own command, so
-anything that fails can be re-run on its own without re-running the rest.
-
-"""
+"""Run the whole rubric showcase, in dependency order. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import argparse
@@ -29,7 +11,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PY = sys.executable
 
-# (stage, description, command). `slow` stages are skipped by --fast.
 Stage = tuple[str, str, list[str], bool]
 
 STAGES: list[Stage] = [
@@ -59,12 +40,9 @@ STAGES: list[Stage] = [
      [PY, "app/scripts/verify_ledger.py", "--all"], False),
     ("tamper", "prove an edited ledger is detected",
      [PY, "app/scripts/verify_ledger.py", "--tamper-demo"], False),
-    # Last, because it reads every artefact above. The web UI renders this bundle and nothing
-    # else, so if a stage above did not run, the UI says so instead of showing a stale number.
     ("web", "export every artefact as the web UI's data bundle",
      [PY, "app/scripts/export_web.py"], False),
 ]
-
 
 
 def run(cmd: list[str], label: str) -> tuple[int, float]:
@@ -72,8 +50,6 @@ def run(cmd: list[str], label: str) -> tuple[int, float]:
     print(f"\n\033[1m=== {label} ===\033[0m\n    $ {' '.join(cmd)}", flush=True)
     proc = subprocess.run(cmd, cwd=ROOT)
     return proc.returncode, time.perf_counter() - started
-
-
 
 
 def main() -> int:
@@ -100,8 +76,6 @@ def main() -> int:
             if code != 0:
                 failures.append((name, code))
                 print(f"\n\033[31mstage {name} exited {code}\033[0m", file=sys.stderr)
-                # The stages are a dependency chain: continuing past a broken clause store or a
-                # broken run would produce artefacts built on nothing.
                 if name in ("kb", "demo"):
                     print("this stage is a dependency of everything after it; stopping",
                           file=sys.stderr)

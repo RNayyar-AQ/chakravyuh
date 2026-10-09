@@ -1,15 +1,4 @@
-"""Hybrid retrieval: BM25 + vector (+ tree) fused with RRF. Y.3172 node: PP.
-
-Used ONLY by the Policy & Legal Adviser to answer free-text questions. The policy engine
-never calls this -- legality is decided from clause IDs fetched exactly (§1.3).
-
-Modes, all selectable so §9.2 can measure them against each other:
-  bm25    -- lexical only (rank_bm25). Section numbers and defined terms are lexical,
-             which is why this is a serious baseline on statute text, not a straw man.
-  vector  -- ITU reference Chroma collections
-  hybrid  -- reciprocal rank fusion of bm25 + vector
-  tree    -- section-tree navigation (kb/tree_index.py, P2)
-"""
+"""Hybrid retrieval: BM25 + vector (+ tree) fused with RRF. Y.3172 node: PP."""
 from __future__ import annotations
 
 import math
@@ -23,7 +12,7 @@ from ..y3172 import node
 from .ingest import CHROMA_PATH, COLLECTIONS, Chunk, load_chunks
 
 Mode = Literal["bm25", "vector", "hybrid", "tree", "hybrid_rerank"]
-RRF_K = 60  # standard reciprocal-rank-fusion damping constant
+RRF_K = 60
 
 
 @dataclass
@@ -35,7 +24,7 @@ class Hit:
     instrument: str
     section: str
     source_url: str
-    source: str  # which retriever produced it: bm25 | vector | rrf | tree
+    source: str
 
 
 def tokenize(text: str) -> list[str]:
@@ -48,7 +37,6 @@ def tokenize(text: str) -> list[str]:
 @node("PP")
 class Retriever:
     """Hybrid clause retriever over the ingested chunks."""
-
     def __init__(self, chunks: Optional[Sequence[Chunk]] = None,
                  chroma_path: str | Path = CHROMA_PATH, mode: Mode = "hybrid"):
         self.chunks: list[Chunk] = list(chunks) if chunks is not None else load_chunks()
@@ -61,13 +49,12 @@ class Retriever:
         if self.chunks:
             self._build_bm25()
 
-    # -- BM25 --------------------------------------------------------------
     def _build_bm25(self) -> None:
         try:
             from rank_bm25 import BM25Okapi  # noqa: PLC0415
             self._bm25 = BM25Okapi([tokenize(c.text) for c in self.chunks])
         except ImportError:
-            self._bm25 = None  # falls back to the tf-idf scorer below
+            self._bm25 = None
 
     def search_bm25(self, query: str, k: int = 5) -> list[Hit]:
         q = tokenize(query)
@@ -95,7 +82,6 @@ class Retriever:
             out.append(score)
         return out
 
-    # -- vector (Chroma) ---------------------------------------------------
     def chroma_ready(self) -> bool:
         try:
             import chromadb  # noqa: PLC0415,F401
@@ -129,7 +115,6 @@ class Retriever:
         hits.sort(key=lambda h: -h.score)
         return hits[:k]
 
-    # -- tree (P2) ---------------------------------------------------------
     def search_tree(self, query: str, k: int = 5) -> list[Hit]:
         from .tree_index import SectionTree  # noqa: PLC0415
         if self._tree is None:
@@ -137,7 +122,6 @@ class Retriever:
         return [self._hit(self._by_id[cid], score, "tree")
                 for cid, score in self._tree.navigate(query, k) if cid in self._by_id]
 
-    # -- fusion ------------------------------------------------------------
     @node("PP")
     def search(self, query: str, k: int = 5, mode: Optional[Mode] = None) -> list[Hit]:
         """Retrieve k chunks. `hybrid` fuses BM25 and vector ranks with RRF."""

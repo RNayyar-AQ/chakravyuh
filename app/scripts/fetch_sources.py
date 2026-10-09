@@ -1,27 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch, hash and completeness-check the primary source PDFs. Y.3172 node: SRC.
-
-    python app/scripts/fetch_sources.py              # fetch anything missing, verify everything held
-    python app/scripts/fetch_sources.py --verify     # verify what is on disk; fetch nothing
-    python app/scripts/fetch_sources.py --force      # re-fetch even if the file is present
-
-WHY VERIFICATION IS THE POINT, NOT THE DOWNLOAD
-
-A PDF that returns HTTP 200 and has a text layer can still be the wrong document, a partial
-extract, or two documents spliced together. All three happened the first time this manifest was
-run, and one of them would have produced a confidently FALSE finding: a copy of the Telecom
-Cyber Security Rules containing only rules 4-8 yields zero hits for "authenticate", which looks
-exactly like the evidence of absence our property P2 depends on -- while being missing most of
-the instrument.
-
-So every source declares `must_contain` strings that only the real instrument carries, and the
-script refuses to mark a document verified unless its extracted text carries all of them. A
-document whose checks fail is reported, never silently used.
-
-Hashes: on first fetch the sha256 is recorded into the manifest if absent. On every later run a
-changed hash is an ERROR, not an update -- a gazette PDF that changes under a stable URL is
-either a re-notification or a different document, and both need a human.
-"""
+"""Fetch, hash and completeness-check the primary source PDFs. Y.3172 node: SRC."""
 from __future__ import annotations
 
 import argparse
@@ -107,9 +85,6 @@ def check(source: dict, path: Path) -> dict:
     if source.get("pages") and pages != source["pages"]:
         result["problems"].append(f"page count {pages}, manifest says {source['pages']}")
 
-    # Collapse all runs of whitespace before matching. A gazette title wraps mid-phrase
-    # ("Mandatory Disaster Response\nInitiative"), and the fix is to normalise, not to shorten
-    # the required string until it happens to fit on one line.
     flat = re.sub(r"\s+", " ", text).lower()
     missing = [s for s in source.get("must_contain", [])
                if re.sub(r"\s+", " ", s).lower() not in flat]

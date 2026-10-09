@@ -86,8 +86,6 @@ def test_extract_json_rejects_garbage():
         extract_json("no object here")
 
 
-# ------------------------------------------------- model selection and credentials
-
 def test_resolve_model_prefers_explicit_then_hosted_then_local(monkeypatch):
     from chakravyuh.llm.client import DEFAULT_LOCAL_MODEL, resolve_model
 
@@ -112,11 +110,11 @@ def test_client_honours_prefer_hosted(monkeypatch, tmp_path):
 
 
 @pytest.mark.parametrize("model,expected", [
-    ("ollama/qwen2.5:14b", None),                     # local: no credential at all
+    ("ollama/qwen2.5:14b", None),
     ("openai/gpt-4o", "OPENAI_API_KEY"),
     ("openai/gpt-4o", "OPENAI_API_KEY"),
     ("gemini/gemini-2.0-flash", "GEMINI_API_KEY"),
-    ("some-unknown/model", None),                      # unknown: defer to LiteLLM, do not guess
+    ("some-unknown/model", None),
 ])
 def test_credential_env_for(model, expected):
     from chakravyuh.llm.client import credential_env_for
@@ -158,24 +156,20 @@ def test_env_example_documents_every_variable_the_code_reads():
     import re
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
-    # Count commented-out declarations too: `# OPENAI_API_KEY=` still documents the variable.
     declared = set(re.findall(r"^#?\s*([A-Z][A-Z0-9_]+)=", (root / ".env.example").read_text(),
                               flags=re.M))
     read: set[str] = set()
     for src in (root / "app" / "chakravyuh").rglob("*.py"):
         read |= set(re.findall(r'environ(?:\.get)?\(\s*"([A-Z][A-Z0-9_]+)"', src.read_text()))
-    # Provider keys are read by LiteLLM and checked by credential_env_for, never by os.environ
-    # here, so they are legitimately documented without appearing in `read`.
     from chakravyuh.llm.client import PROVIDER_CREDENTIALS
     provider_keys = {var for _prefix, var in PROVIDER_CREDENTIALS if var}
 
     assert read - declared == set(), f"undocumented variables: {sorted(read - declared)}"
     assert declared - read - provider_keys == set(), \
         f"documented but never read: {sorted(declared - read - provider_keys)}"
-    # Every credential the code can demand must be documented somewhere the user will find it.
     env_text = (root / ".env.example").read_text()
     for var in sorted(provider_keys):
         if var in {"GOOGLE_APPLICATION_CREDENTIALS", "AWS_ACCESS_KEY_ID", "AZURE_API_KEY",
                    "MISTRAL_API_KEY", "GROQ_API_KEY"}:
-            continue   # supported via LiteLLM but not among the documented showcase options
+            continue
         assert var in env_text, f"{var} can be demanded but is not in .env.example"

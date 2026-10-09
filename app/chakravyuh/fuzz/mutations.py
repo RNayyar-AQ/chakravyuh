@@ -1,12 +1,4 @@
-"""Mutation families applied to a base scenario. Y.3172 node: SRC.
-
-Two families are in MVP scope (spec §0): forged orders, and delayed/rumour-driven events. The
-rest are implemented because Hypothesis composes them for free and they cost nothing, but the
-report counts findings by family so the MVP claim stays honest.
-
-Every mutation is a PURE function: Scenario -> new Scenario. The base scenario is never mutated
-in place, so a shrunk counterexample replays exactly.
-"""
+"""Mutation families applied to a base scenario. Y.3172 node: SRC."""
 from __future__ import annotations
 
 

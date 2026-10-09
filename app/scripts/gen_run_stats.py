@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs/run_stats.md: wall time, tokens and energy proxy per run. Y.3172 node: SINK.
-
-Why this document exists. The brief's eighth perspective is digital infrastructure and energy,
-and the usual way to address it is a paragraph claiming efficiency. This measures it instead:
-every run records its wall time, its LLM call count and its token usage in the ledger's
-RUN_HEADER and in outputs/comparison.json, and the numbers are read back here.
-
-The honest headline is that the deterministic tier costs no tokens at all, which is the actual
-engineering claim: the legality decision is code, so the expensive component is optional and is
-confined to the Adviser and the optional LLM agent tier.
-
-  python app/scripts/gen_run_stats.py
-"""
+"""Generate docs/run_stats.md: wall time, tokens and energy proxy per run. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import json

@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Retrieval eval: BM25 vs vector vs hybrid vs hybrid+rerank vs tree. Y.3172 node: PP.
-
-Scores the rubric's "knowledge base quality" criterion (spec §9.2). Reports recall@5 and MRR over
-data/eval/retrieval_qa.jsonl and writes docs/retrieval_eval.md. The best mode is what the Adviser
-should use -- the table is the evidence, not the assertion.
-
-  python app/scripts/eval_retrieval.py            # all available modes
-  python app/scripts/eval_retrieval.py --k 5
-"""
+"""Retrieval eval: BM25 vs vector vs hybrid vs hybrid+rerank vs tree. Y.3172 node: PP."""
 from __future__ import annotations
 
 import argparse
@@ -30,8 +22,7 @@ def load_qa(path: Path) -> list[dict]:
 
 
 def evaluate(retriever: Retriever, qa: list[dict], mode: str, k: int) -> dict:
-    """recall@k = fraction of questions with at least one gold clause in the top k.
-    MRR = mean of 1/rank of the first gold clause (0 when absent)."""
+    """recall@k = fraction of questions with at least one gold clause in the top k."""
     hits_at_k = 0
     rr_total = 0.0
     per_question: list[dict] = []
@@ -41,11 +32,6 @@ def evaluate(retriever: Retriever, qa: list[dict], mode: str, k: int) -> dict:
     for row in qa:
         gold = set(row["gold_clause_ids"])
         if not gold:
-            # An unanswerable question. A retriever always returns its k best matches -- it has
-            # no way to return nothing -- so the only honest thing to measure here is the TOP
-            # SCORE: if the best match for a question with no answer scores as high as the best
-            # match for one that has an answer, then no downstream threshold can tell them
-            # apart and the Adviser's abstention cannot be grounded in retrieval at all.
             try:
                 hits = retriever.search(row["question"], k=k, mode=mode)
             except Exception as exc:
@@ -76,9 +62,6 @@ def evaluate(retriever: Retriever, qa: list[dict], mode: str, k: int) -> dict:
                              "top_score": round(hits[0].score, 4) if hits else 0.0})
     if answered == 0:
         return {"mode": mode, "questions": 0, "recall_at_k": 0.0, "mrr": 0.0, "per_question": []}
-    # Abstention separability: the fraction of (answerable, unanswerable) pairs in which the
-    # answerable question's top score is the higher of the two. 1.0 means a single threshold
-    # separates them perfectly; 0.5 means the top score carries no signal about answerability.
     separable = None
     if abstain_scores and answerable_scores:
         pairs = len(answerable_scores) * len(abstain_scores)

@@ -1,13 +1,4 @@
-"""Game Master: resolves proposals in deterministic order. Y.3172 node: D.
-
-Concordia's split (DeepMind 2023), with the Game Master as deterministic code rather than an LLM.
-Agents only propose; the GM resolves every proposal against ONE world state and ONE rulebook, in
-one order. That is what neutralises Cognition's "conflicting implicit decisions" failure mode
-while still letting the agents hold genuinely partial, uneven information (§1.1).
-
-Resolution order within a tick, fully determined:
-  (t, role priority, proposal_id)
-"""
+"""Game Master: resolves proposals in deterministic order. Y.3172 node: D."""
 from __future__ import annotations
 
 from typing import Mapping, Optional, Sequence
@@ -22,14 +13,7 @@ from ..y3172 import node
 
 
 class HumanGate:
-    """Human-in-the-loop stub for NEEDS_HUMAN verdicts (§5.4 step 4).
-
-    batch mode  : auto-approves after `auto_approve_after_min` of simulated time, recording that
-                  the approval was automatic so the report never claims a human reviewed it.
-    ui mode     : holds the action until `approve()` is called (the Streamlit button).
-    deny mode   : never approves, for measuring what strict human gating would cost.
-    """
-
+    """Human-in-the-loop stub for NEEDS_HUMAN verdicts (§5.4 step 4)."""
     def __init__(self, mode: str = "batch", auto_approve_after_min: int = 30):
         self.mode = mode
         self.auto_approve_after_min = auto_approve_after_min
@@ -66,7 +50,6 @@ class HumanGate:
 @node("D")
 class GameMaster:
     """The single authority over world state. No agent holds a reference to the world."""
-
     def __init__(self, world: WorldState, pack: PolicyPack, ledger: Ledger,
                  human_gate: Optional[HumanGate] = None,
                  agents: Optional[Mapping[str, object]] = None):
@@ -79,12 +62,11 @@ class GameMaster:
         self.events_by_id: dict[str, Event] = {}
         self.verdicts: list[Verdict] = []
         self.effects: list[dict] = []
-        self.deferred: list[tuple[int, Proposal, Verdict]] = []   # (effective_t, proposal, verdict)
+        self.deferred: list[tuple[int, Proposal, Verdict]] = []
         self.forged_executions: list[dict] = []
         self._pending_derived: list[Event] = []
-        self._rule_clauses: Optional[dict[str, list[str]]] = None   # lazily built from the pack
+        self._rule_clauses: Optional[dict[str, list[str]]] = None
 
-    # -- perception --------------------------------------------------------
     def register_event(self, event: Event) -> None:
         """Record the full event (with ground truth) for the engine's authentication check."""
         self.events_by_id[event.event_id] = event
@@ -101,11 +83,7 @@ class GameMaster:
         return changed
 
     def _clauses_for_rules(self, rule_ids: Sequence[str]) -> list[str]:
-        """Clause ids the given rules cite, in the pack's order, de-duplicated.
-
-        A rule id an agent cited that the pack does not define resolves to nothing rather than
-        to a guess; the engine's verdict is what reports that the rule was not found.
-        """
+        """Clause ids the given rules cite, in the pack's order, de-duplicated."""
         if self._rule_clauses is None:
             self._rule_clauses = {r.rule_id: list(r.clause_ids) for r in self.pack.rules}
         out: list[str] = []
@@ -115,7 +93,6 @@ class GameMaster:
                     out.append(cid)
         return out
 
-    # -- resolution --------------------------------------------------------
     @node("D")
     def resolve_tick(self, proposals: list[Proposal], t: int) -> list[Verdict]:
         """Resolve every proposal for this tick in (t, role priority, proposal_id) order."""
@@ -218,7 +195,6 @@ class GameMaster:
                 return False
         return True
 
-    # -- reporting ---------------------------------------------------------
     def verdict_counts(self) -> dict[str, int]:
         counts: dict[str, int] = {}
         for v in self.verdicts:

@@ -1,19 +1,4 @@
-"""Read-only HTTP tier over the artefacts. Y.3172 node: SINK.
-
-WHAT THIS IS NOT
-    Not a place where anything is decided. It serves files the pipeline already wrote and runs
-    verification that is already implemented in `chakravyuh.audit.ledger`. It computes no margin,
-    no verdict and no confidence, and it cannot write to the ledger. Everything here would still
-    be true if this process were switched off -- which is the point: the frontend's production
-    build reads the same artefacts straight off disk and needs no server at all.
-
-WHY IT EXISTS ANYWAY
-    `make dev` runs the frontend against a live backend, so the demo can re-verify the hash chains
-    on request instead of showing a verification result baked in at build time. A judge asking
-    "is that still true right now?" gets the answer from the chain, not from a cached number.
-
-    uvicorn app.api.main:app --reload --port 8000
-"""
+"""Read-only HTTP tier over the artefacts. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import json
@@ -25,8 +10,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-ROOT = Path(__file__).resolve().parents[2]           # repo root: data/, outputs/, runs/
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # app/: the chakravyuh package
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from chakravyuh.audit.ledger import verify
 
@@ -42,8 +27,6 @@ app = FastAPI(
     description="Read-only access to artefacts the simulator produced. Decides nothing.",
 )
 
-# The frontend dev server is a different origin. Locked to localhost: this tier is a development
-# and demo convenience, never something to expose.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
@@ -92,12 +75,7 @@ def timeline(pack_id: str) -> FileResponse:
 
 @app.post("/api/verify")
 def verify_ledgers() -> dict:
-    """Re-walk every hash chain on disk, right now.
-
-    This is the one endpoint that does work rather than serving a file, and it is still only
-    reading: `verify` recomputes sha256(prev | seq | t | kind | canonical_json(payload)) for each
-    entry and reports the first sequence number where the chain breaks.
-    """
+    """Re-walk every hash chain on disk, right now."""
     results = []
     for path in sorted(RUNS.glob("*.jsonl")) + sorted((OUTPUTS / "tamper").glob("*.jsonl")):
         ok, message = verify(path)

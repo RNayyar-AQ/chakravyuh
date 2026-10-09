@@ -1,14 +1,4 @@
-"""Export the pipeline's artefacts as one JSON bundle for the web UI. Y.3172 node: SINK.
-
-The frontend NEVER computes anything. It renders what the simulator, the policy engine and the
-fuzzer already decided and already wrote to disk. This script is the only bridge between them,
-so there is exactly one place where a number could drift from its source -- and it does not,
-because every field below is copied, not recalculated.
-
-    python app/scripts/export_web.py        # -> app/web/public/data/*.json
-
-Run `python app/scripts/showcase.py` first: this reads runs/, outputs/ and docs/.
-"""
+"""Export the pipeline's artefacts as one JSON bundle for the web UI. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import csv
@@ -18,8 +8,8 @@ from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]          # repo root: data/, outputs/, runs/
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # app/: the chakravyuh package
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from chakravyuh.agents.roles import ROLE_ORDER, ROLES
 from chakravyuh.audit.ledger import read, verify
@@ -33,7 +23,6 @@ OUTPUTS = ROOT / "outputs"
 DOCS = ROOT / "docs"
 SCENARIO = "amphan_2020"
 
-# Human-facing names for the three regimes. The pack files carry ids; a judge reads names.
 PACK_LABELS = {
     "india_current": ("India", "Current Indian law as it stands"),
     "bangladesh": ("Bangladesh", "BTRA 2001 + DM Act 2012 + CPP standing order"),
@@ -126,7 +115,6 @@ def fuzz_cards(summary: list) -> dict:
         })
         for c in s.get("cards", []):
             cards.append({**c, "pack_id": s.get("pack_id")})
-    # One card per (failure_id, pack): the same minimal counterexample repeats across runs.
     seen, unique = set(), []
     for c in cards:
         key = (c.get("failure_id"), c.get("pack_id"))
@@ -165,7 +153,7 @@ def _import_all_modules() -> None:
     for mod in pkgutil.walk_packages(chakravyuh.__path__, "chakravyuh."):
         try:
             importlib.import_module(mod.name)
-        except ImportError as exc:      # optional dependency absent in this environment
+        except ImportError as exc:
             skipped.append(f"{mod.name} ({exc})")
     if skipped:
         print(f"note: {len(skipped)} module(s) not imported, so their nodes are not counted:")
@@ -224,7 +212,6 @@ def sources_meta() -> list[dict]:
     return out
 
 
-# Ledger kinds the timeline shows. DELIVERY is the inbox plumbing: thousands of rows, no drama.
 TIMELINE_KINDS = {"EVENT", "PROPOSAL", "VERDICT", "EFFECT", "PROPERTY"}
 
 
@@ -239,9 +226,6 @@ def timeline_for(path: Path) -> dict:
         if kind == "EVENT" and p.get("kind") == "RUN_HEADER":
             header = p
             continue
-        # The footer carries the run's own accounting: why proposals were blocked, whether a
-        # forged order executed, and who released the human gate. It is the most quotable entry
-        # in the ledger, so it is surfaced rather than rendered as one more timeline row.
         if kind == "EVENT" and p.get("kind") == "RUN_FOOTER":
             footer = p
             continue

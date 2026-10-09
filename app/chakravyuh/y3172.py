@@ -1,9 +1,4 @@
-"""Y.3172 node vocabulary + registry. Y.3172 node: (meta).
-
-Every module in `app/chakravyuh/` declares its Y.3172 node in its docstring, and every
-public entry point is decorated with @node(...). `app/scripts/gen_y3172_map.py` walks the
-package and generates `y3172_map.md` from this registry -- generated, not hand-typed (§8.1).
-"""
+"""Y.3172 node vocabulary + registry. Y.3172 node: (meta)."""
 from __future__ import annotations
 
 import functools
@@ -12,13 +7,13 @@ from enum import Enum
 
 class Y3172Node(str, Enum):
     """ITU-T Y.3172 ML pipeline nodes [Certain: Y.3172 node vocabulary]."""
-    SRC = "SRC"    # data source
-    C = "C"        # collector
-    PP = "PP"      # pre-processor
-    M = "M"        # model
-    P = "P"        # policy
-    D = "D"        # distributor
-    SINK = "SINK"  # sink
+    SRC = "SRC"
+    C = "C"
+    PP = "PP"
+    M = "M"
+    P = "P"
+    D = "D"
+    SINK = "SINK"
 
 
 DESCRIPTIONS = {
@@ -31,7 +26,6 @@ DESCRIPTIONS = {
     Y3172Node.SINK: "Sink: ledger, failure atlas, gap register, UI",
 }
 
-# node -> list of (module, qualname, summary)
 REGISTRY: dict[str, list[tuple[str, str, str]]] = {n.value: [] for n in Y3172Node}
 
 

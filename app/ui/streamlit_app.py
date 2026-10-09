@@ -1,11 +1,4 @@
-"""CHAKRAVYUH demo UI: Timeline | Adviser | Failure Atlas | Why? | Ledger & Audit.
-
-Y.3172 node: SINK. Runs fully offline: rule-based agent twins need no model, and the Adviser falls
-back to extractive mode when no LLM is reachable. Nothing here decides anything -- it displays what
-the simulator and the policy engine already decided.
-
-    streamlit run app/ui/streamlit_app.py
-"""
+"""CHAKRAVYUH demo UI: Timeline | Adviser | Failure Atlas | Why? | Ledger & Audit."""
 from __future__ import annotations
 
 import json
@@ -33,8 +26,6 @@ SCENARIO = "data/scenarios/amphan_2020.yaml"
 PASS_COLOUR = {"PASS": "#1b7f4f", "FAIL": "#b3261e"}
 
 
-# --------------------------------------------------------------------- loading
-
 @st.cache_resource(show_spinner=False)
 def load_everything(scenario_path: str, seed: int):
     """One simulation sweep across every pack. Cached so tab switches do not re-run it."""
@@ -61,8 +52,6 @@ def badge(passed: bool) -> str:
     return (f"<span style='background:{PASS_COLOUR[label]};color:#fff;padding:2px 8px;"
             f"border-radius:10px;font-size:0.8em;font-weight:600'>{label}</span>")
 
-
-# ----------------------------------------------------------------------- shell
 
 st.title("🌀 CHAKRAVYUH")
 st.caption("Policy fuzzing for emergency telecom governance — agents propose, a deterministic "
@@ -93,8 +82,6 @@ base_pack = "india_current" if "india_current" in results else sorted(results)[0
 tab_timeline, tab_adviser, tab_atlas, tab_why, tab_ledger = st.tabs(
     ["Timeline", "Ask the Adviser", "Failure Atlas", "Why?", "Ledger & Audit"])
 
-
-# -------------------------------------------------------------------- timeline
 
 with tab_timeline:
     st.subheader("Properties by policy pack")
@@ -159,7 +146,7 @@ with tab_timeline:
         import pandas as pd
         st.dataframe(pd.DataFrame(rows).style.apply(_grey_constructed, axis=1),
                      width='stretch', hide_index=True, height=280)
-    except ImportError:          # pandas absent: the column still says which is which
+    except ImportError:
         st.dataframe(rows, width='stretch', hide_index=True, height=280)
 
     c1, c2 = st.columns(2)
@@ -186,8 +173,6 @@ with tab_timeline:
                  f"unauthenticated order — property P2 violated.")
         st.json(gm.forged_executions)
 
-
-# --------------------------------------------------------------------- adviser
 
 with tab_adviser:
     st.subheader("Policy & Legal Adviser")
@@ -237,8 +222,6 @@ with tab_adviser:
                    "verbatim status": c.verbatim_status, "sha256": c.sha256[:12] + "…"}
                   for c in clauses], width='stretch', hide_index=True, height=300)
 
-
-# ----------------------------------------------------------------------- atlas
 
 with tab_atlas:
     st.subheader("Gap register")
@@ -293,8 +276,6 @@ with tab_atlas:
     else:
         st.info("No fuzz results yet. Run `python app/scripts/run_fuzz.py` to populate the atlas.")
 
-
-# ---------------------------------------------------------------------- ledger
 
 with tab_why:
     st.subheader("Why did this happen?")

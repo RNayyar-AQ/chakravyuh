@@ -1,9 +1,4 @@
-"""Structured clause store: exact lookup by clause_id + verbatim/hash check. Y.3172 node: PP.
-
-This is layer (1) of the hybrid KB (spec §0). Legality checks must NEVER go through
-similarity search: rules cite clause IDs, the policy engine fetches clauses by ID from here,
-and the verbatim check compares SHA-256 hashes (§1.3).
-"""
+"""Structured clause store: exact lookup by clause_id + verbatim/hash check. Y.3172 node: PP."""
 from __future__ import annotations
 
 import json
@@ -56,16 +51,11 @@ def _row_to_clause(row) -> Clause:
 
 class ClauseNotFound(KeyError):
     """Asked for a clause_id that is not in the store. A rule citing one must fail compilation."""
-
-
 class HashMismatch(ValueError):
     """Stored text no longer hashes to the recorded sha256: the source text drifted."""
-
-
 @node("PP")
 class ClauseStore:
     """Exact-lookup clause store over SQLite (stdlib sqlite3)."""
-
     def __init__(self, db_path: str | Path = DEFAULT_DB):
         self.db_path = Path(db_path)
         if str(db_path) != ":memory:":
@@ -75,7 +65,6 @@ class ClauseStore:
         self.conn.executescript(SCHEMA)
         self.conn.commit()
 
-    # -- writes ------------------------------------------------------------
     def upsert(self, clause: Clause) -> None:
         if not clause.hash_matches():
             raise HashMismatch(f"{clause.clause_id}: sha256 does not match text_verbatim")
@@ -92,7 +81,6 @@ class ClauseStore:
             n += 1
         return n
 
-    # -- reads -------------------------------------------------------------
     @node("PP")
     def get_clause(self, clause_id: str) -> Clause:
         """Exact lookup by clause_id. Raises ClauseNotFound -- never a fuzzy match."""
@@ -123,7 +111,6 @@ class ClauseStore:
     def count(self) -> int:
         return self.conn.execute("SELECT COUNT(*) FROM clauses").fetchone()[0]
 
-    # -- integrity ---------------------------------------------------------
     @node("PP")
     def verify_verbatim(self, clause_id: str, expected_sha256: str) -> bool:
         """Hash-match check used by the policy compiler: does the cited text still hash as recorded?"""
@@ -168,8 +155,6 @@ class ClauseStore:
     def close(self) -> None:
         self.conn.close()
 
-
-# -- JSONL interchange (data/clauses/clauses.jsonl is the reviewable, diffable form) --
 
 def load_jsonl(path: str | Path = DEFAULT_JSONL) -> list[Clause]:
     """Read clauses from JSONL, recomputing sha256 when the file omits or stales it."""

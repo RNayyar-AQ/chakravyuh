@@ -1,12 +1,4 @@
-"""Invariants P1-P4: what "harm" means here. Y.3172 node: SINK.
-
-Deliberately NOT money or lives with confidence intervals (spec §0): accuracy is not scored and
-invented numbers are an attack surface. Each property is a boolean invariant over a finished run,
-with a measured margin in an ILLUSTRATIVE unit. Thresholds come from the scenario YAML and the
-report states them as illustrative.
-
-A failure = property violated. Nothing here consults an LLM.
-"""
+"""Invariants P1-P4: what "harm" means here. Y.3172 node: SINK."""
 from __future__ import annotations
 
 from typing import Optional
@@ -30,10 +22,6 @@ def check_p1(world: WorldState, th: Thresholds, gm=None) -> PropertyResult:
     """P1 margin = (min % of affected cells reachable for relief during a suspension) - threshold."""
     worst = 100.0
     detail: dict = {"suspensions_examined": 0, "per_area": {}}
-    # Scope: any area suspended while a disaster is declared anywhere. Relief and emergency
-    # traffic (112, responder comms, relief coordination) has to survive a suspension wherever
-    # the response is operating -- not only in the cells the hazard itself struck. A suspension
-    # of an unaffected metro that hosts the relief coordination is squarely in scope.
     response_active = any(world.disaster_declared.values())
     for susp in world.suspensions:
         detail["suspensions_examined"] += 1
@@ -84,7 +72,6 @@ def check_p2(world: WorldState, th: Thresholds, gm=None) -> PropertyResult:
 @node("SINK")
 def check_p3(world: WorldState, th: Thresholds, gm=None) -> PropertyResult:
     """P3 margin = T_alert - (max delay from first warning to a valid local-language alert)."""
-    # Per-area baseline: the clock starts when THIS area was first warned about (§world.state).
     worst = 0
     missed: list[str] = []
     per_area: dict[str, object] = {}
@@ -112,10 +99,6 @@ def check_p3(world: WorldState, th: Thresholds, gm=None) -> PropertyResult:
                           "cross_border": area in world.cross_border_areas}
         worst = max(worst, delay)
     if missed:
-        # Never validly alerted: score it at the full elapsed run, so the margin stays in minutes
-        # and stays comparable with a merely-late alert instead of being a sentinel.
-        # Never validly alerted: score at the longest elapsed time since any missed area was
-        # warned, so the margin stays in minutes and stays comparable with a merely-late alert.
         unserved = max((world.t_minutes - bases[a] for a in missed), default=0)
         margin = float(th.t_alert_min - max(worst, unserved))
         return PropertyResult(
@@ -146,9 +129,6 @@ def check_p4(world: WorldState, th: Thresholds, gm=None) -> PropertyResult:
     worst = 0
     missed: list[str] = []
     per_area: dict[str, object] = {}
-    # Scope: areas that actually lost service, intersected with areas the hazard affected.
-    # A district that was warned and came through undamaged needs no roaming, and demanding it
-    # there would report a false failure. 47 CFR 4.17 ties the obligation to an impaired network.
     scope = sorted(set(world.affected_areas) & set(world.impaired_areas()))
     if not scope:
         return PropertyResult(

@@ -1,22 +1,5 @@
 #!/usr/bin/env python3
-"""Audit the repository against CHAKRAVYUH_RUBRIC_SHOWCASE.md Phase 1. Y.3172 node: SINK.
-
-Prints PASS / FAIL / WAIVED for every check A1..E3 and writes docs/rubric_status.md.
-
-Three statuses, and the distinction matters:
-  PASS    the check's condition holds, measured here and now
-  WAIVED  the condition does not hold and we have decided it should not, with the reason stated
-          in the output. A waiver is a visible, argued decision -- the rubric allows one
-          ("PASS or explicitly waived in rubric_status.md with a reason") and this script is
-          the only place one can be declared.
-  FAIL    the condition does not hold and should
-
-Exit code is 0 when nothing FAILs. `--strict` makes a waiver fail too, which is the mode to run
-when you want to see the unvarnished state.
-
-  python app/scripts/rubric_audit.py
-  python app/scripts/rubric_audit.py --strict
-"""
+"""Audit the repository against CHAKRAVYUH_RUBRIC_SHOWCASE.md Phase 1. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import argparse
@@ -31,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Optional
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # app/: the package
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_HTML = Path("docs/rubric_status.html")
@@ -68,7 +51,6 @@ def _waive(detail: str, reason: str) -> Result:
     return Result(WAIVED, detail, reason)
 
 
-# ======================================================================= KB (A)
 def a1_clause_fields() -> Result:
     """Every clause row carries text, hash, URL -- and a page where a page exists."""
     from chakravyuh.kb.clause_store import ClauseStore
@@ -95,9 +77,6 @@ def a1_clause_fields() -> Result:
               f"{len(clauses)}; page present on {len(clauses) - len(no_page)}")
     if not no_page:
         return _ok(detail)
-    # A page number identifies a location in a PDF we hold. A record summarising an instrument
-    # from a named secondary source has no such location, and inventing one would be the exact
-    # fabrication this audit exists to prevent.
     from collections import Counter
     prov = Counter(ClauseStore().try_get(cid).provenance for cid in no_page)
     if set(prov) <= {"secondary_source", "model_written"}:
@@ -226,7 +205,6 @@ def a6_retrieval_eval() -> Result:
                f"{best[0]}")
 
 
-# ============================================================ agent capability (B)
 def b1_scenario() -> Result:
     from chakravyuh.sim.events import load_scenario
     path = Path("data/scenarios/amphan_2020.yaml")
@@ -338,7 +316,7 @@ def b5_engine_purity() -> Result:
                 names = [a.name for a in n.names]
             elif isinstance(n, ast.ImportFrom) and n.module is not None:
                 base = n.module
-                if n.level:                       # resolve a relative import
+                if n.level:
                     parts = mod.split(".")[: -n.level] or ["chakravyuh"]
                     base = ".".join(parts + ([n.module] if n.module else []))
                 names = [base] + [f"{base}.{a.name}" for a in n.names]
@@ -362,7 +340,6 @@ def b5_engine_purity() -> Result:
                f"inspecting one file)")
 
 
-# ================================================================= gap register (C)
 def c1_gap_register() -> Result:
     from chakravyuh.analysis.gap_register import RUBRIC_COLUMNS, VALID_GAP_TYPES
     path = Path("outputs/gap_register.csv")
@@ -397,7 +374,6 @@ def c1_gap_register() -> Result:
                f"a neighbour cell, a global example and evidence")
 
 
-# ==================================================================== audit (D)
 def d1_ledger_chain() -> Result:
     from chakravyuh.audit.ledger import verify
     runs = sorted(Path("runs").rglob("*.jsonl"))
@@ -452,7 +428,6 @@ def d2_trace_fields() -> Result:
                         "per call under the LLM tier")
 
 
-# =========================================================== ITU alignment (E)
 def e1_y3172() -> Result:
     for path in (Path("docs/y3172_map.md"), Path("docs/y3172_map.md")):
         if path.exists():
@@ -510,8 +485,6 @@ def e3_readme_perspectives() -> Result:
 def _corrections() -> Result:
     """§0's corrections must hold in the repo's own files, not just in the spec."""
     bad: list[str] = []
-    # The spec files quote the corrections themselves, and this script contains the detector
-    # strings; scanning either would make the check fail on its own evidence.
     skip = {"CHAKRAVYUH_RUBRIC_SHOWCASE.md", "CHAKRAVYUH_IMPLEMENTATION.md",
             "CHAKRAVYUH_REAL_DATA.md", "rubric_audit.py"}
     for path in list(ROOT.rglob("*.py")) + list(ROOT.rglob("*.md")) + list(ROOT.rglob("*.yaml")):
@@ -519,8 +492,6 @@ def _corrections() -> Result:
         if path.name in skip or rel.startswith((".venv", "out/", "docs/rubric_status")):
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        # A claim that DPDP's disaster ground is 7(g) is wrong; mentioning 7(g) as the epidemics
-        # ground is correct, so the test is whether 7(g) is tied to disaster.
         for line in text.splitlines():
             low = line.lower()
             if "7(g)" in line and "disaster" in low and "not 7(g)" not in low \
@@ -575,7 +546,6 @@ def g3_no_overclaim() -> Result:
     import re as _re
     pattern = _re.compile(r"(itu[- ]?(certified|approved|endorsed))|(certified\s+(by\s+)?(the\s+)?itu)"
                           r"|(compliant\s+with\s+(itu|y\.3172|x\.1303))", _re.I)
-    # A line that forbids the phrase necessarily contains it; that is the opposite of a claim.
     prohibition = _re.compile(
         r"❌|\bmust not\b|\bnever (say|claim|write)\b|\bdo not (say|claim|write)\b|\bforbid", _re.I)
     skip = {"CHAKRAVYUH_REPO_STANDARD.md", "CHAKRAVYUH_RUBRIC_SHOWCASE.md",
@@ -670,7 +640,7 @@ def main() -> int:
     for check in checks:
         try:
             check.result = check.fn()
-        except Exception as exc:                 # a check that crashes is a failing check
+        except Exception as exc:
             check.result = _no(f"check raised {type(exc).__name__}: {exc}")
         r = check.result
         mark = {PASS: "PASS  ", FAIL: "FAIL  ", WAIVED: "WAIVE "}[r.status]
@@ -732,12 +702,6 @@ def _report(checks: list[Check], n_pass: int, n_waive: int, n_fail: int) -> str:
         lines.append("")
     return "\n".join(lines)
 
-
-
-
-# ============================================================ HTML scorecard
-# One self-contained file: no CDN, no fonts, no fetch. It has to open from file:// on a laptop
-# with no network, because that is the condition a demo actually fails under.
 
 _CSS = """
 :root{--bg:#faf8f5;--card:#fff;--ink:#1a1a1a;--dim:#6b6b6b;--line:#e4e0da;

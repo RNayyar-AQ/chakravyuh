@@ -57,12 +57,7 @@ def test_cross_border_gaps_are_phrased_domain_first(scenario, packs, tmp_path):
 
 
 def test_gap_register_csv_has_neighbour_and_global_columns(scenario, packs, tmp_path):
-    """The register must name an Indian instance, a neighbour and a global example per row.
-
-    Column names are the rubric's §4 names (`neighbour_instance`, not `neighbour_example`),
-    and the check is on the header's order as well as its contents, because the §4 contract is
-    that the required columns come first.
-    """
+    """The register must name an Indian instance, a neighbour and a global example per row."""
     results = run_across_packs(scenario, packs, seed=0, runs_dir=str(tmp_path))
     findings = gap_findings_across(results, packs, scenario)
     out = write_register(findings, packs, out_path=tmp_path / "gap_register.csv")
@@ -70,7 +65,6 @@ def test_gap_register_csv_has_neighbour_and_global_columns(scenario, packs, tmp_
     assert list(rows[0].keys())[: len(RUBRIC_COLUMNS)] == RUBRIC_COLUMNS
     text = out.read_text(encoding="utf-8")
     assert "Bangladesh" in text and "United States" in text
-    # Four simulation rows from this scenario plus the document-derived rows.
     assert len(rows) >= 9
     assert {"simulation", "document"} == {r["source"] for r in rows}
 
@@ -80,8 +74,6 @@ def test_passes_under_is_computed_not_asserted(scenario, packs, tmp_path):
     assert passes_under(results, "P2") == ["bangladesh", "fcc_mdri"]
     assert passes_under(results, "P4") == ["bangladesh", "fcc_mdri"]
 
-
-# ------------------------------------------------------------------ properties
 
 def test_p1_scope_covers_a_suspended_unaffected_metro():
     """A suspension of a metro hosting the response is in P1's scope, not out of it."""
@@ -136,7 +128,6 @@ def test_margins_are_finite_and_in_minutes_when_an_area_is_never_served():
     w.first_warning_by_area = {"A": 0}
     w.landfall_t = 60
     w.t_minutes = 720
-    # P4 scopes to areas that actually lost service, so impair one or it is not applicable.
     next(iter(w.cells.values())).up = False
     props = {p.property_id: p for p in check_all(w, Thresholds())}
     for pid in ("P3", "P4"):

@@ -1,14 +1,4 @@
-"""Repository shape and the HTTP tier. Y.3172 node: SINK.
-
-Two promises are guarded here.
-
-LAYOUT  Everything executable lives under `app/`. `data/`, `docs/` and `tests/` sit beside it
-        because they are, in order, what goes in, what a person reads, and the proof. A stray
-        package at the root is how a repository starts drifting back into a pile.
-
-API     The HTTP tier is read-only. It may serve artefacts and re-verify hash chains; it may not
-        decide anything, and nothing deterministic may depend on it being up.
-"""
+"""Repository shape and the HTTP tier. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import ast
@@ -19,10 +9,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 APP = ROOT / "app"
 
-# Directories allowed at the repository root. Everything else belongs under app/.
 ALLOWED_ROOT_DIRS = {"app", "data", "docs", "tests", ".github", ".git"}
 
-# Files allowed at the root: packaging, licensing and the entry point. Nothing else.
 ALLOWED_ROOT_FILES = {
     "README.md", "SUBMISSION.md", "LICENSE", "NOTICE", "CITATION.cff",
     "pyproject.toml", "requirements.lock", "Makefile", ".gitignore", ".env.example",
@@ -63,11 +51,7 @@ def test_one_command_runs_both_halves():
 
 
 def test_api_is_read_only():
-    """No endpoint may run the simulator, write a ledger or shell out.
-
-    The API serving a stale artefact is a nuisance. The API mutating one would make every number
-    on the site unattributable, because the ledger would no longer be the only writer.
-    """
+    """No endpoint may run the simulator, write a ledger or shell out."""
     source = (APP / "api" / "main.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
 

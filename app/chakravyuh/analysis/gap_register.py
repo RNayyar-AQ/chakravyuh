@@ -1,22 +1,4 @@
-"""Write gap_register.csv and gap_register.md -- the gap-identification artefact. Y.3172 node: SINK.
-
-Two kinds of row land in the same register, and the register says which is which:
-
-  source=simulation  A property failed on a replayable run. The row carries the run id, the
-                     signed margin, and the packs under which the same seed passes. These are
-                     the rows nobody could have written in advance.
-  source=document    The gap is visible in the instruments themselves and would never surface in
-                     a cyclone run -- a plan that was never operationalised, an SOP with no
-                     numeric deadline, a standards family that authenticates calling identity but
-                     not emergency orders. Defined in data/gaps/document_gaps.yaml.
-
-`confidence` is COMPUTED, never written by hand: a row is `certain` only when every clause it
-cites carries the instrument's own words from a primary source, and `likely` as soon as one of
-them is a summary. That makes the column a live readout of the knowledge base's provenance
-rather than an assertion about our own confidence. A row resting on a NEGATIVE finding -- a claim
-that an instrument is silent -- can never be `certain` without the full primary text, because a
-summary cannot establish an absence.
-"""
+"""Write gap_register.csv and gap_register.md -- the gap-identification artefact. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import csv
@@ -32,8 +14,6 @@ from ..y3172 import node
 OUT_DIR = Path("outputs")
 DOCUMENT_GAPS = Path("data/gaps/document_gaps.yaml")
 
-# The rubric's required column set, in its order, first. Everything after `itu_hook` is ours:
-# a superset keeps the required contract readable while losing none of the replay detail.
 RUBRIC_COLUMNS = [
     "gap_id", "domain_gap", "india_instance", "neighbour_instance", "global_example",
     "evidence", "gap_type", "confidence", "itu_hook",
@@ -47,7 +27,6 @@ COLUMNS = RUBRIC_COLUMNS + EXTRA_COLUMNS
 
 VALID_GAP_TYPES = ("policy", "coordination", "execution", "standards")
 
-# How a pack id appears in the register's comparator columns.
 COMPARATOR_LABEL = {
     "bangladesh": "Bangladesh (BTRA 2001 + DM Act 2012 + CPP standing order)",
     "fcc_mdri": "United States (FCC Mandatory Disaster Response Initiative + DIRS)",
@@ -55,11 +34,10 @@ COMPARATOR_LABEL = {
 }
 
 
-# -- confidence -----------------------------------------------------------------
 def _unverified(clause_ids: Iterable[str], store: Optional[ClauseStore]) -> list[str]:
     """Cited clause ids whose record is a summary rather than the instrument's own words."""
     if store is None:
-        return list(clause_ids)        # no store to check against: assume nothing is verified
+        return list(clause_ids)
     out: list[str] = []
     for cid in clause_ids:
         clause = store.try_get(cid)
@@ -70,12 +48,7 @@ def _unverified(clause_ids: Iterable[str], store: Optional[ClauseStore]) -> list
 
 def confidence_for(clause_ids: Sequence[str], store: Optional[ClauseStore],
                    negative_finding: bool = False) -> tuple[str, list[str]]:
-    """`(confidence, unverified_clause_ids)`. `certain` requires primary text for every citation.
-
-    A negative finding is held to the same bar and then one step further: it is downgraded even
-    when every cited record is verified, unless the verified text is quotable, because a record
-    carrying page-break artefacts cannot be relied on to show that something is ABSENT.
-    """
+    """`(confidence, unverified_clause_ids)`. `certain` requires primary text for every citation."""
     unverified = _unverified(clause_ids, store)
     if unverified or not clause_ids:
         return "likely", unverified
@@ -87,7 +60,6 @@ def confidence_for(clause_ids: Sequence[str], store: Optional[ClauseStore],
     return "certain", []
 
 
-# -- simulation-derived rows ----------------------------------------------------
 def _comparator_cell(pack_id: str, findings_by_pack: Mapping[str, Sequence[GapFinding]],
                      prop: str, passes: Sequence[str]) -> str:
     label = COMPARATOR_LABEL.get(pack_id, pack_id)
@@ -135,8 +107,6 @@ def _simulation_rows(findings_by_pack: Mapping[str, Sequence[GapFinding]], base_
     return rows
 
 
-# The ITU work item each property's failure points at. Kept next to the properties rather than in
-# the YAML because these rows are generated from runs, not authored.
 ITU_HOOK_BY_PROPERTY = {
     "P1": "ITU-T E.106 International Emergency Preference Scheme",
     "P2": "ITU-T SG11 (Q.3057/Q.3062/Q.3063); ITU-T SG17 (X.509)",
@@ -145,7 +115,6 @@ ITU_HOOK_BY_PROPERTY = {
 }
 
 
-# -- document-derived rows ------------------------------------------------------
 def load_document_gaps(path: str | Path = DOCUMENT_GAPS) -> list[dict]:
     """Read data/gaps/document_gaps.yaml, validating gap_type and required keys."""
     path = Path(path)
@@ -174,8 +143,6 @@ def _document_rows(gaps: Sequence[dict], store: Optional[ClauseStore],
         neighbour = list(gap.get("neighbour_clause_ids") or [])
         global_ = list(gap.get("global_clause_ids") or [])
         negative = bool(gap.get("negative_finding"))
-        # Confidence rests on the India citations: that is the claim the register makes about
-        # the jurisdiction under study. Comparator citations are context, not the finding.
         conf, unverified = confidence_for(india, store, negative_finding=negative)
 
         prop = gap.get("reproduced_by_property") or ""
@@ -219,7 +186,6 @@ def _instance_cell(clause_ids: Sequence[str], note: str, store: Optional[ClauseS
     return f"{note} [{' '.join(marked)}]".strip()
 
 
-# -- output ---------------------------------------------------------------------
 @node("SINK")
 def write_register(findings_by_pack: Mapping[str, Sequence[GapFinding]],
                    packs: Mapping[str, PolicyPack], base_pack: str = "india_current",
@@ -260,11 +226,7 @@ def register_markdown(findings_by_pack: Mapping[str, Sequence[GapFinding]],
 
 @node("SINK")
 def register_doc(csv_path: str | Path = OUT_DIR / "gap_register.csv") -> str:
-    """Render the full register as Markdown, read back from the CSV it was written to.
-
-    Reading the CSV rather than the findings is deliberate: the document and the CSV cannot
-    disagree, because there is only one source and no hand-editing step between them.
-    """
+    """Render the full register as Markdown, read back from the CSV it was written to."""
     rows = list(csv.DictReader(Path(csv_path).open(encoding="utf-8")))
     sim = [r for r in rows if r["source"] == "simulation"]
     doc = [r for r in rows if r["source"] == "document"]

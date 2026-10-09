@@ -1,17 +1,4 @@
-"""Classify a property violation as policy | coordination | execution. Y.3172 node: SINK.
-
-Deterministic and defensible (spec §5.6). For each violated property, identify the action that
-would have prevented it, then walk the run backwards:
-
-  policy gap        no rule in the pack permits or obliges that action for anyone
-                    (or a rule positively prohibits it)
-  coordination gap  a rule permits it, but the empowered role never received the fact it needed,
-                    or received it too late to act within the threshold
-  execution gap     the rule permitted it and the fact arrived in time, and the agent still
-                    did not act
-
-Findings are phrased domain-first, country as instance (brief note, §5.6).
-"""
+"""Classify a property violation as policy | coordination | execution. Y.3172 node: SINK."""
 from __future__ import annotations
 
 from typing import Optional
@@ -22,7 +9,6 @@ from ..y3172 import node
 
 DOMAIN = "Emergency telecom"
 
-# The action that would have prevented each property's violation, and the roles that could hold it.
 PREVENTING_ACTION = {
     "P1": ("PRIORITISE_RELIEF_SLICE", ("tsp_network",)),
     "P2": ("SUSPEND_SERVICE", ("tsp_network",)),
@@ -30,7 +16,6 @@ PREVENTING_ACTION = {
     "P4": ("ENABLE_ROAMING", ("tsp_network", "neighbour_authority")),
 }
 
-# The fact a role needs before it can lawfully act, per property.
 ENABLING_FACTS = {
     "P1": ("ORDER", "LANDFALL", "DAMAGE_REPORT", "DISASTER_DECLARED"),
     "P2": ("SUSPICIOUS_ORDER", "INCIDENT_REPORT"),
@@ -84,7 +69,6 @@ def _classify_p2(result, pack, world, gm, run_id) -> GapFinding:
     instance = f"India ({', '.join(areas)})" if areas else "India"
 
     if not auth_rules:
-        # No rule anywhere in the pack conditions the operator's compliance on authentication.
         acting = _enabling_rules(pack, action, roles)
         return _finding(
             "P2", "policy",
@@ -98,7 +82,6 @@ def _classify_p2(result, pack, world, gm, run_id) -> GapFinding:
              "rules_governing_compliance": [r.rule_id for r in acting],
              "rules_requiring_authentication": []})
 
-    # The duty exists. Did the operator have what it needed to detect the forgery?
     view = gm.views.get("tsp_network")
     saw_flag = any(view.seen(f, world.t_minutes) for f in ENABLING_FACTS["P2"]) if view else False
     if not saw_flag:
@@ -162,7 +145,6 @@ def _classify_timing(result, pack, world, gm, scenario, run_id) -> GapFinding:
     per_area = result.detail.get("per_area", {})
     threshold = result.detail.get("threshold_min")
 
-    # Focus on the worst area: one never served if any, else the latest.
     if missed:
         focus = sorted(missed)[0]
     else:
@@ -173,14 +155,6 @@ def _classify_timing(result, pack, world, gm, scenario, run_id) -> GapFinding:
     enabling = _enabling_rules(pack, action, roles)
     prohibiting = _prohibiting_rules(pack, action, roles)
 
-    # Which of the empowered roles could lawfully have served THIS area?
-    #
-    # Two filters. The first is the rule's own area scope. The second is jurisdictional reach,
-    # which is a property of the ACTOR and not of any condition: a domestic authority or operator
-    # cannot lawfully alert or reconfigure a network inside another State's territory, whatever
-    # its domestic powers say. Only the neighbouring authority can act on its own side. Without
-    # this filter the classifier blames the Indian operator for not roaming Bangladeshi cells,
-    # which would report a structural legal gap as an agent's failure to act.
     serviceable = []
     for r in enabling:
         scope = r.conditions.get("area_in")
@@ -213,8 +187,6 @@ def _classify_timing(result, pack, world, gm, scenario, run_id) -> GapFinding:
                                  "prohibited_by": [r.rule_id for r in blocked_here],
                                  "enabling_rules": [r.rule_id for r in enabling]})
 
-    # The power exists for this area. Did the empowered role get a fact ABOUT THIS AREA in time?
-    # Area-blind arrival would count a warning about Odisha as notice about Khulna.
     arrivals: dict[str, Optional[int]] = {}
     for role in sorted({r.actor_role for r in serviceable}):
         view = gm.views.get(role)

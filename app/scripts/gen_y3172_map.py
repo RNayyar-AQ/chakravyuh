@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Generate y3172_map.md from the @node decorators in the source. Y.3172 node: (meta).
-
-Spec §8.1: the standards-alignment artefact is generated, not hand-typed, so it cannot drift from
-the code. Importing every module runs the decorators, which populate the registry.
-"""
+"""Generate y3172_map.md from the @node decorators in the source. Y.3172 node: (meta)."""
 from __future__ import annotations
 
 import importlib
@@ -18,7 +14,6 @@ from chakravyuh.y3172 import REGISTRY, render_map
 
 OUT = Path("docs/y3172_map.md")
 
-# Modules whose imports need optional dependencies; skipped with a note rather than crashing.
 OPTIONAL = {"chakravyuh.fuzz.machine": "hypothesis"}
 
 

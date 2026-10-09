@@ -1,9 +1,4 @@
-"""The web UI must render the pipeline's numbers, never its own. Y.3172 node: SINK.
-
-A frontend that recomputes anything is a second source of truth, and the second one has no tests.
-These tests pin the contract in both directions: the exporter copies values faithfully, and the
-UI has no way to invent one.
-"""
+"""The web UI must render the pipeline's numbers, never its own. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import csv
@@ -87,8 +82,6 @@ def test_bundle_is_json_serialisable_and_sorted():
     assert raw == json.dumps(json.loads(raw), indent=1, sort_keys=True)
 
 
-# ----------------------------------------------------------------- the UI's own guarantees
-
 def _web_sources() -> list[Path]:
     if not (WEB / "app").exists():
         return []
@@ -134,6 +127,5 @@ def test_exporter_reruns_cleanly(tmp_path):
     assert proc.returncode == 0, proc.stderr
     after = BUNDLE.read_bytes()
     before_doc, after_doc = json.loads(before), json.loads(after)
-    # `generated_utc` is a timestamp by design; everything else must be identical.
     before_doc.pop("generated_utc"), after_doc.pop("generated_utc")
     assert before_doc == after_doc

@@ -22,8 +22,6 @@ def _script(name: str, *args: str):
                           cwd=ROOT, capture_output=True, text=True, timeout=600)
 
 
-# ----------------------------------------------------------------------- trace
-
 def test_prompt_is_stored_by_hash_and_recoverable(tmp_path):
     prompt = "You are the competent authority. Decide."
     sha = store_prompt(prompt, tmp_path)
@@ -43,8 +41,6 @@ def test_llm_trace_payload_carries_everything_the_rubric_asks_for(tmp_path):
         assert key in payload
     assert load_prompt(payload["prompt_sha256"], tmp_path) == "p"
 
-
-# ---------------------------------------------------------------------- ledger
 
 def test_ledger_contains_every_required_entry_kind(scenario, india_pack, tmp_path):
     r = run(scenario, india_pack, seed=0, ledger_path=tmp_path / "l.jsonl")
@@ -72,8 +68,6 @@ def test_run_header_and_footer_frame_the_ledger(scenario, india_pack, tmp_path):
     assert footer and "latency_by_role" in footer[-1].payload
 
 
-# --------------------------------------------------------------------- y3172
-
 def test_y3172_registry_covers_every_node():
     import chakravyuh.kb.ingest  # noqa: F401
     import chakravyuh.policy.engine  # noqa: F401
@@ -89,8 +83,6 @@ def test_y3172_map_is_generated_from_the_code():
     assert "`P`" in text and "`SINK`" in text
 
 
-# ------------------------------------------------------------------- scripts
-
 @pytest.mark.slow
 def test_build_kb_script_runs_and_writes_report():
     res = _script("build_kb.py", "--no-chroma")
@@ -99,11 +91,6 @@ def test_build_kb_script_runs_and_writes_report():
     assert report.exists()
     body = report.read_text(encoding="utf-8")
     assert "do not edit" in body
-    # The report must disclose PROVENANCE (where the clauses came from), not merely that they are
-    # unverified. "Unverified" invites "so transcribe it"; the real issue is that the text is model
-    # output and the URLs were recalled.
-    # The report must disclose PROVENANCE per record class, and must keep the model-written
-    # share visible as a number now that the corpus is mixed.
     assert "PROVENANCE" in body
     assert "gazette_pdf" in body and "model_written" in body
     assert "source_pdf_sha256" in body
@@ -121,7 +108,6 @@ def test_gen_y3172_map_script_writes_the_map():
 def test_run_demo_script_produces_register_and_report():
     res = _script("run_demo.py")
     assert res.returncode == 0, res.stderr
-    # Documents a judge reads land in docs/; machine-readable data lands in outputs/.
     for name in ("gap_register.md", "demo_report.md"):
         assert (ROOT / "docs" / name).exists(), name
     for name in ("gap_register.csv", "comparison.json"):
@@ -189,13 +175,10 @@ def test_dead_urls_are_reported_against_the_records_that_cite_them():
     if not saved.exists():
         pytest.skip("run app/scripts/check_sources.py once with network")
     data = json.loads(saved.read_text(encoding="utf-8"))
-    # A timeout is not a dead URL (see app/scripts/check_sources.py), so it is excluded here too.
     dead_states = {"dead", "unreachable"}
     dead_urls = {u for u, v in data["per_url"].items() if v["state"] in dead_states}
     dead_recs = [cid for state, ids in data["records_by_state"].items()
                  if state in dead_states for cid in ids]
-    # Not asserting zero: dead URLs are a known, tracked defect. Asserting they are ATTRIBUTED,
-    # so no dead link can sit in the corpus without a named list of affected clause records.
     if dead_urls:
         assert dead_recs, "dead URLs found but no clause records attributed to them"
         body = (ROOT / "docs/source_check.md").read_text(encoding="utf-8")

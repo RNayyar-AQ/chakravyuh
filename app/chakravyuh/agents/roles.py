@@ -1,9 +1,4 @@
-"""Role definitions: mandate, powers, inbox filter, channel latency, prompt. Y.3172 node: M.
-
-Six roles (spec §5.2). Powers come from the *pack*, not from here -- this file carries what the
-role optimises and what it can perceive. Keeping the two separate is what lets the same agent
-behave differently under three different legal regimes without changing any agent code.
-"""
+"""Role definitions: mandate, powers, inbox filter, channel latency, prompt. Y.3172 node: M."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -24,8 +19,8 @@ class Role:
     name: str
     analogue: str
     mandate: str
-    inbox_types: tuple[str, ...]         # event types this role can ever receive
-    priority: int                        # GM tie-break order within a tick
+    inbox_types: tuple[str, ...]
+    priority: int
     channel_latency_min: int = 0
     boundaries: str = ""
 
@@ -112,8 +107,8 @@ ROLES: dict[str, Role] = {
 class Inbox:
     """What one role has received, in arrival order. The agent's entire world."""
     role_id: str
-    items: list[dict] = field(default_factory=list)   # {"arrives_t", "event" (redacted)}
-    raw_events: list = field(default_factory=list)    # full Event objects, for the GM/engine only
+    items: list[dict] = field(default_factory=list)
+    raw_events: list = field(default_factory=list)
 
     def add(self, delivery) -> None:
         self.items.append({"arrives_t": delivery.arrives_t, "event": delivery.event.redact()})

@@ -1,9 +1,4 @@
-"""YAML policy pack -> validated Rule objects. Y.3172 node: PP.
-
-Every rule must cite clause_ids that (a) exist in the clause store and (b) hash-match the
-recorded verbatim text. A pack that cites a clause the KB does not hold fails to compile --
-that is the mechanism that stops the simulator from running on invented law.
-"""
+"""YAML policy pack -> validated Rule objects. Y.3172 node: PP."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -17,20 +12,18 @@ from ..kb.clause_store import ClauseStore, DEFAULT_DB
 
 PACKS_DIR = Path("data/packs")
 
-# Condition keys the engine understands. The compiler rejects anything else, so a typo in a
-# pack is a compile error rather than a silently-never-true condition.
 KNOWN_CONDITIONS = {
-    "event_seen",                 # str | list[str]: actor received an event of this type
-    "event_seen_authentic",       # str: actor received an event of this type that is genuine
-    "area_in",                    # "affected" | "declared" | "cross_border" | "any"
-    "after_min",                  # int: only at/after this sim minute
-    "before_min",                 # int
-    "within_min_of",              # {"event_type": str, "minutes": int}
-    "disaster_declared",          # bool
-    "order_in_force",             # str: an order of this action_type is active
-    "param_max",                  # {param_name: int} upper bound on a numeric param
-    "param_required",             # list[str] params that must be present and non-empty
-    "param_in",                   # {param_name: [allowed values]}
+    "event_seen",
+    "event_seen_authentic",
+    "area_in",
+    "after_min",
+    "before_min",
+    "within_min_of",
+    "disaster_declared",
+    "order_in_force",
+    "param_max",
+    "param_required",
+    "param_in",
 }
 
 KNOWN_EFFECTS = {"permit", "oblige", "prohibit"}
@@ -38,8 +31,6 @@ KNOWN_EFFECTS = {"permit", "oblige", "prohibit"}
 
 class PackCompileError(ValueError):
     """A pack is not fit to run: unknown clause, hash drift, bad condition, duplicate rule id."""
-
-
 @node("PP")
 def compile_pack(path: str | Path, store: Optional[ClauseStore] = None,
                  strict_clauses: bool = True) -> PolicyPack:

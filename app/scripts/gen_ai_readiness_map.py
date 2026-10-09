@@ -1,21 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs/ai_readiness_map.md from ITU's own dimensions.json. Y.3172 node: SINK.
-
-Every dimension label, short name, factor and metric count in the output is READ from
-`data/sources/INTL/02_ITU_AI_Readiness_dimensions.json`, which is ITU's file fetched from their
-repository (see data/sources/INTL/PROVENANCE.md). Nothing here retypes an ITU label.
-
-That is not pedantry. An earlier draft of our own proposal had "D1 = Open Source", and the file
-says `"id": 1, "name": "Data/Model Marketplace"` -- open source is a *factor* (`opensource`),
-not a dimension. Generating the map from the file makes that class of error impossible: if ITU
-renumbers or renames a dimension, the map changes with the file and our claims move with it.
-
-What this script DOES author is the `claim` for each dimension we map to: one sentence saying
-what in this repository addresses it, and the file that shows it. Those are ours and are marked
-as ours. A dimension we do not address is listed as not addressed rather than quietly dropped.
-
-  python app/scripts/gen_ai_readiness_map.py
-"""
+"""Generate docs/ai_readiness_map.md from ITU's own dimensions.json. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import json
@@ -27,11 +11,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 DIMENSIONS = Path("data/sources/INTL/02_ITU_AI_Readiness_dimensions.json")
 OUT = Path("docs/ai_readiness_map.md")
 
-# Our claims, keyed by ITU's dimension id. `rank` is primary | secondary; a dimension absent from
-# this table is reported as "not addressed" with no claim attached to it.
-#
-# Each claim must name a file a reviewer can open. A claim with no artefact behind it is the kind
-# of mapping that reads well and proves nothing, so `evidence` is required, not optional.
 CLAIMS: dict[int, dict[str, str]] = {
     10: {"rank": "primary",
          "claim": "The whole system is a policy simulator: three jurisdictions' instruments are "
@@ -79,8 +58,6 @@ CLAIMS: dict[int, dict[str, str]] = {
          "evidence": "data/clauses/clauses.jsonl, docs/kb_report.md"},
 }
 
-# Dimensions we deliberately do not claim, with the reason. Listed so the map is a complete
-# reading of ITU's framework and not a selection of the ones that flatter us.
 NOT_ADDRESSED: dict[int, str] = {
     5:  "Measures AI's integration into an organisation's workflows. This is a simulator, not a "
         "deployment inside a telecom operator or regulator, so there is no workflow to measure.",

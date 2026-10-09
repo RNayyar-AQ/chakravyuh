@@ -1,19 +1,4 @@
-"""Policy & Legal Adviser: queryable RAG with a hard citation check. Y.3172 node: M.
-
-Scores the rubric's "agent capability" criterion: it can be asked a question mid-scenario and
-must answer with cited clauses (§2).
-
-Two guarantees, both enforced in code rather than asked of the model:
-
-  1. Every cited clause_id must be in the retrieved set AND exist in the clause store. A citation
-     that fails either test is rejected, the question is re-asked once, and if it fails again the
-     answer becomes "insufficient evidence". The model cannot invent a clause and have it stand.
-  2. The adviser never decides legality. It explains; the policy engine decides.
-
-It also runs without any model at all, in `extractive` mode: retrieval returns the clauses and the
-adviser presents them verbatim with no generated prose. That keeps the demo working offline and is
-labelled as extractive everywhere it appears, because quoting is not the same as advising.
-"""
+"""Policy & Legal Adviser: queryable RAG with a hard citation check. Y.3172 node: M."""
 from __future__ import annotations
 
 from typing import Literal, Optional
@@ -74,7 +59,6 @@ class AdviserAnswer(BaseModel):
 @node("M")
 class Adviser:
     """Retrieve -> answer -> verify citations. Holds no powers and proposes no actions."""
-
     role_id = "adviser"
     tier = "adviser"
 
@@ -90,7 +74,6 @@ class Adviser:
         self.use_llm = use_llm
         self.llm_calls = 0
 
-    # -- retrieval ---------------------------------------------------------
     def retrieve(self, question: str) -> list[Hit]:
         return self.retriever.search(question, k=self.k, mode=self.retrieval_mode)
 
@@ -103,7 +86,6 @@ class Adviser:
             lines.append(f"clause_id: {h.clause_id}{status}\n{h.text}\n")
         return "\n".join(lines) if lines else "(no clauses retrieved)"
 
-    # -- answering ---------------------------------------------------------
     @node("M")
     def ask(self, question: str, t: Optional[int] = None, situation: str = "") -> AdviserAnswer:
         """Answer a question with cited clauses. Falls back to extractive when no model is usable."""
@@ -164,7 +146,6 @@ class Adviser:
             cited = raw.get("cited_clause_ids") or []
             cited = [cited] if isinstance(cited, str) else [str(c) for c in cited]
 
-            # THE GATE: a citation must be in the retrieved set and present in the clause store.
             bad = [c for c in cited if c not in allowed or not self.store.exists(c)]
             if self.ledger is not None:
                 self.ledger.append("LLM_TRACE", llm_trace_payload(

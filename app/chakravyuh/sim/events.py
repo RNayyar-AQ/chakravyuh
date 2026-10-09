@@ -1,9 +1,4 @@
-"""Scenario loader + chunked, uneven event release. Y.3172 node: SRC/D.
-
-Mandatory brief item (§5.3): events are sequenced, chunked and released progressively, and the
-SAME fact reaches different agents at different times, incompletely. `visible_to` controls who
-ever learns it; `delay_by_role` controls when. `authentic` is ground truth agents cannot read.
-"""
+"""Scenario loader + chunked, uneven event release. Y.3172 node: SRC/D."""
 from __future__ import annotations
 
 import heapq
@@ -22,10 +17,10 @@ SCENARIOS_DIR = Path("data/scenarios")
 
 class Thresholds(BaseModel):
     """Property thresholds. ILLUSTRATIVE units, stated as such in the report (§5.5)."""
-    t_alert_min: int = 90          # P3: max minutes from first warning to a valid public alert
-    t_roam_min: int = 120          # P4: max minutes from landfall to disaster roaming
-    min_pct_relief_cells: float = 60.0   # P1: min % of affected cells reachable for relief
-    max_forged_executions: int = 0       # P2: executions traced to an inauthentic order
+    t_alert_min: int = 90
+    t_roam_min: int = 120
+    min_pct_relief_cells: float = 60.0
+    max_forged_executions: int = 0
 
 
 class Scenario(BaseModel):
@@ -38,12 +33,7 @@ class Scenario(BaseModel):
     cross_border_areas: list[str] = []
     cells_per_area: dict[str, int] = {}
     local_languages: dict[str, list[str]] = {}
-    # Real wall-clock instant of T+0, with a timezone offset. CAP 1.2 `sent` needs a real
-    # dateTime; deriving it from the epoch keeps a replayed run byte-identical.
     epoch_iso: Optional[str] = None
-    # CAP 1.2 area shapes, per area id. Declare one ONLY where a cited source gives it:
-    # a polygon we drew ourselves would be a fabricated district boundary, and CAP makes
-    # both elements optional, so the honest envelope simply omits them.
     area_polygons: dict[str, str] = {}
     area_circles: dict[str, str] = {}
     channel_latency_min: dict[str, int] = {}
@@ -79,7 +69,6 @@ def load_scenario(path: str | Path) -> Scenario:
 @node("D")
 class EventQueue:
     """Priority queue of events by release time. Ties break on event_id, so release is total-ordered."""
-
     def __init__(self, events: Iterable[Event] = ()):
         self._heap: list[tuple[int, str, Event]] = []
         self._counter = 0

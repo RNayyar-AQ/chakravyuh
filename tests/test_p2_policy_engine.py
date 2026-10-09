@@ -31,7 +31,7 @@ def _imports_of(module: str) -> set[str]:
         if isinstance(node, ast.Import):
             out.update(a.name for a in node.names if a.name.startswith("chakravyuh"))
         elif isinstance(node, ast.ImportFrom):
-            if node.level:                      # relative: resolve against this module's package
+            if node.level:
                 base = parts[: len(parts) - node.level]
                 target = ".".join(base + ([node.module] if node.module else []))
             else:
@@ -39,7 +39,6 @@ def _imports_of(module: str) -> set[str]:
             if not target.startswith("chakravyuh"):
                 continue
             out.add(target)
-            # `from x.y import z` may name a submodule rather than an attribute.
             out.update(f"{target}.{a.name}" for a in node.names)
     return out
 
@@ -73,9 +72,6 @@ def test_whole_policy_package_is_llm_free():
         assert not any(m.startswith("chakravyuh.llm") for m in reachable), module
 
 
-# The engine's own imports are checked against an allowlist rather than a list of model vendors.
-# Naming vendors only catches the ones someone remembered; this catches every import that was not
-# deliberately permitted. tests/test_p10_repo_standard.py applies the same rule transitively.
 ENGINE_ALLOWED_IMPORTS = frozenset({"pydantic", "chakravyuh"})
 
 
@@ -93,9 +89,6 @@ def test_engine_imports_nothing_outside_the_allowlist():
     assert not offending, f"engine imports {offending}, which are not on the allowlist"
 
 
-# Model-client handles that must never appear in the P node's executable code. Checked against
-# tokens, not raw text: the engine's docstring states this very constraint, and a plain substring
-# scan would read the rule as a breach of itself.
 FORBIDDEN_NAMES = frozenset({"LLMClient", "litellm", "Adviser"})
 
 
@@ -171,8 +164,6 @@ def test_all_shipped_packs_compile(packs):
         assert pack.rules
 
 
-# ------------------------------------------------------------------ decisions
-
 def _world():
     w = build_world(["A", "B"], {"A": 10, "B": 10}, {"A": ["bn"]}, cross_border_areas=["B"])
     w.affected_areas = ["A"]
@@ -186,7 +177,6 @@ def _proposal(role: str, action: str, **params) -> Proposal:
 
 
 def test_ultra_vires_is_blocked(india_pack):
-    # The alerting authority has no power to suspend service under any pack.
     v = evaluate(_proposal("sdma_alerts", "SUSPEND_SERVICE", area="A"), _world(), india_pack)
     assert v.decision is Decision.BLOCK
     assert v.explanation.startswith("ultra_vires")

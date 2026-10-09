@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Policy fuzzing campaign: Hypothesis -> minimal failures -> failure cards. Y.3172: M -> SINK.
-
-  python app/scripts/run_fuzz.py                        # all packs, 300 examples each
-  python app/scripts/run_fuzz.py --max-examples 50
-  python app/scripts/run_fuzz.py --pack fcc_mdri
-  python app/scripts/run_fuzz.py --replay F-P3-ab12cd34 # re-run one saved failure card
-
-Fuzzing asserts only the properties a pack ALREADY passes on the unmutated scenario, so it searches
-for NEW failures instead of rediscovering the baseline ones the gap register already reports. A
-pack that fails everything at baseline has nothing to fuzz, and the report says so.
-
-Agents are rule twins: thousands of runs, zero tokens, bit-identical replay.
-"""
+"""Policy fuzzing campaign: Hypothesis -> minimal failures -> failure cards. Y.3172: M -> SINK."""
 from __future__ import annotations
 
 import argparse
@@ -61,10 +49,9 @@ def fuzz_pack(scenario, pack, packs, max_examples: int, steps: int, runs_dir: st
     result = unittest.TextTestRunner(verbosity=0, stream=io.StringIO()).run(
         unittest.TestLoader().loadTestsFromTestCase(TC))
     row["wall_seconds"] = round(time.perf_counter() - started, 2)
-    row["runs_completed"] = len(machine.CONFIG["failures"]) + max_examples  # lower bound
+    row["runs_completed"] = len(machine.CONFIG["failures"]) + max_examples
     row["hypothesis_found_counterexample"] = bool(result.failures or result.errors)
 
-    # The shortest mutation list per property is Hypothesis's shrunk case for that property.
     shortest: dict[str, dict] = {}
     for f in machine.CONFIG["failures"]:
         pid = f["property_id"]

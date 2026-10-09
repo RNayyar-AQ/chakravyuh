@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
-"""Export the head of a run ledger as a standalone, self-verifying audit sample. Y.3172 node: SINK.
-
-Why a prefix and not a selection. A hash-chained ledger is verifiable from its first entry
-forward, so the first N lines are themselves a valid chain and `verify_ledger.py` accepts the
-sample on its own. A hand-picked subset of interesting entries would NOT verify -- the chain
-would show gaps -- and a reviewer would have to take our word for it. The prefix is the only
-excerpt that keeps the guarantee it is meant to demonstrate.
-
-  python app/scripts/export_audit_sample.py                     # default run, first 50 entries
-  python app/scripts/export_audit_sample.py --n 200 --run runs/....jsonl
-"""
+"""Export the head of a run ledger as a standalone, self-verifying audit sample. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import argparse

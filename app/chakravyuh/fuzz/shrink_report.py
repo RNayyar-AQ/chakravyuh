@@ -1,10 +1,4 @@
-"""Minimal failing case -> FailureCard. Y.3172 node: SINK.
-
-Hypothesis shrinks a failure to a minimal mutation sequence; this module turns that into the
-artefact the demo shows and the report cites: a card carrying the seed, the mutation list, the
-violated property with its margin, the gap class, the responsible clause IDs, which packs survive
-the same seed, and a replay command that actually reproduces it.
-"""
+"""Minimal failing case -> FailureCard. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import hashlib
@@ -34,11 +28,7 @@ def failure_id(pack_id: str, property_id: str, mutations: Sequence[dict]) -> str
 def build_card(base: Scenario, packs: Mapping[str, PolicyPack], pack_id: str,
                property_id: str, mutations: Sequence[dict], seed: int = 0,
                runs_dir: str = "runs/failures") -> Optional[FailureCard]:
-    """Re-run the minimal case, classify it, compare across packs, return the card.
-
-    Returns None if the minimal case does not actually reproduce the failure -- a card that does
-    not replay is worse than no card, so it is dropped rather than reported.
-    """
+    """Re-run the minimal case, classify it, compare across packs, return the card."""
     mutated = apply_mutations(base, list(mutations))
     pack = packs[pack_id]
     fid = failure_id(pack_id, property_id, mutations)
@@ -47,7 +37,7 @@ def build_card(base: Scenario, packs: Mapping[str, PolicyPack], pack_id: str,
                  run_suffix=fid)
     prop = next((p for p in result.properties if p.property_id == property_id), None)
     if prop is None or prop.passed:
-        return None   # did not reproduce
+        return None
 
     ctx = context_for(result)
     finding = classify(prop, pack, ctx["world"], ctx["gm"], mutated, result.run_id)

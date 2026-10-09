@@ -1,16 +1,4 @@
-"""Generic role-bound LLM agent returning typed JSON. Y.3172 node: M.
-
-Delegation is explicit (§5.2): every prompt carries an objective, an output schema, the
-allowed actions, and explicit boundaries ("you cannot see X; if unsure, ASK").
-
-The agent PROPOSES ONLY. It cannot change the world, and it is not asked whether its action is
-legal -- the policy engine decides that. An LLM proposal outside the role's powers is not
-filtered here: it goes to the Game Master, which BLOCKs it as `ultra_vires` and logs it. A
-filtered-out overreach would be a finding destroyed; a blocked one is a finding recorded.
-
-Every call writes an LLM_TRACE ledger entry (model, prompt sha, raw output, parsed proposal,
-latency, tokens). The demo runs in replay mode, so the showcase is identical every time.
-"""
+"""Generic role-bound LLM agent returning typed JSON. Y.3172 node: M."""
 from __future__ import annotations
 
 import json
@@ -59,7 +47,6 @@ Propose at most ONE action for this tick. Return only the JSON object."""
 @node("M")
 class LLMAgent:
     """Role-bound LLM agent. Deterministic via the record/replay cache + temperature 0."""
-
     tier = "llm"
 
     def __init__(self, role_id: str, client: Optional[LLMClient] = None,
@@ -70,14 +57,13 @@ class LLMAgent:
         self.client = client or LLMClient()
         self.ids = ids or ProposalIdFactory()
         self.ledger = ledger
-        self.strict = strict          # strict: a replay cache miss aborts the run
+        self.strict = strict
         self.max_actions = max_actions
         self.history: list[str] = []
         self.llm_calls = 0
         self.parse_failures = 0
         self.cache_misses = 0
 
-    # -- prompt ------------------------------------------------------------
     def system_prompt(self, pack: PolicyPack) -> str:
         powers = pack.powers_of(self.role_id)
         rules = [r for r in pack.rules if r.actor_role == self.role_id]
@@ -97,7 +83,6 @@ class LLMAgent:
             t=t, inbox=inbox.as_text(),
             history="\n".join(f"  - {h}" for h in self.history) or "  (none yet)")
 
-    # -- decision ----------------------------------------------------------
     @node("M")
     def observe(self, inbox: Inbox, t: int, pack: PolicyPack) -> list[Proposal]:
         """One LLM call per tick. Returns at most one proposal; NOOP when nothing is new."""
@@ -144,8 +129,6 @@ class LLMAgent:
         params = raw.get("params") if isinstance(raw.get("params"), dict) else {}
         cited = raw.get("cited_rule_ids") or []
         cited = [cited] if isinstance(cited, str) else [str(c) for c in cited]
-        # Attribute the proposal to the facts the agent actually holds, so the GM's authentication
-        # check and the gap classifier have a trigger chain to walk.
         triggers = self._triggers_for(inbox, params.get("area"))
         try:
             return Proposal(
@@ -182,7 +165,7 @@ def build_llm_agents(client: Optional[LLMClient] = None, ledger: Optional[Ledger
                      ids: Optional[ProposalIdFactory] = None, strict: bool = True,
                      rule_fallback_for: tuple[str, ...] = ("adviser",)) -> dict:
     """Six agents. The adviser proposes nothing, so it stays a rule twin (§10 cut line)."""
-    from .rule_agents import TWINS   # local import avoids a cycle at module load
+    from .rule_agents import TWINS
     ids = ids or ProposalIdFactory()
     client = client or LLMClient()
     agents: dict[str, object] = {}

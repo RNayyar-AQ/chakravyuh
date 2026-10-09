@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-"""Build the knowledge base: clause store + chunks + ITU reference Chroma collections.
-
-Y.3172 nodes: SRC -> C. Writes data/clauses/{clauses.jsonl,chunks.jsonl,clauses.sqlite} and
-docs/kb_report.md (spec §9.1).
-
-  python app/scripts/build_kb.py                 # clause store + chunks, Chroma if installed
-  python app/scripts/build_kb.py --no-chroma     # skip the vector index entirely
-"""
+"""Build the knowledge base: clause store + chunks + ITU reference Chroma collections."""
 from __future__ import annotations
 
 import argparse

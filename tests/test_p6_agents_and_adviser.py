@@ -32,7 +32,6 @@ def test_adviser_cites_the_gold_clause(built_kb):
      "US.CFR47.4.17.trigger"),
     ("Q30", "What must states parties do about regulatory barriers to cross-border telecom use?",
      "INTL.TAMPERE1998.art9"),
-    # Against the REAL gazette text now in the store.
     ("Q36", "What may the Central Government take temporary possession of on the occurrence of a "
             "public emergency?", "IN.TA2023.s20.1"),
     ("Q38", "What is the Digital Bharat Nidhi and what fund does it replace?", "IN.TA2023.s24"),
@@ -83,8 +82,6 @@ def test_adviser_falls_back_to_extractive_on_cache_miss(built_kb, tmp_path):
     assert any("extractive" in g for g in ans.gaps)
 
 
-# -------------------------------------------------------------------- agents
-
 def test_all_six_roles_exist_and_satisfy_the_protocol():
     agents = build_rule_agents()
     assert set(agents) == set(ROLES) == {
@@ -107,8 +104,8 @@ def test_llm_agent_prompt_carries_objective_schema_actions_and_boundaries(india_
     assert "Mandate:" in prompt
     assert "You may ONLY propose these actions:" in prompt
     assert "SUSPEND_SERVICE" in prompt and "ASK" in prompt and "NOOP" in prompt
-    assert "cannot verify" in prompt          # the role's boundary
-    assert "cited_rule_ids" in prompt          # the output schema
+    assert "cannot verify" in prompt
+    assert "cited_rule_ids" in prompt
 
 
 def test_llm_agent_raises_on_cache_miss_when_strict(india_pack, tmp_path):

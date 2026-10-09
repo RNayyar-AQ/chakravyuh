@@ -1,8 +1,4 @@
-"""Append-only, hash-chained JSONL ledger. Y.3172 node: SINK.
-
-hash = sha256(prev_hash + canonical_json(payload)). `verify` recomputes the whole chain,
-so editing, reordering, inserting or deleting any line is detectable (§7).
-"""
+"""Append-only, hash-chained JSONL ledger. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import hashlib
@@ -17,7 +13,6 @@ GENESIS = "0" * 64
 
 
 def _entry_hash(prev_hash: str, seq: int, t_minutes: int, kind: str, payload: dict) -> str:
-    # seq/t/kind are inside the hash too, so a line cannot be moved or relabelled undetected.
     material = f"{prev_hash}|{seq}|{t_minutes}|{kind}|{canonical_json(payload)}"
     return hashlib.sha256(material.encode("utf-8")).hexdigest()
 
@@ -25,7 +20,6 @@ def _entry_hash(prev_hash: str, seq: int, t_minutes: int, kind: str, payload: di
 @node("SINK")
 class Ledger:
     """Append-only hash-chained run ledger."""
-
     def __init__(self, path: str | Path, run_id: str = ""):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)

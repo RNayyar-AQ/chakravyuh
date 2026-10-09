@@ -1,9 +1,4 @@
-"""ALL inter-module data models (spec §6). Y.3172 node: SRC (vocabulary shared by every node).
-
-The models in spec §6 are implemented exactly. Two additive extensions are marked
-EXTENSION below; both exist to keep unverified data honestly labelled rather than
-silently presented as verified source text.
-"""
+"""ALL inter-module data models (spec §6). Y.3172 node: SRC (vocabulary shared by every node)."""
 from __future__ import annotations
 
 import hashlib
@@ -29,35 +24,26 @@ def canonical_json(payload: dict) -> str:
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True, default=str)
 
 
-# --------------------------------------------------------------------------- KB
-
 class Clause(BaseModel):
-    clause_id: str            # e.g. "IN.TA2023.s20.2"
-    instrument: str           # "Telecommunications Act 2023"
-    jurisdiction: str         # "IN" | "BD" | "US" | "INTL"
+    clause_id: str
+    instrument: str
+    jurisdiction: str
     section: str
     text_verbatim: str
     source_url: str
-    sha256: str               # of text_verbatim, normalised whitespace
+    sha256: str
     retrieved_at: str
 
-    # ---- EXTENSIONS (not in §6). All exist to keep provenance attached to the text. ----
-    #
-    # verified                 text came from the instrument's own PDF and is clean
-    # verified_with_artifacts  text came from the PDF but a marginal heading is interpolated
-    #                          mid-sentence by a page break; see kb/real_sources.py
-    # unverified_summary       model-written summary, NOT the words of the instrument
     verbatim_status: Literal["verified", "verified_with_artifacts", "unverified_summary"] = \
         "unverified_summary"
 
-    # Chain of custody for gazette-derived text.
-    page: Optional[int] = None                    # page of the source PDF
-    source_pdf_sha256: Optional[str] = None       # hash of the PDF itself: pins the document
-    text_raw: Optional[str] = None                # exactly what pdftotext produced
-    sha256_raw: Optional[str] = None              # hash of text_raw, so cleaning is auditable
+    page: Optional[int] = None
+    source_pdf_sha256: Optional[str] = None
+    text_raw: Optional[str] = None
+    sha256_raw: Optional[str] = None
     pagebreak_artifact: bool = False
-    marginal_note_candidate: Optional[str] = None  # suspected interpolated heading, NOT removed
-    parent_clause_id: Optional[str] = None        # set on derived subsection records
+    marginal_note_candidate: Optional[str] = None
+    parent_clause_id: Optional[str] = None
     provenance: Literal["gazette_pdf", "gazette_pdf_subsection", "secondary_source",
                         "model_written"] = "model_written"
 
@@ -75,21 +61,18 @@ class Clause(BaseModel):
         return self.sha256 == sha256_text(self.text_verbatim)
 
 
-# ----------------------------------------------------------------------- POLICY
-
 class Rule(BaseModel):
     rule_id: str
-    clause_ids: list[str] = []   # must exist in clause store; compiler checks hash
+    clause_ids: list[str] = []
     actor_role: str
     action_type: str
     effect: Literal["permit", "oblige", "prohibit"]
-    conditions: dict = {}        # simple DSL: {"event_seen": "LANDFALL", "area_in": "affected"}
+    conditions: dict = {}
     approval_delay_min: int = 0
     deadline_min: Optional[int] = None
     requires_authenticated_order: bool = False
     reversible: bool = True
 
-    # EXTENSION: human-readable summary shown in agent prompts (§12 wants "rule_id: summary").
     summary: str = ""
 
 
@@ -109,8 +92,6 @@ class PolicyPack(BaseModel):
                        if r.actor_role == actor_role and r.effect in ("permit", "oblige")})
 
 
-# ------------------------------------------------------------------------- SIM
-
 class Event(BaseModel):
     event_id: str
     t_minutes: int
@@ -119,12 +100,8 @@ class Event(BaseModel):
     payload: dict = {}
     visible_to: list[str]
     delay_by_role: dict[str, int] = {}
-    authentic: bool = True          # agents never see this field (see redact())
+    authentic: bool = True
     claimed_issuer: Optional[str] = None
-    # True when this event is our construction rather than something that happened. The real IMD
-    # bulletins and the real landfall are `false`; the per-cell outages, the rumour and the forged
-    # order are `true`. It is a first-class field, not a naming convention, so the UI can grey
-    # them, the report can count them and nobody can mistake the adversarial test for history.
     synthetic: bool = False
 
     def redact(self) -> dict:
@@ -143,14 +120,11 @@ class Proposal(BaseModel):
     proposal_id: str
     t_minutes: int
     actor_role: str
-    action_type: str                 # or "ASK" / "NOOP"
+    action_type: str
     params: dict = {}
     cited_rule_ids: list[str] = []
-    # Clause ids the cited rules rest on. Filled by the Game Master from the compiled pack, NOT
-    # by the agent: an agent may claim a rule, but only the pack decides which law that rule
-    # encodes, and the audit trail has to show law the agent could not have invented.
     cited_clause_ids: list[str] = []
-    reasoning: str                   # stored as CoT trace
+    reasoning: str
     triggered_by_event_ids: list[str] = []
 
 
@@ -168,18 +142,14 @@ class Verdict(BaseModel):
     explanation: str
     mode: Literal["advisory", "blocking"]
 
-    # EXTENSION: in advisory mode a BLOCK still executes (§5.4). The GM needs to know
-    # whether to apply effects without re-deriving the mode rule.
     @property
     def executes(self) -> bool:
         if self.decision is Decision.ALLOW:
             return True
         if self.decision is Decision.BLOCK:
             return self.mode == "advisory"
-        return False   # NEEDS_HUMAN executes only after the human-in-loop gate clears
+        return False
 
-
-# ----------------------------------------------------------------------- AUDIT
 
 LedgerKind = Literal[
     "EVENT", "DELIVERY", "PROPOSAL", "VERDICT", "EFFECT",
@@ -196,14 +166,12 @@ class LedgerEntry(BaseModel):
     payload: dict
 
 
-# -------------------------------------------------------------------- ANALYSIS
-
 class PropertyResult(BaseModel):
     """EXTENSION: §5.5 defines properties with a measured margin; this carries the measurement."""
-    property_id: str          # P1..P4
+    property_id: str
     description: str
     passed: bool
-    margin: float             # signed slack in the property's own illustrative unit
+    margin: float
     unit: str
     detail: dict = {}
 
@@ -213,9 +181,9 @@ class GapFinding(BaseModel):
     gap_id: str
     violated_property: str
     gap_class: Literal["policy", "coordination", "execution"]
-    domain: str                              # "Emergency telecom"
-    statement: str                           # domain-first phrasing
-    instance: str                            # "India-Bangladesh"
+    domain: str
+    statement: str
+    instance: str
     responsible_clause_ids: list[str] = []
     responsible_rule_ids: list[str] = []
     evidence_run_id: str = ""
@@ -231,7 +199,7 @@ class FailureCard(BaseModel):
     margin: float
     gap_class: Literal["policy", "coordination", "execution"]
     responsible_clause_ids: list[str]
-    passes_under_packs: list[str]            # cross-pack comparison
+    passes_under_packs: list[str]
     replay_cmd: str
 
 
@@ -241,7 +209,7 @@ class RunResult(BaseModel):
     pack_id: str
     scenario_id: str
     seed: int
-    agent_tier: str                          # "rule" | "llm" | "jev"
+    agent_tier: str
     ledger_path: str
     ledger_head_hash: str
     properties: list[PropertyResult] = []

@@ -1,43 +1,4 @@
-"""Ingest REAL clause text split from official gazette PDFs. Y.3172 node: C.
-
-PROVENANCE, which is the whole point of this module
----------------------------------------------------
-`data/sources/IN/telecom_act_2023.jsonl` (62 sections) and `.../dpdp_act_2023.jsonl` (44) were
-produced by `app/scripts/build_clauses.py` from the eGazette PDFs that ITU ships in its India dataset.
-Each record carries the page it came from, a SHA-256 of the extracted text, and
-`source_pdf_sha256` -- the hash of the PDF itself. That last field is the chain of custody: it
-pins exactly which document produced this text, whether or not the PDF is still on disk.
-
-These are the only clause records in CHAKRAVYUH whose text is the instrument's own words.
-Everything else in the corpus is still model-written summary and stays marked as such.
-
-GAZETTE ARTIFACTS, and why they are flagged rather than cleaned
---------------------------------------------------------------
-The Gazette prints section headings in the margin. `pdftotext` reads them into the text flow, so
-a page break inside a section leaves this shape:
-
-    ...or relating to any particular subject, brought for
-        Provisions for public emergency or public safety. [PART II—
-    transmission by, or transmitted or received by...
-
-Two kinds of debris result:
-
-  (a) STRUCTURAL MARKERS -- `[PART II—`, `CHAPTER VII ...`, `SEC. 1]`, running heads, marginal
-      statute references like `53 of 2005.`. These are unambiguous and are removed.
-
-  (b) INTERPOLATED MARGINAL HEADINGS -- the section's own title, dropped mid-sentence. These are
-      NOT removed automatically. A heuristic that reads "the capitalised phrase before the marker"
-      is right about two-thirds of the time: it correctly lifts "Provisions for public emergency or
-      public safety." out of s.20, but it also swallows real statutory text such as
-      "Act or the rules made thereunder." and "State Government, or under any statute; or".
-      Mangling the words of a statute at 65% accuracy is worse than leaving a visible artifact, so
-      instead each affected record gets `pagebreak_artifact: True` plus a
-      `marginal_note_candidate`, and `verbatim_status` becomes `verified_with_artifacts`.
-      A human finishing the corpus clears those records one at a time.
-
-`text_raw` and `sha256_raw` always preserve exactly what was extracted from the PDF, so every
-cleaning step is auditable and reversible.
-"""
+"""Ingest REAL clause text split from official gazette PDFs. Y.3172 node: C."""
 from __future__ import annotations
 
 import json
@@ -50,7 +11,6 @@ from ..y3172 import node
 
 DATA_DIR = Path("data/sources/IN")
 
-# The real gazette-derived corpora, and the official source each was built from.
 REAL_SOURCES: tuple[dict, ...] = (
     {"path": DATA_DIR / "telecom_act_2023.jsonl", "instrument_id": "IN.TA2023",
      "expected_sections": 62},
@@ -58,20 +18,17 @@ REAL_SOURCES: tuple[dict, ...] = (
      "expected_sections": 44},
 )
 
-# (a) Unambiguous structural debris. Removed, and the removal is counted.
 STRUCTURAL = (
     re.compile(r"\[PART\s+[IVXL]+\s*[—–-]*\s*(?:SEC\.\s*\d+\])?"),
     re.compile(r"\bSEC\.\s*\d+\]"),
     re.compile(r"\bTHE GAZETTE OF INDIA\s+EXTRAORDINARY\b", re.I),
     re.compile(r"\bCHAPTER\s+[IVXL]+\b"),
-    re.compile(r"\b\d{1,3} of (?:19|20)\d{2}\."),       # marginal statute reference
+    re.compile(r"\b\d{1,3} of (?:19|20)\d{2}\."),
 )
 
-# (b) Candidate marginal heading: reported, never auto-removed. See the module docstring.
 MARGINAL_CANDIDATE = re.compile(
     r"(?:(?<=[a-z\)])\s|(?<=\.)\s)([A-Z][^.;,]{3,70}\.)\s*(?=\[PART|CHAPTER\s+[IVXL]+|SEC\.\s*\d+\])")
 
-# Top-level subsection "(1)" / "(2)" and lettered clause "(a)" / "(h)" markers.
 SUBSECTION = re.compile(r"\((\d{1,2})\)\s")
 LETTERED = re.compile(r"\(([a-z])\)\s")
 
@@ -100,12 +57,7 @@ def clean_gazette_text(raw: str) -> dict:
 
 @node("C")
 def split_subsections(text: str, mode: str = "numeric") -> dict[str, str]:
-    """Split a section into its top-level subsections.
-
-    `numeric` splits on "(1)", "(2)"; `lettered` splits on "(a)", "(h)". Returns {label: text}.
-    A subsection is a genuine substring of the real section text, so quoting it is still quoting
-    the instrument -- which is why derived records keep their own hash and name their parent.
-    """
+    """Split a section into its top-level subsections."""
     pattern = SUBSECTION if mode == "numeric" else LETTERED
     marks = [(m.start(), m.group(1)) for m in pattern.finditer(text)]
     if not marks:
@@ -113,10 +65,10 @@ def split_subsections(text: str, mode: str = "numeric") -> dict[str, str]:
     out: dict[str, str] = {}
     for i, (start, label) in enumerate(marks):
         if label in out:
-            continue        # a repeated marker is a cross-reference, not a new subsection
+            continue
         end = marks[i + 1][0] if i + 1 < len(marks) else len(text)
         body = _normalise_ws(text[start:end])
-        if len(body) > 25:   # a bare cross-reference like "(2) of section 5" is not a subsection
+        if len(body) > 25:
             out[label] = body
     return out
 
@@ -124,12 +76,7 @@ def split_subsections(text: str, mode: str = "numeric") -> dict[str, str]:
 @node("C")
 def load_real_clauses(sources: Iterable[dict] = REAL_SOURCES,
                       derive: Optional[dict[str, dict]] = None) -> tuple[list[Clause], dict]:
-    """Load the gazette-derived corpora into Clause records, with provenance intact.
-
-    `derive` requests subsection-level records, e.g.
-        {"IN.TA2023.s20": {"mode": "numeric", "labels": ["1", "2"]}}
-    Each derived record cites the same page, URL and source PDF hash as its parent section.
-    """
+    """Load the gazette-derived corpora into Clause records, with provenance intact."""
     derive = derive or {}
     clauses: list[Clause] = []
     stats = {"sections": 0, "derived": 0, "with_artifacts": 0, "files": [], "missing_files": []}
@@ -180,10 +127,6 @@ def load_real_clauses(sources: Iterable[dict] = REAL_SOURCES,
                 body = parts.get(label)
                 if not body:
                     continue
-                # Re-derive the artifact flag for THIS subsection. A page break elsewhere in the
-                # section says nothing about this one: inheriting the parent's flag would mark
-                # clean subsection text unquotable, and marking it clean when the break lands
-                # inside it would be worse. Decide per record.
                 own = MARGINAL_CANDIDATE.search(section.text_raw or "")
                 own_note = None
                 if own and own.group(1) in body:

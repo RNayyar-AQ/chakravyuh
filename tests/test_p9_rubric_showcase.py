@@ -1,8 +1,4 @@
-"""Rubric-showcase guarantees: CAP envelopes, computed confidence, provenance, audit surface.
-
-These tests exist because each one covers a claim the showcase makes to a judge. A claim nobody
-can break on stage is worth more than a claim in a README.
-"""
+"""Rubric-showcase guarantees: CAP envelopes, computed confidence, provenance, audit surface."""
 from __future__ import annotations
 
 import csv
@@ -25,12 +21,11 @@ SCENARIO = ROOT / "data/scenarios/amphan_2020.yaml"
 EPOCH = "2020-05-16T08:45:00+05:30"
 
 
-# ----------------------------------------------------------------- CAP 1.2 / X.1303
 def test_cap_envelope_carries_every_required_element():
     cap = build_cap(alert_id="a1", area="WB-KOLKATA", t_minutes=100, languages=["bn", "hi"],
                     issued_by="sdma_alerts", epoch_iso=EPOCH)
     assert cap_shape_errors(cap) == [], f"missing CAP elements: {cap_shape_errors(cap)}"
-    assert set(CAP_REQUIRED_FIELDS)        # the contract itself is not empty
+    assert set(CAP_REQUIRED_FIELDS)
 
 
 def test_cap_sent_is_derived_from_the_scenario_clock_not_the_wall_clock():
@@ -39,7 +34,6 @@ def test_cap_sent_is_derived_from_the_scenario_clock_not_the_wall_clock():
               issued_by="sdma_alerts", epoch_iso=EPOCH)
     first, second = build_cap(**kw), build_cap(**kw)
     assert first == second
-    # T+6300 min from 16 May 08:45 IST is 20 May 17:45 IST.
     assert first["sent"] == "2020-05-20T17:45:00+05:30"
 
 
@@ -84,7 +78,6 @@ def test_language_tag_is_region_aware_across_the_border():
     assert language_tag("bn", "BD-KHULNA") == "bn-BD"
     assert language_tag("or", "OD-BALASORE") == "or-IN"
     assert region_for_area("BD-KHULNA") == "BD"
-    # An unmapped code must say 'undetermined', never guess.
     assert language_tag("zz", "WB-KOLKATA") == "und"
 
 
@@ -107,7 +100,6 @@ def test_cap_info_language_is_the_local_language_not_the_alphabetically_first():
             assert tag == "bn-IN", f"{area} alerted in {tag}, not Bengali"
 
 
-# ------------------------------------------------------- computed gap confidence
 def test_confidence_is_certain_only_for_primary_text():
     """The column must discriminate: a gazette record earns `certain`, a summary does not."""
     store = ClauseStore()
@@ -147,7 +139,6 @@ def test_every_document_gap_has_a_valid_type_and_three_instances():
     for gap in gaps:
         assert gap["gap_type"] in VALID_GAP_TYPES
         assert gap.get("india_clause_ids"), f"{gap['gap_id']} cites no Indian instrument"
-        # A neighbour or global cell may legitimately be "none found", but it must be said.
         assert gap.get("neighbour_clause_ids") is not None or gap.get("neighbour_note")
         assert gap.get("global_clause_ids") or gap.get("global_note")
 
@@ -174,7 +165,6 @@ def test_gap_types_cover_all_four_of_the_rubrics_classes():
     assert set(VALID_GAP_TYPES) <= {r["gap_type"] for r in rows}
 
 
-# ------------------------------------------------------------- scenario provenance
 def test_every_constructed_event_is_flagged_synthetic():
     """A constructed event must be machine-identifiable, not identifiable by its id prefix."""
     scen = load_scenario(SCENARIO)
@@ -218,7 +208,6 @@ def test_landfall_matches_the_imd_release_timing():
     assert round(min(e.t_minutes for e in landfall) / 60, 2) == 104.75
 
 
-# -------------------------------------------------------------- the audit surface
 def test_every_actionable_proposal_cites_a_clause_the_pack_defines():
     run = ROOT / "runs/amphan_2020__india_current__rule__seed0.jsonl"
     if not run.exists():
@@ -263,7 +252,6 @@ def test_tamper_demo_detects_a_single_character_edit():
     assert "tampered at seq" in proc.stdout or "hash mismatch" in proc.stdout
 
 
-# ------------------------------------------------------------ abstention eval set
 def test_the_eval_set_has_answerable_and_unanswerable_questions():
     rows = [json.loads(l) for l in
             (ROOT / "data/eval/retrieval_qa.jsonl").read_text(encoding="utf-8").splitlines()
@@ -293,7 +281,6 @@ def test_retrieval_eval_reports_abstention_separability():
         assert sep is not None and 0.0 <= sep <= 1.0, r["mode"]
 
 
-# --------------------------------------------------------------- ITU alignment
 def test_ai_readiness_map_accounts_for_every_itu_dimension():
     src = ROOT / "data/sources/INTL/02_ITU_AI_Readiness_dimensions.json"
     out = ROOT / "docs/ai_readiness_map.md"

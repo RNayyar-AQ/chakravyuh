@@ -1,17 +1,4 @@
-"""run(scenario, pack, agents, seed) -> RunResult. Y.3172 node: D.
-
-The tick loop (spec §5.3). At each 15-minute tick:
-  1. release due events          (scenario timeline, chunked and progressive)
-  2. deliver via bus with delays (per-role, uneven, incomplete)
-  3. agents observe and propose  (only their own inbox; no world access)
-  4. GM resolves in deterministic order, consulting the policy engine
-  5. world dynamics step
-  6. ledger append
-
-Determinism: no wall clock, no uuid, no RNG except a seeded generator threaded explicitly. Two
-runs of the same (scenario, pack, agents, seed) produce an identical ledger head hash, which is
-the P3 acceptance gate and the basis of every replay claim in the report.
-"""
+"""run(scenario, pack, agents, seed) -> RunResult. Y.3172 node: D."""
 from __future__ import annotations
 
 import time
@@ -55,7 +42,7 @@ def run(scenario: Scenario, pack: PolicyPack, agents: Optional[Mapping[str, obje
 
     path = Path(ledger_path) if ledger_path else Path(runs_dir) / f"{rid}.jsonl"
     if path.exists():
-        path.unlink()      # a run id names one run; never append onto a previous chain
+        path.unlink()
     ledger = Ledger(path, run_id=rid)
 
     world = scenario.world()
@@ -79,35 +66,29 @@ def run(scenario: Scenario, pack: PolicyPack, agents: Optional[Mapping[str, obje
     ticks = 0
     t = 0
     while t <= scenario.horizon_min:
-        # 1. release due scenario events
         due = [e for e in pending if e.t_minutes <= t]
         pending = [e for e in pending if e.t_minutes > t]
         for ev in sorted(due, key=lambda e: (e.t_minutes, e.event_id)):
             gm.apply_exogenous(ev, t)
             bus.publish(ev, t)
 
-        # 2. deliver what has arrived
         for delivery in bus.deliver_due(t):
             gm.record_delivery(delivery)
             inboxes[delivery.role].add(delivery)
 
-        # 3. agents propose from their own inbox only
         proposals: list[Proposal] = []
         for role_id in sorted(agents, key=lambda r: (ROLES[r].priority if r in ROLES else 99, r)):
             agent = agents[role_id]
             got = agent.observe(inboxes[role_id], t, pack) or []
             proposals.extend(p for p in got if p.action_type != "NOOP")
 
-        # 4. GM resolves, then applies anything whose delay/human gate has cleared
         gm.resolve_tick(proposals, t)
         gm.release_deferred(t)
         gm.release_human_gate(t)
 
-        # derived events (an order becoming a fact) go back onto the bus
         for ev in gm.take_derived():
             bus.publish(ev, t)
 
-        # 5. world step
         step_info = dynamics.step(world, t)
         if step_info["suspensions_expired"] or step_info["cells_lost_to_power"]:
             ledger.append("EFFECT", {"kind": "WORLD_STEP", **step_info}, t)
@@ -115,7 +96,6 @@ def run(scenario: Scenario, pack: PolicyPack, agents: Optional[Mapping[str, obje
         ticks += 1
         t += scenario.tick_min
 
-    # Anything still in flight at the horizon never arrived: that itself is evidence.
     undelivered = bus.in_flight()
     results: list[PropertyResult] = check_all(world, scenario.thresholds, gm)
     for r in results:
@@ -139,20 +119,11 @@ def run(scenario: Scenario, pack: PolicyPack, agents: Optional[Mapping[str, obje
         wall_seconds=round(time.perf_counter() - started, 4), llm_calls=llm_calls,
     )
 
-    # Gap classification needs the GM's views and the bus; attach them for the caller without
-    # putting non-serialisable objects on the Pydantic model.
     _remember_context(result.run_id, {"world": world, "gm": gm, "bus": bus, "scenario": scenario,
                                       "pack": pack, "inboxes": inboxes})
     return result
 
 
-# Side table of live objects from the most recent runs, keyed by run_id. The RunResult itself stays
-# serialisable; analysis code that needs the world asks for it here.
-#
-# BOUNDED on purpose. Each entry pins a whole WorldState, GameMaster and Bus, and a fuzz campaign
-# runs the simulator thousands of times -- an unbounded dict would retain every one of them and the
-# campaign would grow without limit. Oldest entries are evicted first; analysis always runs
-# immediately after the run that produced it, so a small window is enough.
 CONTEXT_LIMIT = 64
 result_context: "OrderedDict[str, dict]" = OrderedDict()
 
@@ -165,11 +136,7 @@ def _remember_context(run_id: str, ctx: dict) -> None:
 
 
 def context_for(result: RunResult) -> dict:
-    """Live objects (world, GM, bus, inboxes) for a recent run.
-
-    Raises KeyError once the run has been evicted from the bounded window, rather than returning
-    a stale or empty context that would silently produce wrong analysis.
-    """
+    """Live objects (world, GM, bus, inboxes) for a recent run."""
     ctx = result_context.get(result.run_id)
     if ctx is None:
         raise KeyError(

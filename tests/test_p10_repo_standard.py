@@ -1,9 +1,4 @@
-"""Repo-standard guarantees: engine purity, forbidden claims, submission surface.
-
-Each test here protects a promise the submission makes to a judge. They are cheap to run and
-they fail loudly, which is the point: the claims they guard are exactly the ones nobody can
-re-check by eye the morning of a demo.
-"""
+"""Repo-standard guarantees: engine purity, forbidden claims, submission surface."""
 from __future__ import annotations
 
 import ast
@@ -15,13 +10,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# The engine's import closure is an ALLOWLIST, not a denylist of model vendors. A denylist only
-# catches the libraries someone thought to name; this catches anything that is not deliberately
-# permitted -- a new SDK, a vendor nobody has heard of yet, a transitive dependency that pulls one
-# in. The engine is a pure function over compiled rules, so the permitted set is small and stable.
 ALLOWED_THIRD_PARTY = frozenset({"pydantic"})
 ALLOWED_FIRST_PARTY = "chakravyuh"
-# Our own model client is first-party but still out of bounds for the P node.
 BANNED_FIRST_PARTY = "chakravyuh.llm"
 STDLIB = frozenset(sys.stdlib_module_names)
 
@@ -39,7 +29,7 @@ def _project_imports(module: str) -> list[str]:
         if isinstance(node, ast.Import):
             names += [a.name for a in node.names]
         elif isinstance(node, ast.ImportFrom):
-            if node.level:                      # relative: resolve against this module
+            if node.level:
                 parts = module.split(".")[: -node.level] or ["chakravyuh"]
                 base = ".".join(parts + ([node.module] if node.module else []))
             else:
@@ -92,19 +82,17 @@ def test_the_allowlist_rejects_an_unlisted_package():
 
 def test_the_purity_check_would_actually_catch_a_violation():
     """Positive control: a test that cannot fail is not a test."""
-    tainted = "chakravyuh.agents.adviser"            # legitimately imports the LLM client
+    tainted = "chakravyuh.agents.adviser"
     names = _project_imports(tainted)
     assert any(n.startswith("chakravyuh.llm") for n in names), (
         "the positive control no longer imports chakravyuh.llm; pick another module or the "
         "purity test above is unfalsifiable")
 
 
-# ----------------------------------------------------------------- forbidden claims
 SPEC_FILES = {"CHAKRAVYUH_REPO_STANDARD.md", "CHAKRAVYUH_RUBRIC_SHOWCASE.md",
               "CHAKRAVYUH_IMPLEMENTATION.md", "CHAKRAVYUH_REAL_DATA.md",
               "CHAKRAVYUH_KB_HARDENING.md", "test_p10_repo_standard.py", "LICENSE"}
 
-# "certified"/"approved"/"compliant with" about ITU would be a false claim about endorsement.
 OVERCLAIM = re.compile(r"(itu[- ]?(certified|approved|endorsed))"
                        r"|(certified\s+(by\s+)?(the\s+)?itu)"
                        r"|(compliant\s+with\s+(itu|y\.3172|x\.1303))", re.I)
@@ -122,9 +110,6 @@ def _repo_files(*suffixes: str):
         yield path, rel
 
 
-# A line that FORBIDS a phrase has to contain the phrase. docs/VIDEO_BRIEF.md lists the claims a
-# video must never make, each marked with a cross; a style guide does the same thing. Recognise an
-# explicit prohibition and keep asserting on every other line, rather than exempting whole files.
 _PROHIBITION = re.compile(
     r"❌|\bmust not\b|\bnever (say|claim|write)\b|\bdo not (say|claim|write)\b|\bforbid", re.I)
 
@@ -147,9 +132,6 @@ def test_the_overclaim_check_still_catches_a_real_claim():
     assert OVERCLAIM.search(forbidden) and _PROHIBITION.search(forbidden)
 
 
-# Mentioning a confidence interval to DISCLAIM it is correct and must not trip the check --
-# the repo says "no money, no casualties, no confidence intervals" in several places on purpose.
-# What would be wrong is ASSERTING one. A denial is a line carrying a negation near the phrase.
 _DENIAL = re.compile(r"\b(no|not|never|without|rather than|neither|nor|none)\b", re.I)
 
 
@@ -163,8 +145,6 @@ def test_no_accuracy_or_confidence_interval_claims():
         for i, line in enumerate(lines, 1):
             if not pattern.search(line):
                 continue
-            # A disclaimer routinely wraps: "No money, no casualties, no / confidence intervals."
-            # so the negation can sit on the line above. Check the sentence, not the line.
             window = " ".join(lines[max(0, i - 2):i + 1])
             if not (_DENIAL.search(window) or _PROHIBITION.search(line)):
                 bad.append(f"{rel}:{i}: {line.strip()[:90]}")
@@ -178,7 +158,6 @@ def test_the_ci_check_would_catch_a_real_assertion():
     assert not _DENIAL.search("we report a 95% confidence interval of 12-18 minutes")
 
 
-# ----------------------------------------------------------------- submission surface
 @pytest.mark.parametrize("name", [
     "LICENSE", "NOTICE", "CITATION.cff", "SUBMISSION.md", "README.md",
     "requirements.lock", ".env.example", "app/scripts/replay_demo.sh",

@@ -23,7 +23,7 @@ def test_get_clause_is_exact(built_kb):
     store = ClauseStore()
     assert store.get_clause("IN.SUSP2024.r2.4").section == "r.2(4)"
     with pytest.raises(ClauseNotFound):
-        store.get_clause("IN.SUSP2024.r2")        # a prefix must NOT fuzzy-match
+        store.get_clause("IN.SUSP2024.r2")
     with pytest.raises(ClauseNotFound):
         store.get_clause("totally.made.up")
     store.close()
@@ -47,12 +47,7 @@ def test_jurisdictions_cover_in_bd_us_intl(built_kb):
 
 
 def test_integrity_report_counts_unverified_honestly(built_kb):
-    """The corpus is now MIXED: real gazette text plus model-written summaries. Report both.
-
-    The point of this test is that the report never rounds the mixture up to "verified". Every
-    record must be counted in exactly one provenance bucket, and the model-written share must
-    stay visible as a number rather than being absorbed into a total.
-    """
+    """The corpus is now MIXED: real gazette text plus model-written summaries. Report both."""
     store = ClauseStore()
     rep = store.integrity_report()
     assert rep["pct_hash_matching"] == 100.0
@@ -63,9 +58,7 @@ def test_integrity_report_counts_unverified_honestly(built_kb):
     assert prov.get("model_written", 0) > 0, "model-written records still exist; do not hide them"
     assert sum(prov.values()) == rep["total"], "every record lands in exactly one bucket"
 
-    # Real text must never be reported as 100%: instruments we have not obtained remain summaries.
     assert 0 < rep["pct_verbatim_verified"] < 100.0
-    # Quotable is stricter than verified: page-break artifacts are excluded from quotable.
     assert rep["quotable"] <= rep["verbatim_verified"]
     assert rep["with_source_pdf_hash"] == rep["verbatim_verified"], \
         "every record with real text must name the PDF hash it came from"
@@ -80,15 +73,8 @@ def test_retrieval_returns_results(built_kb):
     assert "IN.SUSP2024.r2.1" in {h.clause_id for h in hits}
 
 
-# --------------------------------------------------- provenance must stay disclosed
-
 def test_only_gazette_derived_records_claim_verification(built_kb):
-    """A record may claim real text ONLY if it came from a source PDF whose hash it carries.
-
-    This is the ratchet that replaced "nothing is verified". It fired when the real gazette
-    corpus landed, which is exactly what it was for. A model-written record that flips itself to
-    `verified` without a source PDF hash still fails here.
-    """
+    """A record may claim real text ONLY if it came from a source PDF whose hash it carries."""
     store = ClauseStore()
     offenders = [(c.clause_id, c.provenance, bool(c.source_pdf_sha256))
                  for c in store.all_clauses()
@@ -127,12 +113,7 @@ def test_pagebreak_artifacts_are_flagged_not_silently_quoted(built_kb):
 
 
 def test_provenance_doc_describes_the_mixed_corpus(built_kb):
-    """The disclosure must name BOTH halves and keep the model-written half visible.
-
-    The corpus used to be entirely model-written and the doc said so. Now that real gazette text
-    is in, the risk inverts: a reader could assume the whole corpus is sourced. The doc has to
-    keep both halves, and the negative findings, explicit.
-    """
+    """The disclosure must name BOTH halves and keep the model-written half visible."""
     from pathlib import Path
     doc = (Path(__file__).resolve().parents[1]
            / "data/sources/CLAUSES_PROVENANCE.md").read_text(encoding="utf-8").lower()

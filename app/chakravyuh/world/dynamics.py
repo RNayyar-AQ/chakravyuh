@@ -1,10 +1,4 @@
-"""Deterministic effects of approved actions and exogenous events. Y.3172 node: D.
-
-The ONLY module that mutates a WorldState. Called by the Game Master, never by an agent, and
-only after the policy engine returned a verdict that executes. Every function here is a pure
-function of (state, input) -> (mutation, description); no randomness, no clock, no I/O, so the
-same seed replays to the same world.
-"""
+"""Deterministic effects of approved actions and exogenous events. Y.3172 node: D."""
 from __future__ import annotations
 
 
@@ -13,8 +7,6 @@ from ..alerts.cap import build_cap, cap_shape_errors
 from ..y3172 import node
 from .state import Alert, IncidentReport, RoamingGrant, Suspension, WorldState
 
-# Derived events the GM must re-inject into the bus, keyed by the action that produces them.
-# This is how an authority's order becomes a fact the operator can later cite as its trigger.
 DERIVED_EVENT_TYPE = {
     "ORDER_SUSPENSION": "ORDER",
     "ORDER_DISASTER_ROAMING": "ORDER_DISASTER_ROAMING",
@@ -47,10 +39,7 @@ def _int(v, default: int = 0) -> int:
 
 @node("D")
 def apply_exogenous(state: WorldState, event: Event) -> dict:
-    """Apply what the world does on its own: warnings, landfall, site damage, power loss.
-
-    `event.payload["truth"]` is the ground truth, visible only here and to the Game Master.
-    """
+    """Apply what the world does on its own: warnings, landfall, site damage, power loss."""
     truth = event.payload.get("truth", {})
     changed: dict = {"event_id": event.event_id, "type": event.type, "cells_changed": []}
 
@@ -58,7 +47,6 @@ def apply_exogenous(state: WorldState, event: Event) -> dict:
         if state.first_warning_t is None:
             state.first_warning_t = event.t_minutes
         named = list(truth.get("areas_at_risk", []))
-        # cross_border_areas are warned about too, and their clock starts here as well.
         named += [a for a in (event.payload.get("cross_border_areas") or []) if isinstance(a, str)]
         for area in named:
             if area not in state.affected_areas:
@@ -81,7 +69,6 @@ def apply_exogenous(state: WorldState, event: Event) -> dict:
         area = event.area or truth.get("area")
         n_down = _int(truth.get("cells_down"), 0)
         cells = sorted(state.cells_in(area or ""), key=lambda c: c.cell_id)
-        # Deterministic selection: the first N still-up cells, in cell_id order. No RNG.
         for cell in [c for c in cells if c.up][:n_down]:
             cell.up = False
             cell.damaged = True
@@ -94,8 +81,6 @@ def apply_exogenous(state: WorldState, event: Event) -> dict:
         area = event.area or truth.get("area")
         if area:
             state.grid_down[area] = True
-        # The event sets how much backup the loss immediately consumes; the rest drains tick by
-        # tick in step(), but ONLY while the grid is actually down for that area.
         for cell in sorted(state.cells_in(area or ""), key=lambda c: c.cell_id):
             cell.power_backup_min = max(0, cell.power_backup_min - _int(truth.get("drain_min"), 60))
             if cell.power_backup_min == 0 and cell.up:
@@ -105,7 +90,6 @@ def apply_exogenous(state: WorldState, event: Event) -> dict:
         changed["grid_down"] = sorted(a for a, v in state.grid_down.items() if v)
 
     elif event.type == "RUMOUR":
-        # A rumour changes no physical state. It only enters inboxes; that is the whole point.
         changed["note"] = "rumour: no world effect, inbox only"
 
     return changed
@@ -114,11 +98,7 @@ def apply_exogenous(state: WorldState, event: Event) -> dict:
 @node("D")
 def apply_action(state: WorldState, proposal: Proposal, verdict: Verdict,
                  trigger_authentic: bool = True) -> tuple[dict, list[Event]]:
-    """Apply an executing action. Returns (effect description, derived events to re-inject).
-
-    Raises ValueError if called on a verdict that must not execute -- the GM is the gate, and
-    this assertion makes a GM bug loud rather than silent.
-    """
+    """Apply an executing action. Returns (effect description, derived events to re-inject)."""
     if not verdict.executes:
         raise ValueError(f"apply_action called on non-executing verdict {verdict.decision} "
                          f"for {proposal.proposal_id}")
@@ -155,7 +135,7 @@ def apply_action(state: WorldState, proposal: Proposal, verdict: Verdict,
         for cell in state.cells_in(area or ""):
             susp = [s for s in state.active_suspensions(t) if s.area == cell.area]
             if susp and not any(s.exempt_priority_slice for s in susp):
-                continue   # a non-exempt suspension in force overrides the operator's own slice
+                continue
             if cell.up:
                 cell.priority_slice_up = True
                 raised.append(cell.cell_id)
@@ -174,15 +154,9 @@ def apply_action(state: WorldState, proposal: Proposal, verdict: Verdict,
         langs = p.get("languages") or []
         langs = [langs] if isinstance(langs, str) else list(langs)
         alert_id = f"alert-{proposal.proposal_id}"
-        # CAP's info/language is single-valued, and a real alerting authority puts the local
-        # language first: an Odia district's primary block should read `or-IN`, not `hi-IN`
-        # because an agent happened to list its languages alphabetically. Order by the area's
-        # own declared languages, keeping anything extra after them.
         local = state.local_languages.get(area or "", [])
         cap_langs = ([x for x in local if x in langs]
                      + [x for x in langs if x not in local])
-        # Build the CAP 1.2 / X.1303 envelope here, from the same params the agent proposed, so
-        # what the UI shows and what the ledger records is the artefact the action produced.
         cap = build_cap(
             alert_id=alert_id, area=area or "", t_minutes=t, languages=cap_langs,
             issued_by=proposal.actor_role, severity=str(p.get("severity", "Severe")),
@@ -209,7 +183,6 @@ def apply_action(state: WorldState, proposal: Proposal, verdict: Verdict,
     elif proposal.action_type == "RESTORE_SITE":
         restored = []
         budget = _int(p.get("max_sites"), 3)
-        # Restoration brings generators with it: the area stops bleeding battery.
         if area and state.grid_down.get(area):
             state.grid_down[area] = False
             effect["grid_restored"] = area
@@ -255,7 +228,7 @@ def derive_events(proposal: Proposal, verdict: Verdict) -> list[Event]:
         area=proposal.params.get("area"),
         payload=payload,
         visible_to=list(DERIVED_VISIBILITY.get(etype, [])),
-        authentic=True,                       # genuinely issued by an agent inside the sim
+        authentic=True,
         claimed_issuer=proposal.actor_role,
     )]
 
@@ -273,10 +246,6 @@ def step(state: WorldState, t: int) -> dict:
             for cell in state.cells_in(s.area):
                 cell.service_suspended = any(
                     o.active_at(t) for o in state.suspensions if o.area == cell.area)
-    # Battery drains only where mains power is actually down. Draining every cell in every
-    # affected area for the whole run was an artefact of a 12-hour scenario: over the real
-    # 125-hour Amphan timeline it flattened the entire network and made P1 meaningless.
-    # Reported cause of outage during Amphan was grid loss, so grid state is what gates it.
     drained = []
     for cell in sorted(state.cells.values(), key=lambda c: c.cell_id):
         if not cell.up or not state.grid_down.get(cell.area, False):

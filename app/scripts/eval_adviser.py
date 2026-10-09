@@ -1,23 +1,5 @@
 #!/usr/bin/env python3
-"""Adviser eval on a 4-point rubric. Y.3172 node: M/SINK.
-
-Scores the rubric's "agent capability" criterion (spec §9.3). 20 mid-scenario questions, each
-scored on four binary criteria:
-
-  C1 correct clause cited        at least one gold clause_id appears in the citations
-  C2 correct actor/mandate       the answer names the actor or body the gold clauses empower
-  C3 flags uncertainty           where the KB cannot answer, the answer says so (or names the gap)
-  C4 no invented clause          every cited clause_id exists in the store AND was retrieved
-
-C1 and C4 are decided mechanically and are the honest part of this eval. C2 and C3 need judgement:
-an LLM judge (a DIFFERENT model from the Adviser) scores them when one is configured, and the
-output always carries a column for the team's hand-check, because the spec's own lesson is that
-humans catch what judges miss. Rows with no judge are reported as `unjudged`, never as passes.
-
-  python app/scripts/eval_adviser.py                  # extractive adviser, mechanical criteria only
-  python app/scripts/eval_adviser.py --use-llm        # LLM adviser (needs a populated replay cache)
-  python app/scripts/eval_adviser.py --judge-model openai/gpt-4o
-"""
+"""Adviser eval on a 4-point rubric. Y.3172 node: M/SINK."""
 from __future__ import annotations
 
 import argparse
@@ -62,13 +44,10 @@ def mechanical_scores(case: dict, ans) -> dict:
     gold = set(case["gold_clause_ids"])
     cited = set(ans.cited_clause_ids)
     store = ClauseStore()
-    # C1: an unanswerable case (no gold clause) passes C1 by citing nothing.
     c1 = bool(gold & cited) if gold else not cited
-    # C4: no invented clause. Every citation must exist and have been retrieved.
     retrieved = set(ans.retrieved_clause_ids)
     c4 = all(store.exists(c) and c in retrieved for c in cited)
     store.close()
-    # C3 heuristic (superseded by a judge when one is configured).
     text = (ans.answer or "").lower() + " " + " ".join(ans.gaps).lower()
     expects_gap = bool(case.get("expected_gap"))
     c3_heuristic = any(m in text for m in UNCERTAINTY_MARKERS) if expects_gap else True
@@ -132,7 +111,7 @@ def main() -> int:
         row.update(judge(judge_client, case, ans) if judge_client else
                    {"judged": False, "reason": "no judge model configured"})
         row["answer_excerpt"] = (ans.answer or "")[:400]
-        row["human_check"] = ""      # the team fills this column in; it ships empty on purpose
+        row["human_check"] = ""
         rows.append(row)
         flag = "ok " if row["c1_correct_clause"] and row["c4_no_invented_clause"] else "ATT"
         print(f"{flag} {row['cid']}: C1={row['c1_correct_clause']} C4={row['c4_no_invented_clause']} "

@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Run the showcase: baseline + cross-pack comparison + gap register. Y.3172: the whole pipeline.
-
-  python app/scripts/run_demo.py                          # all 3 packs, rule twins, full artefacts
-  python app/scripts/run_demo.py --pack india_current     # one pack only
-  python app/scripts/run_demo.py --tier llm               # LLM agents (needs a populated replay cache)
-  python app/scripts/run_demo.py --ask "Who can order a suspension?"
-
-Writes docs/demo_report.md, outputs/gap_register.csv, outputs/comparison.json and one ledger per run under
-runs/. Every number in the report comes from a run that happened; nothing is hand-entered.
-"""
+"""Run the showcase: baseline + cross-pack comparison + gap register. Y.3172: the whole pipeline."""
 from __future__ import annotations
 
 import argparse
@@ -45,11 +36,7 @@ def agent_factory_for(tier: str, client: LLMClient | None = None):
 
 
 def preflight(client: LLMClient) -> None:
-    """In record/live mode, refuse to start without the credential the model needs.
-
-    A sweep across three packs is many calls; discovering a missing key on the first one wastes
-    nothing, but discovering it halfway through a recording leaves a half-populated cache.
-    """
+    """In record/live mode, refuse to start without the credential the model needs."""
     if client.mode == "replay":
         return
     missing = missing_credential(client.model)
@@ -210,9 +197,6 @@ def main() -> int:
 
     DOCS.mkdir(parents=True, exist_ok=True)
     DATA.mkdir(parents=True, exist_ok=True)
-    # The register's `confidence` column is computed from clause provenance, so it needs the
-    # store. Without it every row would read `likely`, which would be wrong in the safe direction
-    # but would stop the column meaning anything.
     reg = write_register(findings, packs, base_pack=base_pack, store=ClauseStore(),
                          scenario_id=scenario.scenario_id)
     (DOCS / "gap_register.md").write_text(register_doc(reg), encoding="utf-8")

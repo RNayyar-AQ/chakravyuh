@@ -1,11 +1,4 @@
-"""Section-tree ("vectorless") navigation over statute headings. Y.3172 node: PP. Priority P2.
-
-A 60-line ToC tree in the PageIndex spirit: instrument -> section -> chunk. The LLM (or, here,
-a lexical scorer standing in for it) reasons down the tree instead of embedding everything.
-Statutes have clean section structure, which is the case where this does well; it is kept
-behind the `tree` retrieval mode and measured against BM25/vector/hybrid in §9.2 rather than
-being asserted as better.
-"""
+"""Section-tree ("vectorless") navigation over statute headings. Y.3172 node: PP. Priority P2."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -28,7 +21,6 @@ class TreeNode:
 
 class SectionTree:
     """instrument -> section -> chunk ids, navigated by lexical overlap at each level."""
-
     def __init__(self, root: TreeNode, texts: dict[str, str]):
         self.root = root
         self.texts = texts

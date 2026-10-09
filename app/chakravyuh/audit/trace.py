@@ -1,9 +1,4 @@
-"""Per-call trace capture. Y.3172 node: SINK.
-
-Every LLM call writes an LLM_TRACE ledger entry: model, prompt sha256, retrieved chunk ids,
-raw output, parsed object, latency, tokens. Prompt bodies live in traces/<sha>.txt so the
-ledger stays small while remaining fully reconstructible (§7).
-"""
+"""Per-call trace capture. Y.3172 node: SINK."""
 from __future__ import annotations
 
 from pathlib import Path

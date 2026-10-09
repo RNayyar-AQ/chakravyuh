@@ -52,12 +52,7 @@ def test_fuzzer_finds_a_new_failure_in_a_passing_pack(scenario, packs, tmp_path)
 
 
 def test_event_delay_overrides_channel_latency(scenario, packs, tmp_path):
-    """Precedence matters for every fuzz result: an event's own per-role delay wins.
-
-    `ev001` already sets delay_by_role[sdma_alerts]=15, so raising the sdma_alerts CHANNEL
-    latency changes nothing for that event. Only delay_event_for_role moves it. A fuzz campaign
-    that found the channel mutation "ineffective" would be reporting this rule, not the law.
-    """
+    """Precedence matters for every fuzz result: an event's own per-role delay wins."""
     from chakravyuh.sim.runner import run
     channel = apply_mutations(scenario, [delay_channel(scenario, "sdma_alerts", 240)[1]])
     per_event = apply_mutations(scenario, [delay_event_for_role(scenario, "ev001",

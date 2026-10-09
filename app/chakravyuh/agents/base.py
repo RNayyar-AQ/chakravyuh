@@ -1,10 +1,4 @@
-"""Agent protocol. Y.3172 node: M.
-
-An agent observes its inbox and returns proposals. It never touches the world, the ledger or
-the policy engine. Three implementations share this protocol -- rule twins (cheap, for fuzzing),
-LLM agents (realistic, for the showcase), and the optional Jev tier (§11) -- so the simulator
-cannot tell them apart and the comparison between tiers is apples to apples.
-"""
+"""Agent protocol. Y.3172 node: M."""
 from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
@@ -16,7 +10,7 @@ from .roles import Inbox
 @runtime_checkable
 class Agent(Protocol):
     role_id: str
-    tier: str   # "rule" | "llm" | "jev"
+    tier: str
 
     def observe(self, inbox: Inbox, t: int, pack: PolicyPack) -> list[Proposal]:
         """Return proposals for this tick. Must be deterministic given (inbox, t, pack)."""
@@ -25,7 +19,6 @@ class Agent(Protocol):
 
 class ProposalIdFactory:
     """Deterministic proposal ids: no uuid4, no time, so two runs of one seed match byte for byte."""
-
     def __init__(self, run_id: str = "run"):
         self.run_id = run_id
         self._n = 0

@@ -1,21 +1,5 @@
 #!/usr/bin/env python3
-"""Check every clause's source_url actually resolves. Y.3172 node: SRC.
-
-WHY THIS EXISTS
----------------
-The clause corpus was written from a language model's own knowledge. The provision summaries were
-not transcribed from the instruments, and the URLs were not copied from a browser -- they were
-recalled. Recalled URLs rot and recalled URLs are invented, so "has a source_url" is worth nothing
-on its own: the question is whether that URL is real and whether it holds the provision claimed.
-
-This script answers the first half mechanically. The second half -- does the page actually contain
-the section cited -- needs a human, and `verbatim_status` tracks it.
-
-  python app/scripts/check_sources.py              # check and report
-  python app/scripts/check_sources.py --strict     # exit 1 if any URL is dead (for CI)
-
-Exit codes: 0 all reachable (or only blocked), 1 at least one dead URL and --strict given.
-"""
+"""Check every clause's source_url actually resolves. Y.3172 node: SRC."""
 from __future__ import annotations
 
 import argparse
@@ -37,8 +21,6 @@ DATA = Path("outputs")
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
 
-# 403/429 usually means bot protection, not a dead link. Reported separately so a WAF does not
-# masquerade as an invented URL -- and so a real 404 is never excused as "probably blocked".
 BLOCKED_CODES = {401, 403, 405, 429}
 
 
@@ -55,9 +37,6 @@ def check(url: str, timeout: int = 15) -> dict:
         state = "blocked" if exc.code in BLOCKED_CODES else "dead"
         return {"state": state, "code": exc.code, "content_type": ""}
     except Exception as exc:
-        # A timeout is NOT evidence of a dead URL. Some sites are simply slow or redirect through
-        # several hops; curl resolves these fine. Conflating "slow" with "invented" would overstate
-        # the corpus's problems, which is the opposite of the point of this check.
         name = type(exc).__name__
         state = "timeout" if ("Timeout" in name or "timed out" in str(exc).lower()) else "unreachable"
         return {"state": state, "code": 0, "content_type": "",
@@ -73,9 +52,6 @@ def main() -> int:
                     help="skip the network and report the last saved result, if any")
     args = ap.parse_args()
 
-    # Read the STORE, not just the seed file: the gazette-derived records are the majority of the
-    # corpus and their eGazette URLs need checking too. Falls back to the seed if the store is
-    # not built yet.
     try:
         from chakravyuh.kb.clause_store import ClauseStore
         store = ClauseStore()
@@ -107,7 +83,6 @@ def main() -> int:
         data = {"per_url": per_url, "records": len(rows)}
 
     per_url = data["per_url"]
-    # Attribute each URL's state back to the clause records that depend on it.
     by_state: dict[str, list[str]] = {}
     for r in rows:
         state = per_url.get(r["source_url"], {}).get("state", "unknown")

@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
-"""Verify a run ledger's hash chain. Y.3172 node: SINK.
-
-Exit 0 when the chain is intact, 1 when it is not. Editing, reordering, inserting or deleting any
-line is detectable (spec §7).
-
-  python app/scripts/verify_ledger.py runs/amphan_2020__india_current__rule__seed0.jsonl
-  python app/scripts/verify_ledger.py --all
-  python app/scripts/verify_ledger.py --tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl
-
-`--tamper-demo` is the one that is worth watching: it copies a verified ledger, alters a single
-character deep inside it, and re-verifies the copy. A chain that cannot be edited without
-detection is the whole claim the audit trail makes, and the only convincing way to show it is to
-break one on camera. The original is never touched.
-"""
+"""Verify a run ledger's hash chain. Y.3172 node: SINK."""
 from __future__ import annotations
 
 import argparse
@@ -27,13 +14,7 @@ TAMPER_DIR = Path("outputs/tamper")
 
 
 def tamper_demo(path: Path, out_dir: Path = TAMPER_DIR) -> int:
-    """Copy a ledger, flip one character in one entry, re-verify. Returns 0 when detected.
-
-    The edit is deliberately the smallest and most plausible one an attacker would want: the
-    forged-order verdict is changed from BLOCK to ALLOW, or failing that a single digit in the
-    middle entry is changed. Nothing is appended and nothing is reordered, so only the hash
-    chain can notice.
-    """
+    """Copy a ledger, flip one character in one entry, re-verify. Returns 0 when detected."""
     ok, msg = verify(path)
     print(f"1. verify the original          : {'OK' if ok else 'FAIL'} {msg}")
     if not ok:
@@ -47,7 +28,7 @@ def tamper_demo(path: Path, out_dir: Path = TAMPER_DIR) -> int:
             target, edited = i, line.replace('"BLOCK"', '"ALLOW"', 1)
             what = "changed one VERDICT from BLOCK to ALLOW"
             break
-    if target is None:                       # no BLOCK in this run: edit any digit instead
+    if target is None:
         target = len(lines) // 2
         edited = lines[target].replace('0', '1', 1)
         what = "changed a single digit in one entry"

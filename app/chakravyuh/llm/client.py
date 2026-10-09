@@ -1,14 +1,4 @@
-"""LiteLLM wrapper + record/replay cache. Y.3172 node: M.
-
-Replayability (spec §0): LLMs are not bit-deterministic, so the cache is what makes
-"replay from seed" true. Cache key = sha256(model, prompt, schema). Modes:
-
-  record  -- call the provider, write cache/<sha>.json
-  replay  -- read the cache; a miss raises CacheMiss (fails loudly, never silently calls out)
-  live    -- call the provider, do not persist (development only)
-
-The demo runs in replay mode: identical every time and immune to Wi-Fi.
-"""
+"""LiteLLM wrapper + record/replay cache. Y.3172 node: M."""
 from __future__ import annotations
 
 import hashlib
@@ -22,14 +12,8 @@ from ..y3172 import node
 
 DEFAULT_CACHE = Path(os.environ.get("CHAKRAVYUH_LLM_CACHE", "cache"))
 
-# Which credential each provider needs, by model-id prefix. LiteLLM reads these variables itself;
-# they are listed here only so a `record` run fails in one second with the name of the missing
-# variable, instead of failing deep inside a provider SDK after the first prompt is built.
-#
-# NOTHING in the deterministic pipeline needs any of these: rule twins, the policy engine, the
-# clause store, properties, gaps, fuzzing and the extractive Adviser all run with no credential.
 PROVIDER_CREDENTIALS: tuple[tuple[str, str], ...] = (
-    ("ollama/", ""),                      # local, no key; needs OLLAMA_BASE_URL reachable
+    ("ollama/", ""),
     ("openai/", "OPENAI_API_KEY"),
     ("gpt-", "OPENAI_API_KEY"),
     ("o1-", "OPENAI_API_KEY"),
@@ -49,7 +33,7 @@ def credential_env_for(model: str) -> Optional[str]:
     for prefix, var in PROVIDER_CREDENTIALS:
         if model.startswith(prefix):
             return var or None
-    return None     # unknown provider: let LiteLLM decide rather than guessing wrong
+    return None
 
 
 def missing_credential(model: str) -> Optional[str]:
@@ -84,12 +68,7 @@ def _is_connection_error(exc: Exception) -> bool:
 
 @node("M")
 def resolve_model(prefer_hosted: bool = False, explicit: Optional[str] = None) -> str:
-    """Pick the model id: an explicit one wins, then the hosted/local env var, then the default.
-
-    Spec §3 wants the same code to run against the ITU Sandbox's local Ollama `qwen2.5:14b` and
-    against one hosted model used for the showcase run only. `prefer_hosted` is how a caller asks
-    for the latter without hard-coding a provider anywhere.
-    """
+    """Pick the model id: an explicit one wins, then the hosted/local env var, then the default."""
     if explicit:
         return explicit
     if prefer_hosted:
@@ -101,12 +80,8 @@ def resolve_model(prefer_hosted: bool = False, explicit: Optional[str] = None) -
 
 class CacheMiss(RuntimeError):
     """Replay mode asked for a completion that was never recorded."""
-
-
 class LLMUnavailable(RuntimeError):
     """record/live mode requested but LiteLLM or credentials are absent."""
-
-
 def cache_key(model: str, prompt: str, schema_name: str) -> str:
     h = hashlib.sha256()
     for part in (model, prompt, schema_name):
@@ -129,7 +104,6 @@ class LLMResponse:
 @node("M")
 class LLMClient:
     """Deterministic-by-cache LLM client (LiteLLM -> Ollama or a hosted model)."""
-
     def __init__(self, model: Optional[str] = None, mode: Optional[str] = None,
                  cache_dir: str | Path = DEFAULT_CACHE, temperature: float = 0.0,
                  prefer_hosted: bool = False):
@@ -143,7 +117,6 @@ class LLMClient:
         self.hits = 0
         self.misses = 0
 
-    # -- cache -------------------------------------------------------------
     def _cache_path(self, key: str) -> Path:
         return self.cache_dir / f"{key}.json"
 
@@ -165,7 +138,6 @@ class LLMClient:
                                 "tokens": {"prompt": 0, "completion": 0}, "source": "seeded"})
         return key
 
-    # -- completion --------------------------------------------------------
     @node("M")
     def complete(self, prompt: str, *, system: str = "", schema_name: str = "",
                  max_tokens: int = 1024) -> LLMResponse:
@@ -203,13 +175,10 @@ class LLMClient:
                 "litellm is not installed; install the 'llm' extra or use CHAKRAVYUH_LLM_MODE=replay"
             ) from exc
 
-        # Fail now, with the name of the variable, rather than inside the provider SDK.
         missing = missing_credential(self.model)
         if missing:
             raise LLMUnavailable(credential_help(self.model, missing))
 
-        # LiteLLM prints its own feedback banner to stderr on any exception. We raise a message
-        # that already says what to do, so the banner is just noise on a demo screen.
         litellm.suppress_debug_info = True
 
         kwargs: dict[str, Any] = {
@@ -223,8 +192,6 @@ class LLMClient:
         try:
             resp = litellm.completion(**kwargs)
         except Exception as exc:
-            # A local model needs no key but does need Ollama running; a raw provider traceback
-            # on build day is the wrong thing to be reading. Name the cause and the fix.
             if self.model.startswith("ollama/") and _is_connection_error(exc):
                 base = kwargs.get("api_base")
                 raise LLMUnavailable(

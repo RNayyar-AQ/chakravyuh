@@ -1,13 +1,4 @@
-"""Hypothesis stateful policy fuzzing. Y.3172 node: M/SINK.
-
-A `RuleBasedStateMachine` whose rules are mutations of the base scenario (§5.7). After each step
-the simulation is re-run with RULE-BASED agents and P1-P4 are asserted. Hypothesis shrinks any
-failure to a minimal mutation sequence automatically -- which is why the spec says not to
-hand-roll shrinking.
-
-Agents are rule twins only: thousands of runs, zero tokens, bit-identical replay. The top failure
-cards are then replayed with LLM agents separately (app/scripts/run_fuzz.py --replay-llm).
-"""
+"""Hypothesis stateful policy fuzzing. Y.3172 node: M/SINK."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -27,8 +18,6 @@ from . import mutations as mut
 DEFAULT_SCENARIO = Path("data/scenarios/amphan_2020.yaml")
 DEFAULT_PACK = Path("data/packs/india_current.yaml")
 
-# Module-level configuration: Hypothesis instantiates the machine itself, so the target scenario
-# and pack are set by the caller before running the test rather than passed to __init__.
 CONFIG: dict = {"scenario": None, "pack": None, "runs_dir": "runs/fuzz",
                 "properties": ("P1", "P2", "P3", "P4"), "failures": []}
 
@@ -38,14 +27,7 @@ def configure(scenario: Scenario | str | Path = DEFAULT_SCENARIO,
               runs_dir: str = "runs/fuzz",
               properties: tuple[str, ...] = ("P1", "P2", "P3", "P4"),
               baseline_only: bool = True) -> dict:
-    """Point the state machine at a scenario and pack, and reset the collected failures.
-
-    `baseline_only` (default) narrows the asserted properties to those the pack ALREADY passes on
-    the unmutated scenario. Fuzzing is then a search for *new* failures rather than a rediscovery
-    of the baseline ones, which the gap register already reports. Without this, a pack that fails
-    a property at baseline makes the fuzzer stop on its first step with zero mutations and find
-    nothing. Returns the baseline property outcomes so the caller can report what was excluded.
-    """
+    """Point the state machine at a scenario and pack, and reset the collected failures."""
     CONFIG["scenario"] = scenario if isinstance(scenario, Scenario) else load_scenario(scenario)
     CONFIG["pack"] = pack if isinstance(pack, PolicyPack) else compile_pack(pack)
     CONFIG["runs_dir"] = runs_dir
@@ -85,7 +67,6 @@ T_ST = st.integers(min_value=0, max_value=660).map(lambda x: 15 * round(x / 15))
 @node("M")
 class PolicyFuzzMachine(RuleBasedStateMachine):
     """Mutate the scenario, re-run, assert P1-P4. Hypothesis shrinks the failing mutation list."""
-
     def __init__(self):
         super().__init__()
         self.scenario: Scenario = CONFIG["scenario"]
@@ -100,7 +81,6 @@ class PolicyFuzzMachine(RuleBasedStateMachine):
         self.applied = []
         self._rerun()
 
-    # ---- mutation rules (MVP families first) --------------------------------
     @rule(area=st.sampled_from(_areas() or ["OD-COAST"]), t=T_ST)
     def forged_order(self, area: str, t: int) -> None:
         self._mutate(mut.inject_forged_order, area=area, t=t)
@@ -113,7 +93,6 @@ class PolicyFuzzMachine(RuleBasedStateMachine):
     def rumour(self, area: str, t: int) -> None:
         self._mutate(mut.inject_rumour, area=area, t=t)
 
-    # ---- secondary families -------------------------------------------------
     @rule(area=st.sampled_from(_areas() or ["OD-COAST"]), t=T_ST,
           cells=st.integers(min_value=2, max_value=12))
     def damage(self, area: str, t: int, cells: int) -> None:
@@ -127,15 +106,12 @@ class PolicyFuzzMachine(RuleBasedStateMachine):
     def event_delay(self, event_id: str, role: str, dt: int) -> None:
         self._mutate(mut.delay_event_for_role, event_id=event_id, role=role, dt=dt)
 
-    # ---- machinery ----------------------------------------------------------
     def _mutate(self, fn, **kwargs) -> None:
         self.scenario, record = fn(self.scenario, **kwargs)
         self.applied.append(record)
         self._rerun()
 
     def _rerun(self) -> None:
-        # One ledger file for the whole fuzz campaign's scratch runs: thousands of runs must not
-        # leave thousands of files behind.
         self.last_result = run(self.scenario, self.pack, seed=len(self.applied),
                                mutations=list(self.applied), runs_dir=CONFIG["runs_dir"],
                                ledger_path=Path(CONFIG["runs_dir"]) / "_fuzz_scratch.jsonl")

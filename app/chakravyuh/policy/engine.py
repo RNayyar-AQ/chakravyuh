@@ -1,20 +1,4 @@
-"""Deterministic policy engine. Y.3172 node: P.
-
-THE LLM NEVER DECIDES LEGALITY OR WORLD STATE (spec §0). This module is pure Python over
-compiled rules and the world state.
-
-HARD CONSTRAINT: this module must not import anything from `chakravyuh.llm`, directly or
-transitively. `tests/test_engine_purity.py` fails the build if it ever does.
-
-Resolution order (spec §5.4):
-  1. powers check          -> ultra vires
-  2. authentication check  -> forged-order handling. A pack with no authentication requirement
-                              ALLOWS the forged order: that is the vulnerability we measure, not
-                              a bug to patch in code.
-  3. rule evaluation       -> prohibitions, then permits/obligations, with conditions
-  4. reversibility         -> irreversible actions need a human (Y.3173-style)
-  5. Verdict(decision, rule_ids, clause_ids, explanation, mode)
-"""
+"""Deterministic policy engine. Y.3172 node: P."""
 from __future__ import annotations
 
 from typing import Mapping, Optional, Sequence
@@ -23,21 +7,13 @@ from ..schemas import Decision, Event, PolicyPack, Proposal, Rule, Verdict
 from ..world.state import WorldState
 from ..y3172 import node
 
-# Proposals that are never actions on the world; always permitted.
 NON_ACTIONS = frozenset({"NOOP", "ASK", "REPORT_INCIDENT_ACK"})
 
-# Action types whose effects cannot be undone once applied. A pack may override per rule via
-# Rule.reversible; this is the default classification.
 IRREVERSIBLE_BY_DEFAULT = frozenset({"ORDER_SUSPENSION"})
 
 
 class ActorView:
-    """What one role has actually received by time t. The engine uses it for `event_seen`.
-
-    Carries both the redacted view (what the agent knew) and the authentic flag (what was true),
-    because the engine is the Game Master's arm, not an agent: it is entitled to ground truth.
-    """
-
+    """What one role has actually received by time t. The engine uses it for `event_seen`."""
     def __init__(self, role: str, events: Sequence[Event] = (), arrival: Mapping[str, int] | None = None):
         self.role = role
         self.events: list[Event] = list(events)
@@ -77,14 +53,12 @@ def evaluate(proposal: Proposal, state: WorldState, pack: PolicyPack,
     events_by_id = events_by_id or {}
     mode = pack.mode
 
-    # ---- 0. non-actions -------------------------------------------------
     if proposal.action_type in NON_ACTIONS:
         return Verdict(proposal_id=proposal.proposal_id, decision=Decision.ALLOW,
                        rule_ids=[], clause_ids=[],
                        explanation=f"{proposal.action_type} is not an action on the world",
                        mode=mode)
 
-    # ---- 1. powers check (ultra vires) ----------------------------------
     powers = pack.powers_of(proposal.actor_role)
     if proposal.action_type not in powers:
         return Verdict(
@@ -96,7 +70,6 @@ def evaluate(proposal: Proposal, state: WorldState, pack: PolicyPack,
 
     candidates = pack.rules_for(proposal.actor_role, proposal.action_type)
 
-    # ---- 2. authentication check ----------------------------------------
     auth_rules = [r for r in candidates if r.requires_authenticated_order]
     forged = _triggering_order_is_forged(proposal, view, events_by_id)
     if auth_rules and forged:
@@ -108,7 +81,6 @@ def evaluate(proposal: Proposal, state: WorldState, pack: PolicyPack,
                          f"and the triggering order failed authentication"),
             mode=mode)
 
-    # ---- 3. rule evaluation ---------------------------------------------
     for rule in candidates:
         if rule.effect == "prohibit" and _conditions_hold(rule, proposal, state, view):
             return Verdict(
@@ -130,7 +102,6 @@ def evaluate(proposal: Proposal, state: WorldState, pack: PolicyPack,
 
     rule = enabling[0]
 
-    # ---- 4. reversibility -> human in the loop --------------------------
     irreversible = (not rule.reversible) or (
         proposal.action_type in IRREVERSIBLE_BY_DEFAULT and not rule.reversible)
     if irreversible:
@@ -141,7 +112,6 @@ def evaluate(proposal: Proposal, state: WorldState, pack: PolicyPack,
                          f"irreversible; human authorisation required before execution"),
             mode=mode)
 
-    # ---- 5. allow --------------------------------------------------------
     return Verdict(
         proposal_id=proposal.proposal_id, decision=Decision.ALLOW,
         rule_ids=[rule.rule_id], clause_ids=list(rule.clause_ids),
@@ -166,8 +136,6 @@ def _triggering_order_is_forged(proposal: Proposal, view: ActorView,
             return True
     return False
 
-
-# ------------------------------------------------------------ condition DSL
 
 def _area_of(proposal: Proposal) -> Optional[str]:
     a = proposal.params.get("area")
@@ -219,7 +187,7 @@ def _condition_results(rule: Rule, proposal: Proposal, state: WorldState,
             out[key] = all(proposal.params.get(p) not in (None, "", [], {}) for p in want)
         elif key == "param_in":
             out[key] = all(proposal.params.get(p) in allowed for p, allowed in want.items())
-        else:  # unreachable: the compiler rejects unknown keys
+        else:
             out[key] = False
     return out
 
@@ -239,11 +207,7 @@ def _unmet_conditions(rule: Rule, proposal: Proposal, state: WorldState, view: A
 @node("P")
 def obligations_due(pack: PolicyPack, state: WorldState, views: Mapping[str, ActorView],
                     t: int) -> list[dict]:
-    """Obligations whose deadline has passed without the obliged action having happened.
-
-    Used by the gap classifier to tell a *policy* gap (no obligation exists at all) from an
-    *execution* gap (the obligation existed, the fact arrived, nobody acted).
-    """
+    """Obligations whose deadline has passed without the obliged action having happened."""
     out: list[dict] = []
     for rule in pack.rules:
         if rule.effect != "oblige" or rule.deadline_min is None:
