@@ -1,0 +1,163 @@
+# Document-derived gaps: findings that come from reading the instruments, not from a run.
+#
+# WHY THESE EXIST ALONGSIDE THE SIMULATION-DERIVED ROWS
+#   A simulated run can only find a gap that its properties happen to test. Several of the gaps
+#   the brief asks about are visible in the documents themselves and would never surface in a
+#   125-hour cyclone run: that a national emergency telecom plan has not been operationalised,
+#   that an SOP carries no numeric deadline, that no ITU recommendation covers the authentication
+#   of an emergency *order* even though three cover the authentication of a calling *identity*.
+#   Those are read, not simulated, and the register says which is which in its `source` column.
+#
+# HOW CONFIDENCE IS SET -- it is NOT written here
+#   `confidence` is COMPUTED by chakravyuh/analysis/gap_register.py from the provenance of the
+#   clause records a row cites:
+#       certain  -- every cited clause carries the instrument's own words from a primary source
+#       likely   -- at least one cited clause is a summary (secondary_source or model_written)
+#   This is deliberate. An earlier draft of this file asserted `certain` on rows whose backing
+#   text we had never read, which is the precise failure mode the no-invented-text rule exists to
+#   prevent. Writing a confidence by hand here has no effect; the generator overwrites it.
+#
+# A NEGATIVE FINDING is a claim that an instrument is SILENT on something. It is the hardest kind
+# to support, because proving a silence needs the full text, not a summary of it. Rows resting on
+# one are flagged `negative_finding: true` and can never reach `certain` without the primary text.
+
+gaps:
+  - gap_id: G1
+    domain_gap: >-
+      Emergency telecom: disaster roaming has no standing, automatically triggered obligation;
+      it is arranged between operators and switched on by request, so the clock starts only once
+      somebody asks.
+    gap_type: policy
+    itu_hook: ITU-D Guidelines for National Emergency Telecommunication Plans (2020)
+    india_clause_ids: [IN.DOTSOP2020.icr, IN.UL.DISASTER]
+    india_note: >-
+      DoT SOP-2020 routes intra-circle roaming through MoUs between TSPs on mutually agreed
+      terms; activation is requested through DoT rather than triggered by the disaster itself.
+    neighbour_clause_ids: [BT.TELSOP.no_roaming]
+    neighbour_note: >-
+      Bhutan's SOP for Telecom Services during Disaster contains no roaming provision at all.
+    global_clause_ids: [US.CFR47.4.17.trigger, US.CFR47.4.17.a, US.FCC.DIRS]
+    global_note: >-
+      47 CFR 4.17 makes roaming-under-disaster-arrangements a standing obligation on a provider
+      whose network is impaired, triggered by the event rather than by a request.
+    reproduced_by_property: P4
+    negative_finding: false
+
+  - gap_id: G2
+    domain_gap: >-
+      Emergency telecom: a national emergency telecommunication plan is not operational, so
+      disaster-time telecom coordination rests on standing committees rather than on a plan with
+      owners and deadlines.
+    gap_type: coordination
+    itu_hook: ITU-D NETP Guidelines; ITU target of an NETP in every country
+    india_clause_ids: [IN.DOTSOP2020.committees]
+    india_note: >-
+      SOP-2020 establishes committees and nodal officers; it is an SOP, not a costed national plan.
+    neighbour_clause_ids: [BD.NETS.gap]
+    neighbour_note: >-
+      Bangladesh's National Emergency Telecommunication Service initiative has run since Sep 2022
+      with funds available and, as reported, no plan in place.
+    global_clause_ids: [INTL.ITU.NETP2020]
+    global_note: >-
+      The ITU-D guidelines set out what an NETP contains and who owns each part of it.
+    reproduced_by_property: ""
+    negative_finding: false
+
+  - gap_id: G3
+    domain_gap: >-
+      Emergency telecom: orders to operators are not cryptographically authenticated, so a forged
+      direction is indistinguishable from a genuine one at the moment the operator must act.
+    gap_type: standards
+    itu_hook: ITU-T SG11 (Q.3057/Q.3062/Q.3063); ITU-T SG17 (X.509)
+    india_clause_ids: [IN.SUSP2024.r3, IN.TCSR2024.no_order_auth, IN.TA2023.s20.2]
+    india_note: >-
+      The Suspension Rules route a direction to a nodal officer by electronic means; neither they
+      nor the Telecom Cyber Security Rules impose a duty to verify where it came from.
+    neighbour_clause_ids: []
+    neighbour_note: none found in the instruments held for Bangladesh, Bhutan or Bangladesh SOD 2019
+    global_clause_ids: [INTL.ITU.Q3057]
+    global_note: >-
+      ITU-T Q.3057 standardises certificate-based authentication of calling identity in
+      signalling. There is no equivalent recommendation for authenticating an emergency order to
+      an operator -- the standards gap is the absence, not a weaker alternative.
+    reproduced_by_property: P2
+    negative_finding: true
+
+  - gap_id: G4
+    domain_gap: >-
+      Emergency telecom: suspension safeguards carry no mandatory carve-out for response and
+      relief traffic, so a lawful suspension can switch off the traffic the response depends on.
+    gap_type: policy
+    itu_hook: ITU-T E.106 International Emergency Preference Scheme
+    india_clause_ids: [IN.TA2023.s20.1, IN.TA2023.s20.2, IN.SUSP2024.r2.1]
+    india_note: >-
+      s.20(1)(b) ENABLES priority routing for authorised responders; it does not oblige it, and
+      the 2024 Rules' safeguards address duration, review and who may order -- not a carve-out.
+    neighbour_clause_ids: [BD.CPP.WARNING]
+    neighbour_note: >-
+      Bangladesh's CPP standing order keeps the warning chain running independently of any
+      suspension, which is why the same seed passes under the Bangladesh pack.
+    global_clause_ids: [INTL.ITU.E106, INTL.ITU.CONST.art40]
+    global_note: >-
+      E.106 and ITU Constitution Art. 40 give safety-of-life traffic absolute priority on
+      international services. EU EECC Art. 110 is NOT cited: we hold no text for it.
+    reproduced_by_property: P1
+    negative_finding: true
+
+  - gap_id: G5
+    domain_gap: >-
+      Emergency telecom: outage duration is set by site power backup, and no instrument states a
+      numeric backup requirement, so the recovery clock is an engineering accident.
+    gap_type: execution
+    itu_hook: ITU-D NETP Guidelines (resilience and power)
+    india_clause_ids: [IN.DOTSOP2020.icr, IN.UL.DISASTER]
+    india_note: >-
+      Neither the SOP nor the licence condition we hold states a minimum backup duration; the
+      Amphan outages were driven by grid loss (COAI, as reported).
+    neighbour_clause_ids: [BD.SOD2019.ptd]
+    neighbour_note: >-
+      Bangladesh SOD 2019 assigns PTD/BTRC/BTCL duties; tower batteries reported at 4-8 h.
+    global_clause_ids: [US.CFR47.4.17.b]
+    global_note: >-
+      47 CFR 4.17 obliges mutual aid and asset sharing between providers, which is a different
+      lever on the same failure: it shortens outage without specifying a battery.
+    reproduced_by_property: ""
+    negative_finding: true
+
+  - gap_id: G6
+    domain_gap: >-
+      Emergency telecom: disaster telecom SOPs carry no numeric timelines, so "immediately" is
+      the only deadline and nothing is measurable after the event.
+    gap_type: policy
+    itu_hook: ""
+    india_clause_ids: [IN.DOTSOP2020.committees, IN.DOTSOP2020.icr]
+    india_note: "SOP-2020 as held: committees, nodal officers and reporting, no numeric deadline."
+    neighbour_clause_ids: [BT.TELSOP.no_roaming]
+    neighbour_note: 'Bhutan''s SOP as held: "immediately" plus daily reporting.'
+    global_clause_ids: [US.CFR47.4.17.b, US.FCC.DIRS]
+    global_note: >-
+      47 CFR 4.17 sets a 60-day reporting deadline and an annual roaming test; DIRS sets the
+      reporting cadence during the event.
+    reproduced_by_property: ""
+    negative_finding: true
+
+  - gap_id: G7
+    domain_gap: >-
+      Emergency telecom: cross-border alerting has no defined path, so a CAP alert cannot reach
+      the population on the far side of a border that the same cyclone is about to cross.
+    gap_type: coordination
+    itu_hook: ITU-T X.1303 (CAP) -- multilingual, area-polygon alerting
+    india_clause_ids: [IN.NDMA.CAP.SACHET, IN.DMA2005.s6]
+    india_note: >-
+      SACHET's CAP feeds are national and state-scoped; the alerting power is domestic.
+    neighbour_clause_ids: [BD.CPP.WARNING, BD.SOD2019.ptd]
+    neighbour_note: >-
+      Bangladesh's warning chain runs on BMD cyclone signals through CPP volunteers -- a
+      different channel, with no defined interface to SACHET.
+    global_clause_ids: [INTL.ITU.X1303, INTL.TAMPERE1998.art9]
+    global_note: >-
+      X.1303 already carries multilingual, polygon-scoped alerts across any boundary; the gap is
+      institutional, not technical. Tampere Art. 9 addresses regulatory barriers to relief
+      telecoms. Party status per country is NOT asserted: we hold no treaty-status page.
+    reproduced_by_property: P3
+    negative_finding: false

@@ -1,0 +1,180 @@
+# Bangladesh, as encoded for simulation (NOT legal advice). Neighbour comparator.
+# Contrast with india_current:
+#   + suspension direction must come from the authority empowered by Government -> authenticated
+#   + CPP standing order gives a hard 60-minute Bengali alert deadline to coastal areas
+#   - international roaming needs PRIOR WRITTEN BTRC approval -> the slowest roaming of the three
+# Role ids are the simulator's fixed set; here they stand for the Bangladeshi analogues
+# (competent_authority = Government/BTRC, sdma_alerts = DDM/CPP, neighbour_authority = Indian side).
+pack_id: bangladesh
+jurisdiction: BD
+version: "2026.10"
+mode: blocking
+
+rules:
+  - rule_id: BD.R.ORDER_SUSPENSION
+    summary: "Government-empowered authority may direct suspension; operators act only on an authenticated direction"
+    clause_ids: [BD.BTRA2001.s97A]
+    actor_role: competent_authority
+    action_type: ORDER_SUSPENSION
+    effect: permit
+    conditions:
+      param_required: [area, duration_min, reasons]
+    reversible: false
+
+  - rule_id: BD.R.ORDER_DISASTER_ROAMING
+    summary: "Commission may direct prioritisation and restoration of service in an emergency"
+    clause_ids: [BD.BTRA2001.s36, BD.SOD2019.ptd]
+    actor_role: competent_authority
+    action_type: ORDER_DISASTER_ROAMING
+    effect: permit
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, IMD_WARNING]
+      area_in: affected
+    approval_delay_min: 180              # prior written approval for roaming changes
+
+  - rule_id: BD.R.DECLARE_DISASTER
+    summary: "Deputy Commissioner activates district disaster management on an early warning"
+    clause_ids: [BD.DMA2012.s24, BD.DMA2012.s20]
+    actor_role: competent_authority
+    action_type: DECLARE_DISASTER
+    effect: permit
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL, CROSS_BORDER_REQUEST]
+
+  - rule_id: BD.R.SUSPEND_SERVICE
+    summary: "Operator shall act on a suspension direction ONLY where the direction is authenticated"
+    clause_ids: [BD.BTRA2001.s97A, BD.BTRA2001.s36]
+    actor_role: tsp_network
+    action_type: SUSPEND_SERVICE
+    effect: oblige
+    conditions:
+      event_seen: ORDER
+      param_required: [area]
+    requires_authenticated_order: true   # the India pack's G2 closed
+    deadline_min: 30
+
+  - rule_id: BD.R.SUSPEND_KEEPS_RELIEF
+    summary: "A suspension that does not preserve emergency/relief access is impermissible"
+    clause_ids: [BD.BTRA2001.s36, INTL.ITU.CONST.art40]
+    actor_role: tsp_network
+    action_type: SUSPEND_SERVICE
+    effect: prohibit
+    conditions:
+      param_in: {exempt_priority_slice: [false]}
+
+  - rule_id: BD.R.PRIORITISE_RELIEF_SLICE
+    summary: "Operator shall prioritise relief traffic on a Commission direction in an emergency"
+    clause_ids: [BD.BTRA2001.s36, INTL.ITU.E106]
+    actor_role: tsp_network
+    action_type: PRIORITISE_RELIEF_SLICE
+    effect: oblige
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, ORDER]
+      param_required: [area]
+    deadline_min: 60
+
+  - rule_id: BD.R.ENABLE_ROAMING
+    summary: "Operator may enable roaming only with prior written Commission approval"
+    clause_ids: [BD.BTRC.ROAM]
+    actor_role: tsp_network
+    action_type: ENABLE_ROAMING
+    effect: permit
+    conditions:
+      event_seen: ORDER_DISASTER_ROAMING
+      param_required: [area]
+
+  - rule_id: BD.R.ENABLE_ROAMING_UNAPPROVED
+    summary: "Operator shall not alter international roaming arrangements without prior approval"
+    clause_ids: [BD.BTRC.ROAM]
+    actor_role: tsp_network
+    action_type: ENABLE_ROAMING
+    effect: prohibit
+    conditions:
+      param_in: {ordered: [false]}
+
+  - rule_id: BD.R.RESTORE_SITE
+    summary: "Operator restores service in the affected area on Commission direction"
+    clause_ids: [BD.BTRA2001.s36]
+    actor_role: tsp_network
+    action_type: RESTORE_SITE
+    effect: permit
+    conditions:
+      param_required: [area]
+
+  - rule_id: BD.R.REPORT_INCIDENT
+    summary: "Operator reports a service-affecting incident to the Commission"
+    clause_ids: [BD.BTRA2001.s36]
+    actor_role: tsp_network
+    action_type: REPORT_INCIDENT
+    effect: oblige
+    conditions:
+      event_seen: [SUSPICIOUS_ORDER, CYBER_INCIDENT]
+    deadline_min: 360
+
+  - rule_id: BD.R.ISSUE_CAP_ALERT
+    summary: "CPP shall disseminate the cyclone warning to coastal inhabitants in Bengali without delay"
+    clause_ids: [BD.CPP.WARNING, BD.DMA2012.s24, BD.SOD2019.ptd, INTL.ITU.X1303]
+    actor_role: sdma_alerts
+    action_type: ISSUE_CAP_ALERT
+    effect: oblige
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL, CROSS_BORDER_REQUEST]
+      param_required: [area, languages]
+    deadline_min: 60                     # stronger than the India pack's 90
+
+  - rule_id: BD.R.ALERT_LANGUAGE
+    summary: "A warning not disseminated in Bengali does not discharge the dissemination duty"
+    clause_ids: [BD.CPP.WARNING]
+    actor_role: sdma_alerts
+    action_type: ISSUE_CAP_ALERT
+    effect: prohibit
+    conditions:
+      param_in: {languages_include_local: [false]}
+
+  - rule_id: BD.R.REQUEST_CROSS_BORDER
+    summary: "Authority may seek telecommunication assistance from another State Party"
+    clause_ids: [INTL.TAMPERE1998.art4, INTL.TAMPERE1998.art9]
+    actor_role: sdma_alerts
+    action_type: REQUEST_CROSS_BORDER_ALERT
+    effect: permit
+    conditions:
+      param_required: [area]
+
+  - rule_id: BD.R.FLAG_FORGED_ORDER
+    summary: "Sector regulator may flag a suspected forged direction"
+    clause_ids: [BD.BTRA2001.s36]
+    actor_role: cert_in
+    action_type: FLAG_FORGED_ORDER
+    effect: permit
+    conditions:
+      param_required: [about_event_id]
+
+  - rule_id: BD.R.CROSS_BORDER_ROAMING
+    summary: "Authority may enable disaster roaming in its own coastal areas on a cross-border warning"
+    clause_ids: [INTL.TAMPERE1998.art9, BD.BTRA2001.s36]
+    actor_role: neighbour_authority
+    action_type: ENABLE_ROAMING
+    effect: permit
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, CROSS_BORDER_REQUEST]
+      param_required: [area]
+
+  - rule_id: BD.R.NEIGHBOUR_ALERT
+    summary: "Authority alerts the population on its own side once the warning reaches it"
+    clause_ids: [BD.CPP.WARNING, BD.DMA2012.s24]
+    actor_role: neighbour_authority
+    action_type: ISSUE_CAP_ALERT
+    effect: oblige
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, CROSS_BORDER_REQUEST]
+      param_required: [area, languages]
+    deadline_min: 60
+
+  - rule_id: BD.R.NEIGHBOUR_ACK
+    summary: "Authority acknowledges and acts on a cross-border request"
+    clause_ids: [INTL.TAMPERE1998.art4]
+    actor_role: neighbour_authority
+    action_type: ACKNOWLEDGE_CROSS_BORDER
+    effect: permit
+    conditions:
+      event_seen: CROSS_BORDER_REQUEST

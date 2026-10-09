@@ -1,0 +1,175 @@
+# India, current law as encoded for simulation (NOT legal advice).
+# Each rule cites clause_ids that must exist in the clause store and hash-match.
+# This pack is the baseline. Its three designed weaknesses are the object of study:
+#   (G1) no standing disaster-roaming trigger: roaming needs a fresh order + approval delay
+#   (G2) no authentication requirement on a suspension order reaching the operator
+#   (G3) suspension carries no mandatory carve-out for relief/priority traffic
+#   (G4) no domestic power to alert across the border; the neighbour channel is slow
+pack_id: india_current
+jurisdiction: IN
+version: "2026.10"
+mode: blocking
+
+rules:
+  # ---------------- competent authority (MHA / State Home Secretary) ----------------
+  - rule_id: IN.R.ORDER_SUSPENSION
+    summary: "Competent authority may order temporary suspension of telecom services in an area"
+    clause_ids: [IN.TA2023.s20.2, IN.SUSP2024.r2.1, IN.SUSP2024.r2.3]
+    actor_role: competent_authority
+    action_type: ORDER_SUSPENSION
+    effect: permit
+    conditions:
+      param_required: [area, duration_min, reasons]
+      param_max: {duration_min: 21600}   # r.2(4): 15 days at a time
+    reversible: false                     # irreversible in effect -> NEEDS_HUMAN (Y.3173)
+
+  - rule_id: IN.R.ORDER_DISASTER_ROAMING
+    summary: "Licensor/authority may direct inter-operator roaming for disaster relief"
+    # The Act contains no roaming provision at all (verified: zero of its 62 sections mention
+    # roaming). Intra-circle roaming rests on the DoT SOP and licence conditions, which is
+    # precisely why there is no standing trigger.
+    clause_ids: [IN.DOTSOP2020.icr, IN.UL.DISASTER]
+    actor_role: competent_authority
+    action_type: ORDER_DISASTER_ROAMING
+    effect: permit
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT]
+      area_in: affected
+    approval_delay_min: 120               # G1: case-by-case direction, not a standing trigger
+
+  - rule_id: IN.R.DECLARE_DISASTER
+    summary: "State authority declares a disaster situation for an area"
+    clause_ids: [IN.DMA2005.s22.2.h, IN.DMA2005.s34.c]
+    actor_role: competent_authority
+    action_type: DECLARE_DISASTER
+    effect: permit
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL]
+
+  # ---------------- TSP / network operator (the 5G network agent) ----------------
+  - rule_id: IN.R.SUSPEND_SERVICE
+    summary: "Operator shall give effect to a suspension direction received via its nodal officer"
+    # IN.TCSR2024.no_order_auth is a NEGATIVE finding record: the Telecom Cyber Security Rules
+    # 2024 impose incident reporting but no duty to authenticate a direction before acting on it.
+    # Citing it here is what lets the P2 gap name the instrument that is silent.
+    clause_ids: [IN.SUSP2024.r3, IN.TA2023.s20.2, IN.TCSR2024.no_order_auth]
+    actor_role: tsp_network
+    action_type: SUSPEND_SERVICE
+    effect: oblige
+    conditions:
+      event_seen: ORDER
+      param_required: [area]
+    requires_authenticated_order: false  # G2: the pack imposes no authentication duty
+    deadline_min: 30
+
+  - rule_id: IN.R.PRIORITISE_RELIEF_SLICE
+    summary: "Operator may provide priority routing for authorised relief users (E.106-style)"
+    # s.20(1)(b) is the ONLY priority-routing provision in the Act. An earlier draft of this
+    # pack cited s.24 for it; s.24 is "Establishment of Digital Bharat Nidhi" (the USO fund) and
+    # says nothing about routing. The real gazette text caught the error.
+    clause_ids: [IN.TA2023.s20.1, INTL.ITU.E106, INTL.ITU.CONST.art40]
+    actor_role: tsp_network
+    action_type: PRIORITISE_RELIEF_SLICE
+    effect: permit                        # G3: permitted, not obliged, and not tied to suspension
+    conditions:
+      param_required: [area]
+
+  - rule_id: IN.R.ENABLE_ROAMING
+    summary: "Operator may enable disaster roaming only once directed by the Licensor"
+    clause_ids: [IN.UL.DISASTER, IN.DOTSOP2020.icr]
+    actor_role: tsp_network
+    action_type: ENABLE_ROAMING
+    effect: permit
+    conditions:
+      event_seen: ORDER_DISASTER_ROAMING   # G1: no standing trigger; waits for the order
+      param_required: [area]
+
+  - rule_id: IN.R.ENABLE_ROAMING_NO_ORDER
+    summary: "Operator shall not alter roaming arrangements absent a direction"
+    clause_ids: [IN.UL.DISASTER]
+    actor_role: tsp_network
+    action_type: ENABLE_ROAMING
+    effect: prohibit
+    conditions:
+      param_in: {ordered: [false]}
+
+  - rule_id: IN.R.RESTORE_SITE
+    summary: "Operator restores damaged sites"
+    clause_ids: [IN.UL.DISASTER]
+    actor_role: tsp_network
+    action_type: RESTORE_SITE
+    effect: permit
+    conditions:
+      param_required: [area]
+
+  - rule_id: IN.R.REPORT_INCIDENT
+    summary: "Operator shall report a reportable cyber incident to CERT-In within six hours"
+    clause_ids: [IN.CERTIN2022.p2, IN.TCSR2024.r7]
+    actor_role: tsp_network
+    action_type: REPORT_INCIDENT
+    effect: oblige
+    conditions:
+      event_seen: [SUSPICIOUS_ORDER, CYBER_INCIDENT]
+    deadline_min: 360
+
+  # ---------------- SDMA / alerting authority ----------------
+  - rule_id: IN.R.ISSUE_CAP_ALERT
+    summary: "Alerting authority issues a CAP alert to the public in the affected area"
+    clause_ids: [IN.NDMA.CAP.SACHET, IN.DMA2005.s34.c, IN.TA2023.s23, INTL.ITU.X1303]
+    actor_role: sdma_alerts
+    action_type: ISSUE_CAP_ALERT
+    effect: oblige
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL]
+      area_in: affected                   # G4: domestic areas only
+      param_required: [area, languages]
+    deadline_min: 90
+
+  - rule_id: IN.R.NO_CROSS_BORDER_ALERT
+    summary: "Domestic alerting authority holds no power to alert across an international border"
+    clause_ids: [IN.DMA2005.s6, IN.NDMA.CAP.SACHET]
+    actor_role: sdma_alerts
+    action_type: ISSUE_CAP_ALERT
+    effect: prohibit
+    conditions:
+      area_in: cross_border               # G4 made explicit so the BLOCK cites a clause
+
+  - rule_id: IN.R.REQUEST_CROSS_BORDER
+    summary: "Authority may pass a warning to a neighbouring State's authority (Tampere art.3 cooperation)"
+    clause_ids: [INTL.TAMPERE1998.art3, INTL.TAMPERE1998.art4]
+    actor_role: sdma_alerts
+    action_type: REQUEST_CROSS_BORDER_ALERT
+    effect: permit
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL]
+      param_required: [area]
+
+  # ---------------- CERT-In ----------------
+  - rule_id: IN.R.FLAG_FORGED_ORDER
+    summary: "CERT-In may flag an order as suspected forgery and notify stakeholders"
+    clause_ids: [IN.CERTIN2022.p2, IN.TA2023.s22]
+    actor_role: cert_in
+    action_type: FLAG_FORGED_ORDER
+    effect: permit
+    conditions:
+      event_seen: [SUSPICIOUS_ORDER, INCIDENT_REPORT]
+      param_required: [about_event_id]
+
+  - rule_id: IN.R.CERTIN_ADVISORY
+    summary: "CERT-In may issue an advisory on telecom cyber security measures"
+    clause_ids: [IN.TA2023.s22, IN.TA2023.s19, IN.CERTIN2022.p4]
+    actor_role: cert_in
+    action_type: ISSUE_ADVISORY
+    effect: permit
+    conditions:
+      param_required: [subject]
+
+  # ---------------- neighbour authority (acts under its own pack in reality) ----------------
+  - rule_id: IN.R.NEIGHBOUR_NOOP
+    summary: "Neighbour authority has no powers under the Indian pack; retained for role completeness"
+    clause_ids: [INTL.TAMPERE1998.art4]
+    actor_role: neighbour_authority
+    action_type: ACKNOWLEDGE_CROSS_BORDER
+    effect: permit
+    conditions:
+      event_seen: CROSS_BORDER_REQUEST

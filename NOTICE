@@ -1,0 +1,73 @@
+CHAKRAVYUH
+Copyright 2026 Ranny Nayyar / Quantum QAI
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+================================================================================
+ITU resources this work extends
+================================================================================
+
+ITU AI Readiness reference implementation (MIT License)
+  https://github.com/CrashingGuru/ITUAIReadiness
+  The file simulation/data/framework/dimensions.json is redistributed here at
+  data/sources/INTL/02_ITU_AI_Readiness_dimensions.json. Our AI Readiness map is
+  GENERATED from it at build time (scripts/gen_ai_readiness_map.py) so that no ITU
+  label is ever retyped by us.
+
+ITU Sandbox training dataset
+  https://github.com/CrashingGuru/Sandbox_Training
+  Used to locate the official eGazette URLs for the Telecommunications Act 2023 and
+  the Digital Personal Data Protection Act 2023. Clause text in this repository is
+  extracted by us from the official eGazette PDFs, not copied from that dataset.
+
+ITU-T Recommendations referenced (not redistributed)
+  Y.3172  Architectural framework for machine learning in future networks
+  Y.3173  Framework for evaluating intelligence level of future networks
+  Y.3181  Architectural framework for ML sandbox
+  X.1303  Common Alerting Protocol (CAP 1.2)
+  E.106   International Emergency Preference Scheme
+  Q.3057 / Q.3062 / Q.3063  Signature-based calling party authentication
+  ITU-D Guidelines for National Emergency Telecommunication Plans (2020)
+
+This project is ALIGNED WITH and MAPPED TO the above. It is not certified by,
+approved by, or endorsed by the ITU, and no such claim is made anywhere in it.
+
+================================================================================
+Primary source documents
+================================================================================
+
+Source PDFs are NOT redistributed in this repository. Each is recorded in
+data/sources/MANIFEST.yaml with its official URL, SHA-256 and verification
+status, and is re-fetched by scripts/fetch_sources.py. This avoids redistributing
+third-party documents whose licence terms we have not cleared.
+
+Clause TEXT extracted from the following is included as clause records with
+attribution, page number and hash:
+
+  Government of India, eGazette (public domain in India under s.52(1)(q) of the
+  Copyright Act 1957, which exempts reproduction of any Act, rule or order):
+    The Telecommunications Act, 2023 (Act 44 of 2023)
+      https://egazette.gov.in/WriteReadData/2023/250880.pdf
+    The Digital Personal Data Protection Act, 2023 (Act 22 of 2023)
+      https://egazette.gov.in/WriteReadData/2023/248045.pdf
+    Telecommunications (Temporary Suspension of Services) Rules, 2024,
+      G.S.R. 724(E), 22 Nov 2024
+
+  United States Government (works of the US Government are not subject to
+  copyright under 17 U.S.C. s.105):
+    47 CFR 4.17, Federal Register Vol. 87 No. 189, 30 Sep 2022
+
+Documents fetched for verification but whose text is NOT redistributed here, as
+their licence terms have not been cleared:
+    CERT-In Directions, 28 Apr 2022 (cert-in.org.in)
+    SOP for Telecommunication Services During Disasters (DITT, Bhutan)
+    Standing Orders on Disaster 2019 (MoDMR, Bangladesh; ADRC mirror)
+
+================================================================================
+Scenario calibration
+================================================================================
+
+Cyclone Amphan timings are taken from the IMD RSMC New Delhi press release.
+Network impact figures are reported aggregates (COAI via Deccan Herald; BTRC via
+Dhaka Tribune for Remal 2024). Per-cell network state is SIMULATED and is labelled
+as such everywhere it appears. See docs/limits.md.

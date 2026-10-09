@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CHAKRAVYUH — rubric status</title><style>
+:root{--bg:#faf8f5;--card:#fff;--ink:#1a1a1a;--dim:#6b6b6b;--line:#e4e0da;
+--pass:#1b7f4f;--fail:#b3261e;--waive:#9a6700;--accent:#c75000;
+--passbg:#e8f5ee;--failbg:#fdeceb;--waivebg:#fdf4e3;}
+@media (prefers-color-scheme:dark){:root{--bg:#16181c;--card:#1e2126;--ink:#e9e6e1;
+--dim:#9a9690;--line:#2e3238;--pass:#4ec98a;--fail:#ff6b5e;--waive:#e0a93f;
+--passbg:#13301f;--failbg:#36181a;--waivebg:#2f2512;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 80px}
+h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--dim);font-size:14px;margin:0 0 28px}
+.scores{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 28px}
+.score{flex:1 1 150px;background:var(--card);border:1px solid var(--line);
+border-radius:10px;padding:16px 18px}
+.score .n{font-size:34px;font-weight:650;line-height:1;letter-spacing:-.03em}
+.score .l{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);
+margin-top:6px}
+.score.p .n{color:var(--pass)}.score.w .n{color:var(--waive)}.score.f .n{color:var(--fail)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:0 0 28px;
+border:1px solid var(--line)}
+.bar i{display:block}.bar .p{background:var(--pass)}.bar .w{background:var(--waive)}
+.bar .f{background:var(--fail)}
+.note{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
+border-radius:0 8px 8px 0;padding:14px 18px;margin:0 0 28px;font-size:14px;color:var(--dim)}
+.note b{color:var(--ink)}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);
+margin:34px 0 12px;font-weight:600}
+.filters{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}
+.filters button{font:inherit;font-size:13px;padding:5px 13px;border-radius:999px;cursor:pointer;
+border:1px solid var(--line);background:var(--card);color:var(--dim)}
+.filters button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+table{width:100%;border-collapse:collapse;background:var(--card);
+border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);
+padding:11px 14px;border-bottom:1px solid var(--line);font-weight:600}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+tr:last-child td{border-bottom:0}
+td.id{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:600;white-space:nowrap}
+td.crit{color:var(--dim);font-size:13px;white-space:nowrap}
+.pill{display:inline-block;font-size:11px;font-weight:650;letter-spacing:.06em;
+padding:3px 9px;border-radius:5px;white-space:nowrap}
+.pill.PASS{color:var(--pass);background:var(--passbg)}
+.pill.FAIL{color:var(--fail);background:var(--failbg)}
+.pill.WAIVED{color:var(--waive);background:var(--waivebg)}
+details{background:var(--card);border:1px solid var(--line);border-radius:10px;
+padding:0;margin:0 0 10px}
+details[open]{border-color:var(--dim)}
+summary{cursor:pointer;padding:14px 18px;display:flex;gap:12px;align-items:center;
+list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;color:var(--dim);font-size:18px;line-height:1}
+details[open] summary::after{content:"\2212"}
+summary .q{font-weight:500}
+.body{padding:0 18px 18px;font-size:14px;color:var(--dim)}
+.body .detail{color:var(--ink);margin:0 0 14px}
+.waiver{background:var(--waivebg);border-radius:8px;padding:13px 15px;font-size:13.5px;
+color:var(--ink)}
+.waiver b{color:var(--waive)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
+color:var(--dim);font-size:13px}
+.hidden{display:none}
+@media print{.filters{display:none}details{break-inside:avoid}details>.body{display:block!important}}
+</style></head><body>
+<div class="wrap">
+<h1>Rubric status</h1>
+<p class="sub">CHAKRAVYUH &middot; measured 2026-10-09 23:49 by <code>scripts/rubric_audit.py</code>
+&middot; 22 checks from <code>CHAKRAVYUH_RUBRIC_SHOWCASE.md</code> Phase 1</p>
+
+<div class="scores">
+  <div class="score p"><div class="n">20</div><div class="l">Pass</div></div>
+  <div class="score w"><div class="n">2</div><div class="l">Waived</div></div>
+  <div class="score f"><div class="n">0</div><div class="l">Fail</div></div>
+  <div class="score"><div class="n">22</div><div class="l">Checks run</div></div>
+</div>
+<div class="bar">
+  <i class="p" style="width:90.9%"></i>
+  <i class="w" style="width:9.1%"></i>
+  <i class="f" style="width:0.0%"></i>
+</div>
+
+<div class="note"><b>No failures. 2 waived, each with its reason stated below.</b> Nothing on this page is asserted by hand &mdash; every
+line is measured when <code>python scripts/rubric_audit.py</code> runs. A <b>WAIVED</b> check is
+one whose condition does not hold and which we decided should not, for a reason printed with it;
+the reason lives in the check's own code, so a waiver cannot be silent. Run
+<code>--strict</code> to make a waiver fail too.</div>
+
+<h2>All checks</h2>
+<div class="filters">
+  <button data-f="all" aria-pressed="true">All 22</button>
+  <button data-f="PASS" aria-pressed="false">Pass 20</button>
+  <button data-f="WAIVED" aria-pressed="false">Waived 2</button>
+  <button data-f="FAIL" aria-pressed="false">Fail 0</button>
+</div>
+<table><thead><tr><th>ID</th><th>Criterion</th><th>Check</th><th>Status</th></tr></thead>
+<tbody><tr data-status="WAIVED"><td class="id">A1</td><td class="crit">KB</td><td>every clause row has text, hash, URL and a page</td><td><span class="pill WAIVED">WAIVED</span></td></tr>
+<tr data-status="PASS"><td class="id">A2</td><td class="crit">KB / Audit</td><td>re-hashing text_verbatim reproduces the stored sha256</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="WAIVED"><td class="id">A3</td><td class="crit">KB</td><td>every pack rule's clause ids resolve and are sourced</td><td><span class="pill WAIVED">WAIVED</span></td></tr>
+<tr data-status="PASS"><td class="id">A4</td><td class="crit">KB / ITU</td><td>Chroma kb_main has India chunks via the ITU ingest</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">A5</td><td class="crit">KB</td><td>&gt;=30 eval questions with resolvable gold clause ids</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">A6</td><td class="crit">KB</td><td>recall@5 and MRR for &gt;=3 retrievers</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">B1</td><td class="crit">Agent capability</td><td>amphan_2020 scenario with the real IMD timeline</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">B2</td><td class="crit">Agent capability</td><td>information arrives chunked and uneven per role</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">B3</td><td class="crit">Agent capability</td><td>every clause the Adviser cites is retrieved and real</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">B4</td><td class="crit">Agent capability / Gap</td><td>forged order reaches the engine and the verdict is logged</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">B5</td><td class="crit">Audit</td><td>policy engine imports nothing from llm/</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">C1</td><td class="crit">Gap</td><td>gap register has §4 columns, &gt;=5 rows, all three instances</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">D1</td><td class="crit">Audit</td><td>ledger chain verifies and tampering is detected</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">D2</td><td class="crit">Audit</td><td>proposals carry reasoning and cited rule + clause ids</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">E1</td><td class="crit">ITU alignment</td><td>y3172 map generated from @node, all 7 nodes</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">E2</td><td class="crit">ITU alignment</td><td>AI Readiness map reads labels from ITU's dimensions.json</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">E3</td><td class="crit">ITU alignment</td><td>README carries the brief's 8-perspective table</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">F1</td><td class="crit">Ground rules</td><td>§0's corrections hold everywhere in the repo</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">G1</td><td class="crit">Submission</td><td>every promised submission file exists and its links resolve</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">G2</td><td class="crit">Submission</td><td>one command replays the demo with the network off</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">G3</td><td class="crit">Submission</td><td>no claim of ITU certification, approval or compliance</td><td><span class="pill PASS">PASS</span></td></tr>
+<tr data-status="PASS"><td class="id">G4</td><td class="crit">KB</td><td>every held source is hashed and completeness-checked</td><td><span class="pill PASS">PASS</span></td></tr></tbody></table>
+
+<h2>What each check measured</h2>
+<details data-status="WAIVED"><summary><span class="pill WAIVED">WAIVED</span><span class="q"><code>A1</code> &nbsp;every clause row has text, hash, URL and a page</span></summary><div class="body"><p class="detail">157 clauses: text_verbatim, sha256 and source_url present on all 157; page present on 110</p><div class="waiver"><b>Why this is waived.</b> The 47 records without a page are all summaries ({'model_written': 29, 'secondary_source': 18}), not extracts from a PDF we hold. A page number points into a primary document; these records point at a source URL instead, and a fabricated page would be worse than none.</div></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>A2</code> &nbsp;re-hashing text_verbatim reproduces the stored sha256</span></summary><div class="body"><p class="detail">re-hashing text_verbatim reproduces the stored sha256 for all 157 clauses</p></div></details><details data-status="WAIVED"><summary><span class="pill WAIVED">WAIVED</span><span class="q"><code>A3</code> &nbsp;every pack rule's clause ids resolve and are sourced</span></summary><div class="body"><p class="detail">all citations in 44 rules across 3 packs resolve to a clause record; 44 rules cite at least one record that is a summary rather than the instrument's own words</p><div class="waiver"><b>Why this is waived.</b> The rubric's §0 rule would exclude these rules from the demo as PENDING_SOURCE. Doing that would delete the three comparator packs and most of the India pack, and the demo would then show only what we already hold primary text for -- two Acts, neither of which governs suspension, roaming or alerting. We keep them and make the dependency visible everywhere instead: each record's `provenance` and `verbatim_status`, the gap register's computed `confidence` column (every row currently `likely`, not `certain`), the starred clause ids in the register, and the collection list in data/sources/CLAUSES_PROVENANCE.md. No rule's text is paraphrased from memory: every summary record names the source it came from.</div></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>A4</code> &nbsp;Chroma kb_main has India chunks via the ITU ingest</span></summary><div class="body"><p class="detail">kb_main has 257 chunks, 235 from India sources; each chunk carries ['clause_id', 'instrument', 'jurisdiction', 'page', 'sha256', 'source_url'] -- metadata ITU's reference ingest does not record</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>A5</code> &nbsp;&gt;=30 eval questions with resolvable gold clause ids</span></summary><div class="body"><p class="detail">53 questions: 48 answerable with every gold clause id resolving, plus 5 whose honest answer is that the KB cannot say (each one tied to a documented absence, so abstention is scored against a real gap rather than a trick question)</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>A6</code> &nbsp;recall@5 and MRR for &gt;=3 retrievers</span></summary><div class="body"><p class="detail">5 retrievers scored over 48 questions (bm25 r@5=0.979/MRR=0.907, hybrid r@5=0.979/MRR=0.908, hybrid_rerank r@5=0.979/MRR=0.908, tree r@5=0.312/MRR=0.299, vector r@5=0.979/MRR=0.894); best hybrid</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>B1</code> &nbsp;amphan_2020 scenario with the real IMD timeline</span></summary><div class="body"><p class="detail">15 events (7 from the IMD release, 8 labelled synthetic), epoch 2020-05-16T08:45:00+05:30, landfall at T+6285 min = 104.75 h, 9 real districts</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>B2</code> &nbsp;information arrives chunked and uneven per role</span></summary><div class="body"><p class="detail">9 events reach two or more roles at different times (e.g. imd01, spread 150 min) and 5 reach exactly one role</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>B3</code> &nbsp;every clause the Adviser cites is retrieved and real</span></summary><div class="body"><p class="detail">23 adviser cases: every cited clause id is in the retrieved set and in the clause store (C4 23/23); the gold clause is recovered on 19/23 (C1); 10 cases expect an abstention or a GAP answer</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>B4</code> &nbsp;forged order reaches the engine and the verdict is logged</span></summary><div class="body"><p class="detail">forged event(s) ['sim03'] reached the engine: 1 verdict(s), first = SUSPEND_SERVICE -&gt; ALLOW: permitted_by_rule: IN.R.SUSPEND_SERVICE; 1 irreversible action(s) executed on the forged order (this is the P2 finding, reported as found)</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>B5</code> &nbsp;policy engine imports nothing from llm/</span></summary><div class="body"><p class="detail">chakravyuh.policy.engine transitively imports 12 project modules and none of them is chakravyuh.llm (checked by walking the import graph, not by inspecting one file)</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>C1</code> &nbsp;gap register has §4 columns, &gt;=5 rows, all three instances</span></summary><div class="body"><p class="detail">11 rows, §4 columns first and in order; by type {'policy': 7, 'coordination': 2, 'standards': 1, 'execution': 1}; by source {'simulation': 4, 'document': 7}; confidence {'likely': 11}; every row has an India instance, a neighbour cell, a global example and evidence</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>D1</code> &nbsp;ledger chain verifies and tampering is detected</span></summary><div class="body"><p class="detail">11/11 ledgers verify; the tamper demo alters one character and the chain catches it -- 3. verify the altered copy      : FAIL payload tampered at seq 45: hash mismatch</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>D2</code> &nbsp;proposals carry reasoning and cited rule + clause ids</span></summary><div class="body"><p class="detail">all 393 PROPOSAL entries carry reasoning, cited_rule_ids and cited_clause_ids; 394 VERDICT entries carry the deciding rule and clause ids; the demo run is the deterministic rule tier and makes 0 LLM calls, so the LLM_TRACE invariant holds with nothing to record. The mechanism is exercised by tests/test_p6_agents_and_adviser.py, which asserts a trace per call under the LLM tier</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>E1</code> &nbsp;y3172 map generated from @node, all 7 nodes</span></summary><div class="body"><p class="detail">out/y3172_map.md covers all seven Y.3172 nodes ['SRC', 'C', 'PP', 'M', 'P', 'D', 'SINK'], generated from the @node decorators in the source</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>E2</code> &nbsp;AI Readiness map reads labels from ITU's dimensions.json</span></summary><div class="body"><p class="detail">all 13 dimension labels read from ITU's 02_ITU_AI_Readiness_dimensions.json at generation time (framework 2.0); D1 is 'Data/Model Marketplace', not 'Open Source'</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>E3</code> &nbsp;README carries the brief's 8-perspective table</span></summary><div class="body"><p class="detail">README carries a table covering all 8 of the brief's perspectives, each with the file that evidences it</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>F1</code> &nbsp;§0's corrections hold everywhere in the repo</span></summary><div class="body"><p class="detail">§0 corrections hold across the repo: DPDP s.7(h) is the disaster ground and 7(g) appears only as the epidemics ground; no file asserts a 3-hour takedown; D1 is read from ITU's file; Tampere party status is never encoded</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>G1</code> &nbsp;every promised submission file exists and its links resolve</span></summary><div class="body"><p class="detail">all 11 submission files present; every one of the 21 repo-relative links in SUBMISSION.md resolves</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>G2</code> &nbsp;one command replays the demo with the network off</span></summary><div class="body"><p class="detail">`bash scripts/replay_demo.sh` pins CHAKRAVYUH_LLM_MODE=replay, so a cache miss raises instead of reaching the network; builds the KB, replays every pack, verifies all ledgers, runs the tamper demo and the rubric audit</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>G3</code> &nbsp;no claim of ITU certification, approval or compliance</span></summary><div class="body"><p class="detail">no file claims ITU certification, approval or compliance; NOTICE states the relationship as 'aligned with and mapped to', which is what it is</p></div></details><details data-status="PASS"><summary><span class="pill PASS">PASS</span><span class="q"><code>G4</code> &nbsp;every held source is hashed and completeness-checked</span></summary><div class="body"><p class="detail">5 primary sources held, each pinned by sha256 and verified against required strings that only the real instrument carries; 3 not held, each naming what it blocks (IN-TCS-2024, IN-TCS-AMEND-2025, IN-SOP-2020)</p></div></details>
+
+<footer>Regenerate: <code>python scripts/rubric_audit.py</code> &nbsp;&middot;&nbsp;
+everything: <code>python scripts/showcase.py</code><br>
+Policy packs are encodings of selected clauses <b>for simulation, not legal advice</b>.
+Property margins are illustrative units &mdash; cells, minutes, percentages.
+</footer>
+</div>
+<script>
+const btns=document.querySelectorAll('.filters button');
+btns.forEach(b=>b.addEventListener('click',()=>{
+  btns.forEach(x=>x.setAttribute('aria-pressed',x===b));
+  const f=b.dataset.f;
+  document.querySelectorAll('[data-status]').forEach(el=>{
+    el.classList.toggle('hidden', f!=='all' && el.dataset.status!==f);
+  });
+}));
+</script></body></html>

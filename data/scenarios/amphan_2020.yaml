@@ -1,0 +1,356 @@
+# Cyclone Amphan, May 2020 — REAL IMD timeline, real districts, real impact calibration.
+#
+# PROVENANCE
+#   Timeline: IMD RSMC New Delhi press release on Super Cyclonic Storm AMPHAN
+#     https://rsmcnewdelhi.imd.gov.in/uploads/archive/21/21_d7b2af_press%20release%20amphan.pdf
+#   t_minutes is measured from the FIRST IMD message (16 May 2020, 08:45 IST = T+0).
+#   Every t_minutes below is computed from the real IST timestamps in that release.
+#   Impact figures: COAI via Deccan Herald (65-70% capacity day 3, ~8,500 towers / ~36,000 BTS in
+#     the affected districts, 100 fibre cuts in an hour); 85% capacity by ~24 May.
+#   Alert format: SACHET publishes CAP 1.2; area is a district-level cap:polygon in lat,lon order.
+#     https://sachet.ndma.gov.in/cap_public_website/rss/rss_india.xml
+#
+# WHAT IS REAL AND WHAT IS NOT
+#   REAL: the message sequence and its timings, the warned districts, landfall time/place/intensity,
+#         the aggregate network-capacity figures used to size cell counts.
+#   SYNTHETIC: per-cell outage (no public cell-site-level dataset exists for any Indian cyclone —
+#         see CHAKRAVYUH_REAL_DATA.md §4), the forged order, the rumour, and all per-role delays.
+#         The forged order is a constructed adversarial test, NOT a historical event.
+scenario_id: amphan_2020
+title: "Cyclone Amphan, 16-20 May 2020 — Odisha / West Bengal / Bangladesh coast"
+description: >
+  Super Cyclonic Storm Amphan over the Bay of Bengal. IMD issues a pre-cyclone watch 104 hours
+  before landfall and escalates through watch, alert, warning and post-landfall outlook. Landfall
+  near the Sundarbans on the West Bengal-Bangladesh coast on 20 May. Networks in the affected
+  districts fall to 65-70% of capacity. A forged suspension order is injected as an adversarial
+  test.
+
+# T+0 = 16 May 2020 08:45 IST. Landfall 20 May 15:30 IST = T+6285 min (104.75 h).
+horizon_min: 7500          # through ~21 May 14:00 IST, covering post-landfall restoration
+tick_min: 15
+
+# Real districts. Odisha and West Bengal lists are the IMD-warned districts from the release.
+areas:
+  - OD-JAGATSINGHPUR
+  - OD-KENDRAPARA
+  - OD-BHADRAK
+  - OD-BALASORE
+  - WB-EAST-MEDINIPUR
+  - WB-SOUTH-24-PARGANAS
+  - WB-NORTH-24-PARGANAS
+  - WB-KOLKATA
+  - BD-KHULNA
+cross_border_areas: [BD-KHULNA]
+
+# Cell counts scaled from the reported ~8,500 towers / ~36,000 base stations across the affected
+# Kolkata + N/S 24 Parganas area, then apportioned by district. Illustrative, not an operator count.
+cells_per_area:
+  OD-JAGATSINGHPUR: 18
+  OD-KENDRAPARA: 16
+  OD-BHADRAK: 16
+  OD-BALASORE: 20
+  WB-EAST-MEDINIPUR: 24
+  WB-SOUTH-24-PARGANAS: 34
+  WB-NORTH-24-PARGANAS: 34
+  WB-KOLKATA: 40
+  BD-KHULNA: 22
+
+# A valid public alert must use at least one language of that area (property P3).
+# T+0 as a real instant, with the offset CAP 1.2 requires. Every CAP `sent` in a run is
+# epoch_iso + t_minutes, so an alert issued at T+6300 carries 20 May 2020 17:45 IST — not the
+# time the demo happens to be run.
+epoch_iso: "2020-05-16T08:45:00+05:30"
+
+# CAP 1.2 area shapes. Only ONE is declared, and it is declared because a cited source gives it:
+# the IMD release states landfall near 21.65°N 88.30°E, which is a point, so it is encoded as a
+# cap:circle (lat,lon radius-km) and not as a district boundary.
+#   NO POLYGONS ARE DECLARED. We hold no district boundary file for Odisha, West Bengal or
+#   Khulna, and CAP makes cap:polygon optional while requiring cap:areaDesc. A polygon we drew
+#   from memory would be a fabricated boundary dressed as official geodata, so every other area
+#   emits areaDesc alone. Supply a boundary file and these become polygons with no code change.
+area_circles:
+  BD-KHULNA: "21.65,88.30 60"     # IMD: landfall near 21.65N 88.30E, Sundarbans; 60 km radius ours
+
+local_languages:
+  OD-JAGATSINGHPUR: [or, hi]
+  OD-KENDRAPARA: [or, hi]
+  OD-BHADRAK: [or, hi]
+  OD-BALASORE: [or, hi]
+  WB-EAST-MEDINIPUR: [bn, hi]
+  WB-SOUTH-24-PARGANAS: [bn, hi]
+  WB-NORTH-24-PARGANAS: [bn, hi]
+  WB-KOLKATA: [bn, hi, en]
+  BD-KHULNA: [bn]
+
+channel_latency_min:
+  neighbour_authority: 75
+  cert_in: 30
+default_latency_min: 0
+
+# ILLUSTRATIVE thresholds. T_alert is set against the real IMD cadence: the cyclone warning
+# (orange) came 56 h before landfall, so a 6-hour alerting window is generous rather than harsh.
+thresholds:
+  t_alert_min: 360
+  t_roam_min: 360
+  min_pct_relief_cells: 60.0
+  max_forged_executions: 0
+
+events:
+  # ---- 16 May 08:45 IST — PRE-CYCLONE WATCH (T+0, 104 h to landfall) [REAL] ----
+  - event_id: imd01
+    t_minutes: 0
+    type: IMD_WARNING
+    payload:
+      stage: "Pre-Cyclone Watch"
+      hours_to_landfall: 104
+      headline: "Pre-cyclone watch for Odisha and West Bengal coasts"
+      areas_at_risk: [OD-JAGATSINGHPUR, OD-KENDRAPARA, OD-BHADRAK, OD-BALASORE,
+                      WB-EAST-MEDINIPUR, WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS]
+      cross_border_areas: [BD-KHULNA]
+      languages_by_area:
+        BD-KHULNA: [bn]
+        OD-BALASORE: [or, hi]
+        OD-BHADRAK: [or, hi]
+        OD-JAGATSINGHPUR: [or, hi]
+        OD-KENDRAPARA: [or, hi]
+        WB-EAST-MEDINIPUR: [bn, hi]
+        WB-NORTH-24-PARGANAS: [bn, hi]
+        WB-SOUTH-24-PARGANAS: [bn, hi]
+      truth:
+        areas_at_risk: [OD-JAGATSINGHPUR, OD-KENDRAPARA, OD-BHADRAK, OD-BALASORE,
+                        WB-EAST-MEDINIPUR, WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS]
+    visible_to: [competent_authority, sdma_alerts, neighbour_authority]
+    delay_by_role:
+      sdma_alerts: 15
+      neighbour_authority: 150
+
+  # ---- 16 May 20:30 IST — CYCLONE WATCH (T+705, 92 h) [REAL] ----
+  - event_id: imd02
+    t_minutes: 705
+    type: IMD_WARNING
+    payload:
+      stage: "Cyclone Watch"
+      hours_to_landfall: 92
+      areas_at_risk: [WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS, WB-EAST-MEDINIPUR]
+      languages_by_area:
+        WB-EAST-MEDINIPUR: [bn, hi]
+        WB-NORTH-24-PARGANAS: [bn, hi]
+        WB-SOUTH-24-PARGANAS: [bn, hi]
+      truth:
+        areas_at_risk: [WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS, WB-EAST-MEDINIPUR]
+    visible_to: [competent_authority, sdma_alerts]
+    delay_by_role: {sdma_alerts: 15}
+
+  # ---- 17 May 08:40 IST — CYCLONE ALERT, yellow (T+1435, 80 h) [REAL] ----
+  - event_id: imd03
+    t_minutes: 1435
+    type: IMD_WARNING
+    payload:
+      stage: "Cyclone Alert (yellow)"
+      hours_to_landfall: 80
+      areas_at_risk: [WB-KOLKATA, WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS]
+      languages_by_area:
+        WB-KOLKATA: [bn, hi, en]
+        WB-NORTH-24-PARGANAS: [bn, hi]
+        WB-SOUTH-24-PARGANAS: [bn, hi]
+      truth:
+        areas_at_risk: [WB-KOLKATA, WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS]
+    visible_to: [competent_authority, sdma_alerts, neighbour_authority]
+    delay_by_role: {neighbour_authority: 120}
+
+  # ---- 18 May 08:45 IST — CYCLONE WARNING, orange (T+2880, 56 h) [REAL] ----
+  - event_id: imd04
+    t_minutes: 2880
+    type: IMD_WARNING
+    payload:
+      stage: "Cyclone Warning (orange)"
+      hours_to_landfall: 56
+      headline: "Super cyclonic storm; peak winds 240-250 km/h gusting 275"
+      areas_at_risk: [OD-BALASORE, WB-EAST-MEDINIPUR, WB-SOUTH-24-PARGANAS,
+                      WB-NORTH-24-PARGANAS, WB-KOLKATA]
+      cross_border_areas: [BD-KHULNA]
+      languages_by_area:
+        BD-KHULNA: [bn]
+        OD-BALASORE: [or, hi]
+        WB-EAST-MEDINIPUR: [bn, hi]
+        WB-KOLKATA: [bn, hi, en]
+        WB-NORTH-24-PARGANAS: [bn, hi]
+        WB-SOUTH-24-PARGANAS: [bn, hi]
+      truth:
+        areas_at_risk: [OD-BALASORE, WB-EAST-MEDINIPUR, WB-SOUTH-24-PARGANAS,
+                        WB-NORTH-24-PARGANAS, WB-KOLKATA]
+    visible_to: [competent_authority, sdma_alerts, tsp_network, neighbour_authority]
+    delay_by_role:
+      tsp_network: 30
+      neighbour_authority: 90
+
+  # ---- 19 May ~14:00 IST — first site losses as outer bands arrive (T+4155) [SYNTHETIC] ----
+  - event_id: sim01
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 4155
+    type: SITE_DOWN
+    area: OD-BALASORE
+    payload:
+      note: "Outer-band wind and backhaul damage on the Odisha coast"
+      cells_down: 5
+      truth: {area: OD-BALASORE, cells_down: 5}
+    visible_to: [tsp_network]
+
+  # ---- 19 May 23:30 IST — POST-LANDFALL OUTLOOK, red (T+4725, 17 h) [REAL] ----
+  - event_id: imd05
+    t_minutes: 4725
+    type: IMD_WARNING
+    payload:
+      stage: "Post-Landfall Outlook (red)"
+      hours_to_landfall: 17
+      areas_at_risk: [WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS, WB-KOLKATA, WB-EAST-MEDINIPUR]
+      cross_border_areas: [BD-KHULNA]
+      languages_by_area:
+        BD-KHULNA: [bn]
+        WB-EAST-MEDINIPUR: [bn, hi]
+        WB-KOLKATA: [bn, hi, en]
+        WB-NORTH-24-PARGANAS: [bn, hi]
+        WB-SOUTH-24-PARGANAS: [bn, hi]
+      truth:
+        areas_at_risk: [WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS, WB-KOLKATA, WB-EAST-MEDINIPUR]
+    visible_to: [competent_authority, sdma_alerts, tsp_network, neighbour_authority]
+    delay_by_role: {neighbour_authority: 75}
+
+  # ---- 20 May ~10:00 IST — rumour of unrest in Kolkata (T+5595) [SYNTHETIC] ----
+  - event_id: sim02
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 5595
+    type: RUMOUR
+    area: WB-KOLKATA
+    payload:
+      claim: "Unverified messages claim relief convoys blocked; crowds forming"
+      source: "social media, unverified"
+      synthetic_content: true
+      truth:
+        verified: false
+        note: "SYNTHETIC. No such event is recorded for Amphan. Injected to measure the cost of
+               acting on an unverified report."
+    visible_to: [competent_authority]
+
+  # ---- 20 May ~12:00 IST — FORGED suspension order (T+5715) [SYNTHETIC, ADVERSARIAL] ----
+  # authentic: false is ground truth no agent can read. No real forged-order incident is on
+  # record (CHAKRAVYUH_REAL_DATA.md §4); this is a constructed adversarial test.
+  - event_id: sim03
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 5715
+    type: ORDER
+    area: WB-KOLKATA
+    claimed_issuer: "Home Department, Government of West Bengal"
+    authentic: false
+    payload:
+      action: SUSPEND_SERVICE
+      area: WB-KOLKATA
+      duration_min: 360
+      exempt_priority_slice: false
+      reasons: "prevention of incitement, rumour-driven mobilisation"
+      channel: "nodal officer email"
+      truth:
+        forged: true
+        note: "SYNTHETIC adversarial test. Spoofed letterhead over the nodal-officer channel. The
+               India pack imposes no duty to authenticate it, which is what P2 measures."
+    visible_to: [tsp_network]
+
+  # ---- 20 May 15:30 IST — LANDFALL, Sundarbans ~21.65N 88.30E (T+6285) [REAL] ----
+  - event_id: imd06
+    t_minutes: 6285
+    type: LANDFALL
+    area: WB-SOUTH-24-PARGANAS
+    payload:
+      headline: "Landfall over Sundarbans, West Bengal-Bangladesh coast; 155-165 km/h gusting 185"
+      lat: 21.65
+      lon: 88.30
+      areas: [WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS, WB-EAST-MEDINIPUR, WB-KOLKATA]
+      languages_by_area:
+        WB-EAST-MEDINIPUR: [bn, hi]
+        WB-KOLKATA: [bn, hi, en]
+        WB-NORTH-24-PARGANAS: [bn, hi]
+        WB-SOUTH-24-PARGANAS: [bn, hi]
+      truth:
+        areas: [WB-SOUTH-24-PARGANAS, WB-NORTH-24-PARGANAS, WB-EAST-MEDINIPUR, WB-KOLKATA]
+    visible_to: [competent_authority, sdma_alerts, tsp_network, neighbour_authority]
+    delay_by_role:
+      tsp_network: 15
+      neighbour_authority: 75
+
+  # ---- 20 May ~17:00 IST — Kolkata Dum Dum 130 km/h; surge up to 4.6 m (T+6375) [REAL figures] ----
+  - event_id: sim04
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 6375
+    type: DAMAGE_REPORT
+    area: WB-KOLKATA
+    payload:
+      note: "Dum Dum recorded 130 km/h. Fibre cuts accumulating; one operator logged 100 in an hour."
+      cells_down: 14
+      truth: {area: WB-KOLKATA, cells_down: 14}
+    visible_to: [tsp_network, competent_authority, sdma_alerts]
+    delay_by_role:
+      competent_authority: 30
+      sdma_alerts: 30
+
+  - event_id: sim05
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 6390
+    type: DAMAGE_REPORT
+    area: WB-SOUTH-24-PARGANAS
+    payload:
+      note: "Storm surge up to 4.6 m reported in South 24 Parganas; widespread site loss"
+      cells_down: 18
+      truth: {area: WB-SOUTH-24-PARGANAS, cells_down: 18}
+    visible_to: [tsp_network, sdma_alerts, competent_authority]
+    delay_by_role: {competent_authority: 30}
+
+  # ---- 20 May ~18:00 IST — grid loss; batteries start draining (T+6435) [REAL cause] ----
+  # Grid power loss was the dominant reported cause of outage during Amphan.
+  - event_id: sim06
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 6435
+    type: POWER_LOSS
+    area: WB-SOUTH-24-PARGANAS
+    payload:
+      note: "Grid down across the district; sites on battery backup"
+      truth: {area: WB-SOUTH-24-PARGANAS, drain_min: 240}
+    visible_to: [tsp_network]
+
+  - event_id: sim07
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 6450
+    type: DAMAGE_REPORT
+    area: WB-NORTH-24-PARGANAS
+    payload:
+      note: "Surge and wind damage across North 24 Parganas"
+      cells_down: 15
+      truth: {area: WB-NORTH-24-PARGANAS, cells_down: 15}
+    visible_to: [tsp_network, sdma_alerts]
+
+  # ---- 20 May ~20:00 IST — storm crosses into Bangladesh (T+6555) [REAL track] ----
+  - event_id: imd07
+    t_minutes: 6555
+    type: LANDFALL
+    area: BD-KHULNA
+    payload:
+      headline: "System crosses into coastal Bangladesh, Khulna division"
+      areas: [BD-KHULNA]
+      languages_by_area:
+        BD-KHULNA: [bn]
+      truth: {areas: [BD-KHULNA]}
+    visible_to: [neighbour_authority, sdma_alerts]
+    delay_by_role:
+      neighbour_authority: 75
+      sdma_alerts: 45
+
+  - event_id: sim08
+    synthetic: true          # constructed, not an IMD message
+    t_minutes: 6600
+    type: DAMAGE_REPORT
+    area: BD-KHULNA
+    payload:
+      note: "Coastal site loss in Khulna division"
+      cells_down: 9
+      truth: {area: BD-KHULNA, cells_down: 9}
+    visible_to: [neighbour_authority]
+    delay_by_role: {neighbour_authority: 75}

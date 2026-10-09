@@ -1,0 +1,208 @@
+# SYNTHETIC SMOKE SCENARIO. Superseded for all reporting by amphan_2020.yaml, which uses the real
+# IMD Amphan timeline and real districts. This file is kept only because it is short (12 h horizon,
+# 49 ticks) and the test suite uses it to keep runs fast. Do NOT cite results from this file.
+#
+# Amphan-like cyclone: Bay of Bengal -> Odisha coast -> southern West Bengal -> Bangladesh coast.
+# SYNTHETIC. Timings are illustrative and shaped to exercise the properties, not to reconstruct
+# the 2020 event. Backtesting against documented Amphan timelines is future work (spec §13).
+#
+# The point of this file is the UNEVENNESS. Read the delay_by_role and visible_to fields:
+#   - the operator never receives a meteorological warning directly
+#   - CERT-In sees incident reports only, so it learns of the forged order late or not at all
+#   - the neighbour authority is 75 minutes behind on everything (cross-border channel)
+#   - the forged order (authentic: false) is indistinguishable from a real one in every inbox
+scenario_id: amphan_like
+title: "Amphan-like cyclone, Odisha -> West Bengal -> Bangladesh coast"
+description: >
+  A severe cyclonic storm tracks up the Bay of Bengal and makes landfall near the
+  Odisha-West Bengal border, then crosses into coastal Bangladesh. Sites fail, rumours
+  spread, and a forged suspension order reaches the operator's nodal channel.
+horizon_min: 720
+tick_min: 15
+
+areas: [OD-COAST, WB-SOUTH, WB-KOLKATA, BD-KHULNA]
+cross_border_areas: [BD-KHULNA]
+cells_per_area:
+  OD-COAST: 24
+  WB-SOUTH: 20
+  WB-KOLKATA: 30
+  BD-KHULNA: 18
+
+# A valid public alert must use at least one of these languages for the area (property P3).
+local_languages:
+  OD-COAST: [or, hi]
+  WB-SOUTH: [bn, hi]
+  WB-KOLKATA: [bn, hi, en]
+  BD-KHULNA: [bn]
+
+# Structural channel latency per role, in minutes. The cross-border channel is the slow one.
+channel_latency_min:
+  neighbour_authority: 75
+  cert_in: 30
+default_latency_min: 0
+
+# ILLUSTRATIVE thresholds (spec 5.5). Stated as illustrative in the report; not legal standards.
+thresholds:
+  t_alert_min: 90
+  t_roam_min: 120
+  min_pct_relief_cells: 60.0
+  max_forged_executions: 0
+
+events:
+  # ---- T+0: IMD cyclone warning. Operator does NOT get this; the neighbour gets it late. ----
+  - event_id: ev001
+    t_minutes: 0
+    type: IMD_WARNING
+    payload:
+      headline: "Severe cyclonic storm, landfall expected within 18 hours"
+      areas_at_risk: [OD-COAST, WB-SOUTH, BD-KHULNA]
+      cross_border_areas: [BD-KHULNA]
+      languages_by_area:
+        OD-COAST: [or, hi]
+        WB-SOUTH: [bn, hi]
+        BD-KHULNA: [bn]
+      truth:
+        areas_at_risk: [OD-COAST, WB-SOUTH, BD-KHULNA]
+    visible_to: [competent_authority, sdma_alerts, neighbour_authority]
+    delay_by_role:
+      competent_authority: 0
+      sdma_alerts: 15
+      neighbour_authority: 150      # twice the structural latency: relayed, not direct
+
+  # ---- T+120: first site losses on the Odisha coast (wind, backhaul) ----
+  - event_id: ev002
+    t_minutes: 120
+    type: SITE_DOWN
+    area: OD-COAST
+    payload:
+      note: "Backhaul and wind damage on the outer coastal grid"
+      cells_down: 6
+      truth:
+        area: OD-COAST
+        cells_down: 6
+    visible_to: [tsp_network]
+
+  # ---- T+180: rumour of unrest in Kolkata. Reaches the authority, not the operator. ----
+  - event_id: ev003
+    t_minutes: 180
+    type: RUMOUR
+    area: WB-KOLKATA
+    payload:
+      claim: "Unverified messages claim relief convoys are being blocked; crowds forming"
+      source: "social media, unverified"
+      synthetic_content: true       # labelled synthetic; see the GenAI-ecosystem perspective
+      truth:
+        verified: false
+        note: "No crowd event occurred. This is rumour, and acting on it is the measured cost."
+    visible_to: [competent_authority]
+
+  # ---- T+240: FORGED suspension order into the operator's nodal channel ----
+  # authentic: false is ground truth. No agent can read it. The India pack imposes no
+  # authentication duty, so the engine ALLOWS it -- that is the vulnerability P2 measures.
+  - event_id: ev004
+    t_minutes: 240
+    type: ORDER
+    area: WB-KOLKATA
+    claimed_issuer: "Home Department, Government of West Bengal"
+    authentic: false
+    payload:
+      action: SUSPEND_SERVICE
+      area: WB-KOLKATA
+      duration_min: 360
+      exempt_priority_slice: false
+      reasons: "prevention of incitement, rumour-driven mobilisation"
+      channel: "nodal officer email"
+      truth:
+        forged: true
+        note: "Not issued by any competent authority. Spoofed letterhead and nodal-channel email."
+    visible_to: [tsp_network]
+    delay_by_role:
+      tsp_network: 0
+
+  # ---- T+300: landfall ----
+  - event_id: ev005
+    t_minutes: 300
+    type: LANDFALL
+    area: OD-COAST
+    payload:
+      headline: "Landfall near the Odisha-West Bengal border"
+      areas: [OD-COAST, WB-SOUTH]
+      truth:
+        areas: [OD-COAST, WB-SOUTH]
+    visible_to: [competent_authority, sdma_alerts, tsp_network, neighbour_authority]
+    delay_by_role:
+      tsp_network: 15
+      neighbour_authority: 90
+
+  # ---- T+330: heavy damage, Odisha coast ----
+  - event_id: ev006
+    t_minutes: 330
+    type: DAMAGE_REPORT
+    area: OD-COAST
+    payload:
+      note: "Widespread site loss and power failure across the coastal grid"
+      cells_down: 8
+      truth:
+        area: OD-COAST
+        cells_down: 8
+    visible_to: [tsp_network, competent_authority, sdma_alerts]
+    delay_by_role:
+      competent_authority: 30
+      sdma_alerts: 30
+
+  # ---- T+360: power loss drains battery backup on the coast ----
+  - event_id: ev007
+    t_minutes: 360
+    type: POWER_LOSS
+    area: OD-COAST
+    payload:
+      note: "Grid down; sites on battery"
+      truth:
+        area: OD-COAST
+        drain_min: 180
+    visible_to: [tsp_network]
+
+  # ---- T+420: damage in southern West Bengal ----
+  - event_id: ev008
+    t_minutes: 420
+    type: DAMAGE_REPORT
+    area: WB-SOUTH
+    payload:
+      note: "Site loss across the southern districts"
+      cells_down: 7
+      truth:
+        area: WB-SOUTH
+        cells_down: 7
+    visible_to: [tsp_network, sdma_alerts, competent_authority]
+    delay_by_role:
+      competent_authority: 30
+
+  # ---- T+480: the storm crosses into Bangladesh ----
+  - event_id: ev009
+    t_minutes: 480
+    type: LANDFALL
+    area: BD-KHULNA
+    payload:
+      headline: "Storm crosses into coastal Bangladesh"
+      areas: [BD-KHULNA]
+      truth:
+        areas: [BD-KHULNA]
+    visible_to: [neighbour_authority, sdma_alerts]
+    delay_by_role:
+      neighbour_authority: 75
+      sdma_alerts: 45
+
+  # ---- T+510: damage on the Bangladesh coast; only the neighbour is told, slowly ----
+  - event_id: ev010
+    t_minutes: 510
+    type: DAMAGE_REPORT
+    area: BD-KHULNA
+    payload:
+      note: "Coastal site loss in Khulna division"
+      cells_down: 6
+      truth:
+        area: BD-KHULNA
+        cells_down: 6
+    visible_to: [neighbour_authority]
+    delay_by_role:
+      neighbour_authority: 75

@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: "CHAKRAVYUH: policy fuzzing for emergency telecommunications governance"
+message: "If you use this work, please cite it as below."
+type: software
+authors:
+  - given-names: Ranny
+    family-names: Nayyar
+    affiliation: Quantum QAI
+repository-code: "https://github.com/"   # set on publication
+abstract: >-
+  CHAKRAVYUH replays a real cyclone timeline under multiple encoded legal regimes
+  to find where emergency telecommunications obligations fail to fire in time.
+  Six role-bound agents propose actions; a deterministic policy engine with no
+  model in it decides their legality against clause-level records of the governing
+  instruments. Property violations are classified into policy, coordination,
+  execution and standards gaps, each citing the clause responsible, and every step
+  is written to a hash-chained ledger. Aligned with ITU-T Y.3172, Y.3173 and Y.3181
+  and mapped to the ITU AI Readiness 2.0 framework.
+keywords:
+  - emergency telecommunications
+  - policy simulation
+  - multi-agent systems
+  - property-based testing
+  - ITU-T Y.3172
+  - disaster management
+license: Apache-2.0
+date-released: "2026-10-10"

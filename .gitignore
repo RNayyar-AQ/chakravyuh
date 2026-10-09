@@ -1,0 +1,33 @@
+# --- environment ---
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.hypothesis/
+.pytest_cache/
+.ruff_cache/
+
+# --- regenerable build products -------------------------------------------------
+# `out/` is the working directory every generator writes to. The submission surface
+# (docs/ and outputs/) is published from it by scripts/showcase.py and IS committed.
+out/
+traces/
+
+# Rebuilt by `python scripts/build_kb.py` in ~4 s from data/clauses/clauses.jsonl,
+# which is committed.
+data/chroma/
+data/clauses/clauses.sqlite
+
+# Run ledgers. NOT committed, and this is safe because the runs are deterministic:
+# the same seed replays to the same head hash, which is asserted by a test. A judge
+# regenerates all 11 in ~30 s with `bash scripts/replay_demo.sh`. What IS committed is
+# outputs/audit_sample.jsonl — the first 50 entries of the India run, which verify as a
+# hash chain on their own. 13 MB of regenerable JSONL does not belong in a submission.
+runs/
+
+# --- third-party documents -------------------------------------------------------
+# Primary source PDFs, fetched by scripts/fetch_sources.py and pinned by sha256 in
+# data/sources/MANIFEST.yaml. Not redistributed: several have licence terms we have
+# not cleared, and all are re-fetchable from their official URL.
+kb_raw/

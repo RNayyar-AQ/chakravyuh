@@ -1,0 +1,1044 @@
+{
+  "divergences": [
+    {
+      "fails_under": [
+        "india_current"
+      ],
+      "margins": {
+        "bangladesh": 40.0,
+        "fcc_mdri": 40.0,
+        "india_current": -60.0
+      },
+      "passes_under": [
+        "bangladesh",
+        "fcc_mdri"
+      ],
+      "property_id": "P1"
+    },
+    {
+      "fails_under": [
+        "india_current"
+      ],
+      "margins": {
+        "bangladesh": 0.0,
+        "fcc_mdri": 0.0,
+        "india_current": -1.0
+      },
+      "passes_under": [
+        "bangladesh",
+        "fcc_mdri"
+      ],
+      "property_id": "P2"
+    },
+    {
+      "fails_under": [
+        "india_current"
+      ],
+      "margins": {
+        "bangladesh": 345.0,
+        "fcc_mdri": 345.0,
+        "india_current": -7140.0
+      },
+      "passes_under": [
+        "bangladesh",
+        "fcc_mdri"
+      ],
+      "property_id": "P3"
+    },
+    {
+      "fails_under": [
+        "bangladesh",
+        "india_current"
+      ],
+      "margins": {
+        "bangladesh": -855.0,
+        "fcc_mdri": 345.0,
+        "india_current": -855.0
+      },
+      "passes_under": [
+        "fcc_mdri"
+      ],
+      "property_id": "P4"
+    }
+  ],
+  "gaps": {
+    "bangladesh": [
+      {
+        "domain": "Emergency telecom",
+        "evidence": {
+          "areas_missed": [
+            "OD-BALASORE"
+          ],
+          "baseline_t": 6285,
+          "comparator_margins": {
+            "bangladesh": -855.0,
+            "fcc_mdri": 345.0,
+            "india_current": -855.0
+          },
+          "first_enabling_fact_arrival_by_role": {
+            "tsp_network": null
+          },
+          "latency_by_role": {},
+          "passes_under_packs": [
+            "fcc_mdri"
+          ],
+          "per_area": {
+            "BD-KHULNA": {
+              "cross_border": true,
+              "delay_min": 0,
+              "roaming_t": 90
+            },
+            "OD-BALASORE": {
+              "cross_border": false,
+              "roaming_t": null
+            },
+            "WB-KOLKATA": {
+              "cross_border": false,
+              "delay_min": 75,
+              "roaming_t": 6360
+            },
+            "WB-NORTH-24-PARGANAS": {
+              "cross_border": false,
+              "delay_min": 75,
+              "roaming_t": 6360
+            },
+            "WB-SOUTH-24-PARGANAS": {
+              "cross_border": false,
+              "delay_min": 75,
+              "roaming_t": 6360
+            }
+          },
+          "threshold_min": 360
+        },
+        "evidence_run_id": "amphan_2020__bangladesh__rule__seed0",
+        "gap_class": "coordination",
+        "gap_id": "P4-coordination-India(OD-BALASORE)",
+        "instance": "India (OD-BALASORE)",
+        "responsible_clause_ids": [
+          "BD.BTRC.ROAM"
+        ],
+        "responsible_rule_ids": [
+          "BD.R.ENABLE_ROAMING"
+        ],
+        "statement": "The power to enable disaster roaming exists and reaches this area, but the fact that triggers it reached the empowered authority after the threshold had already passed: the delay is in the channel, not in the law.",
+        "violated_property": "P4"
+      }
+    ],
+    "fcc_mdri": [],
+    "india_current": [
+      {
+        "domain": "Emergency telecom",
+        "evidence": {
+          "comparator_margins": {
+            "bangladesh": 40.0,
+            "fcc_mdri": 40.0,
+            "india_current": -60.0
+          },
+          "obligations_to_prioritise": [],
+          "passes_under_packs": [
+            "bangladesh",
+            "fcc_mdri"
+          ],
+          "per_area": {
+            "WB-KOLKATA@susp-tsp_network:05640:SUSPEND_SERVICE:2282": {
+              "exempt_priority_slice": false,
+              "hazard_affected_area": true,
+              "pct_relief_reachable": 0.0,
+              "window": [
+                5640,
+                6000
+              ]
+            },
+            "WB-KOLKATA@susp-tsp_network:05715:SUSPEND_SERVICE:2313": {
+              "exempt_priority_slice": false,
+              "hazard_affected_area": true,
+              "pct_relief_reachable": 0.0,
+              "window": [
+                5715,
+                6075
+              ]
+            }
+          },
+          "prohibitions_on_non_exempt_suspension": []
+        },
+        "evidence_run_id": "amphan_2020__india_current__rule__seed0",
+        "gap_class": "policy",
+        "gap_id": "P1-policy-India(WB-KOLKATA)",
+        "instance": "India (WB-KOLKATA)",
+        "responsible_clause_ids": [
+          "IN.TA2023.s20.1",
+          "INTL.ITU.CONST.art40",
+          "INTL.ITU.E106"
+        ],
+        "responsible_rule_ids": [
+          "IN.R.PRIORITISE_RELIEF_SLICE"
+        ],
+        "statement": "A suspension direction carries no mandatory carve-out for relief and emergency traffic, and priority routing is permitted rather than obliged, so a lawful suspension can switch off the very traffic the response depends on.",
+        "violated_property": "P1"
+      },
+      {
+        "domain": "Emergency telecom",
+        "evidence": {
+          "comparator_margins": {
+            "bangladesh": 0.0,
+            "fcc_mdri": 0.0,
+            "india_current": -1.0
+          },
+          "forged_executions": [
+            {
+              "action_type": "SUSPEND_SERVICE",
+              "area": "WB-KOLKATA",
+              "at_t": 5715,
+              "order_event_id": "sim03",
+              "suspension_id": "susp-tsp_network:05715:SUSPEND_SERVICE:2313"
+            }
+          ],
+          "passes_under_packs": [
+            "bangladesh",
+            "fcc_mdri"
+          ],
+          "rules_governing_compliance": [
+            "IN.R.SUSPEND_SERVICE"
+          ],
+          "rules_requiring_authentication": []
+        },
+        "evidence_run_id": "amphan_2020__india_current__rule__seed0",
+        "gap_class": "policy",
+        "gap_id": "P2-policy-India(WB-KOLKATA)",
+        "instance": "India (WB-KOLKATA)",
+        "responsible_clause_ids": [
+          "IN.SUSP2024.r3",
+          "IN.TA2023.s20.2",
+          "IN.TCSR2024.no_order_auth"
+        ],
+        "responsible_rule_ids": [
+          "IN.R.SUSPEND_SERVICE"
+        ],
+        "statement": "No instrument requires an operator to authenticate a service-suspension direction before giving effect to it, so a forged direction executes exactly like a genuine one and the irreversible act is complete before any verification occurs.",
+        "violated_property": "P2"
+      },
+      {
+        "domain": "Emergency telecom",
+        "evidence": {
+          "areas_missed": [
+            "BD-KHULNA"
+          ],
+          "comparator_margins": {
+            "bangladesh": 345.0,
+            "fcc_mdri": 345.0,
+            "india_current": -7140.0
+          },
+          "enabling_rules": [
+            "IN.R.ISSUE_CAP_ALERT"
+          ],
+          "passes_under_packs": [
+            "bangladesh",
+            "fcc_mdri"
+          ],
+          "per_area": {
+            "BD-KHULNA": {
+              "alert_t": null,
+              "cross_border": true,
+              "languages_used": [],
+              "reason": "no alert issued for this area",
+              "required_languages": [
+                "bn"
+              ],
+              "warned_at": 0
+            },
+            "OD-BALASORE": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            },
+            "OD-BHADRAK": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            },
+            "OD-JAGATSINGHPUR": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            },
+            "OD-KENDRAPARA": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            },
+            "WB-EAST-MEDINIPUR": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            },
+            "WB-KOLKATA": {
+              "alert_t": 1440,
+              "cross_border": false,
+              "delay_min": 5,
+              "warned_at": 1435
+            },
+            "WB-NORTH-24-PARGANAS": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            },
+            "WB-SOUTH-24-PARGANAS": {
+              "alert_t": 15,
+              "cross_border": false,
+              "delay_min": 15,
+              "warned_at": 0
+            }
+          },
+          "prohibited_by": [
+            "IN.R.NO_CROSS_BORDER_ALERT"
+          ],
+          "threshold_min": 360
+        },
+        "evidence_run_id": "amphan_2020__india_current__rule__seed0",
+        "gap_class": "policy",
+        "gap_id": "P3-policy-India-Bangladesh(BD-KHULNA)",
+        "instance": "India-Bangladesh (BD-KHULNA)",
+        "responsible_clause_ids": [
+          "IN.DMA2005.s6",
+          "IN.NDMA.CAP.SACHET"
+        ],
+        "responsible_rule_ids": [
+          "IN.R.NO_CROSS_BORDER_ALERT"
+        ],
+        "statement": "No standing cross-border trigger: no instrument empowers any actor to issue a public alert across the border in time, and the domestic alerting/roaming power is scoped to domestic areas only.",
+        "violated_property": "P3"
+      },
+      {
+        "domain": "Emergency telecom",
+        "evidence": {
+          "areas_missed": [
+            "BD-KHULNA",
+            "OD-BALASORE"
+          ],
+          "comparator_margins": {
+            "bangladesh": -855.0,
+            "fcc_mdri": 345.0,
+            "india_current": -855.0
+          },
+          "enabling_rules": [
+            "IN.R.ENABLE_ROAMING"
+          ],
+          "passes_under_packs": [
+            "fcc_mdri"
+          ],
+          "per_area": {
+            "BD-KHULNA": {
+              "cross_border": true,
+              "roaming_t": null
+            },
+            "OD-BALASORE": {
+              "cross_border": false,
+              "roaming_t": null
+            },
+            "WB-KOLKATA": {
+              "cross_border": false,
+              "delay_min": 135,
+              "roaming_t": 6420
+            },
+            "WB-NORTH-24-PARGANAS": {
+              "cross_border": false,
+              "delay_min": 135,
+              "roaming_t": 6420
+            },
+            "WB-SOUTH-24-PARGANAS": {
+              "cross_border": false,
+              "delay_min": 135,
+              "roaming_t": 6420
+            }
+          },
+          "prohibited_by": [],
+          "threshold_min": 360
+        },
+        "evidence_run_id": "amphan_2020__india_current__rule__seed0",
+        "gap_class": "policy",
+        "gap_id": "P4-policy-India-Bangladesh(BD-KHULNA)",
+        "instance": "India-Bangladesh (BD-KHULNA)",
+        "responsible_clause_ids": [
+          "IN.DOTSOP2020.icr",
+          "IN.UL.DISASTER"
+        ],
+        "responsible_rule_ids": [
+          "IN.R.ENABLE_ROAMING"
+        ],
+        "statement": "No standing cross-border trigger: no instrument empowers any actor to enable disaster roaming across the border in time, and the domestic alerting/roaming power is scoped to domestic areas only.",
+        "violated_property": "P4"
+      }
+    ]
+  },
+  "runs": {
+    "bangladesh": {
+      "agent_tier": "rule",
+      "gaps": [],
+      "ledger_head_hash": "ebfded95d0a7347a661e2d252c0ae1b7cd9b7ba24ed1fba3512245c89791c562",
+      "ledger_path": "runs/amphan_2020__bangladesh__rule__seed0.jsonl",
+      "llm_calls": 0,
+      "mutations": [],
+      "pack_id": "bangladesh",
+      "properties": [
+        {
+          "description": "During any suspension, relief/emergency traffic in affected cells stays reachable",
+          "detail": {
+            "min_pct_observed": 100.0,
+            "per_area": {},
+            "suspensions_examined": 0,
+            "threshold_pct": 60.0
+          },
+          "margin": 40.0,
+          "passed": true,
+          "property_id": "P1",
+          "unit": "% of affected cells reachable for relief"
+        },
+        {
+          "description": "No irreversible action executes on an unauthenticated (forged) order",
+          "detail": {
+            "count": 0,
+            "executions": [],
+            "threshold": 0
+          },
+          "margin": 0.0,
+          "passed": true,
+          "property_id": "P2",
+          "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+        },
+        {
+          "description": "Every affected area, including across the border, gets a public alert within T_alert of the warning, in a local language",
+          "detail": {
+            "areas_missed": [],
+            "first_warning_t": 0,
+            "max_delay_min": 15,
+            "per_area": {
+              "BD-KHULNA": {
+                "alert_t": 15,
+                "cross_border": true,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-BALASORE": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-BHADRAK": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-JAGATSINGHPUR": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-KENDRAPARA": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-EAST-MEDINIPUR": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-KOLKATA": {
+                "alert_t": 1440,
+                "cross_border": false,
+                "delay_min": 5,
+                "warned_at": 1435
+              },
+              "WB-NORTH-24-PARGANAS": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-SOUTH-24-PARGANAS": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              }
+            },
+            "threshold_min": 360,
+            "warning_baseline_by_area": {
+              "BD-KHULNA": 0,
+              "OD-BALASORE": 0,
+              "OD-BHADRAK": 0,
+              "OD-JAGATSINGHPUR": 0,
+              "OD-KENDRAPARA": 0,
+              "WB-EAST-MEDINIPUR": 0,
+              "WB-KOLKATA": 1435,
+              "WB-NORTH-24-PARGANAS": 0,
+              "WB-SOUTH-24-PARGANAS": 0
+            }
+          },
+          "margin": 345.0,
+          "passed": true,
+          "property_id": "P3",
+          "unit": "minutes from first warning to a valid local-language alert"
+        },
+        {
+          "description": "Disaster roaming is active in affected circles within T_roam of landfall",
+          "detail": {
+            "areas_missed": [
+              "OD-BALASORE"
+            ],
+            "elapsed_min": 1215,
+            "landfall_t": 6285,
+            "never_roamed": true,
+            "per_area": {
+              "BD-KHULNA": {
+                "cross_border": true,
+                "delay_min": 0,
+                "roaming_t": 90
+              },
+              "OD-BALASORE": {
+                "cross_border": false,
+                "roaming_t": null
+              },
+              "WB-KOLKATA": {
+                "cross_border": false,
+                "delay_min": 75,
+                "roaming_t": 6360
+              },
+              "WB-NORTH-24-PARGANAS": {
+                "cross_border": false,
+                "delay_min": 75,
+                "roaming_t": 6360
+              },
+              "WB-SOUTH-24-PARGANAS": {
+                "cross_border": false,
+                "delay_min": 75,
+                "roaming_t": 6360
+              }
+            },
+            "scope": [
+              "BD-KHULNA",
+              "OD-BALASORE",
+              "WB-KOLKATA",
+              "WB-NORTH-24-PARGANAS",
+              "WB-SOUTH-24-PARGANAS"
+            ],
+            "threshold_min": 360
+          },
+          "margin": -855.0,
+          "passed": false,
+          "property_id": "P4",
+          "unit": "minutes from landfall to roaming active"
+        }
+      ],
+      "run_id": "amphan_2020__bangladesh__rule__seed0",
+      "scenario_id": "amphan_2020",
+      "seed": 0,
+      "tick_count": 501,
+      "wall_seconds": 0.3072
+    },
+    "fcc_mdri": {
+      "agent_tier": "rule",
+      "gaps": [],
+      "ledger_head_hash": "c30e57aca8ed69069a4074232c5de7a48c9288bcf392e11382e35a4f921d293d",
+      "ledger_path": "runs/amphan_2020__fcc_mdri__rule__seed0.jsonl",
+      "llm_calls": 0,
+      "mutations": [],
+      "pack_id": "fcc_mdri",
+      "properties": [
+        {
+          "description": "During any suspension, relief/emergency traffic in affected cells stays reachable",
+          "detail": {
+            "min_pct_observed": 100.0,
+            "per_area": {},
+            "suspensions_examined": 0,
+            "threshold_pct": 60.0
+          },
+          "margin": 40.0,
+          "passed": true,
+          "property_id": "P1",
+          "unit": "% of affected cells reachable for relief"
+        },
+        {
+          "description": "No irreversible action executes on an unauthenticated (forged) order",
+          "detail": {
+            "count": 0,
+            "executions": [],
+            "threshold": 0
+          },
+          "margin": 0.0,
+          "passed": true,
+          "property_id": "P2",
+          "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+        },
+        {
+          "description": "Every affected area, including across the border, gets a public alert within T_alert of the warning, in a local language",
+          "detail": {
+            "areas_missed": [],
+            "first_warning_t": 0,
+            "max_delay_min": 15,
+            "per_area": {
+              "BD-KHULNA": {
+                "alert_t": 15,
+                "cross_border": true,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-BALASORE": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-BHADRAK": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-JAGATSINGHPUR": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-KENDRAPARA": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-EAST-MEDINIPUR": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-KOLKATA": {
+                "alert_t": 1440,
+                "cross_border": false,
+                "delay_min": 5,
+                "warned_at": 1435
+              },
+              "WB-NORTH-24-PARGANAS": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-SOUTH-24-PARGANAS": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              }
+            },
+            "threshold_min": 360,
+            "warning_baseline_by_area": {
+              "BD-KHULNA": 0,
+              "OD-BALASORE": 0,
+              "OD-BHADRAK": 0,
+              "OD-JAGATSINGHPUR": 0,
+              "OD-KENDRAPARA": 0,
+              "WB-EAST-MEDINIPUR": 0,
+              "WB-KOLKATA": 1435,
+              "WB-NORTH-24-PARGANAS": 0,
+              "WB-SOUTH-24-PARGANAS": 0
+            }
+          },
+          "margin": 345.0,
+          "passed": true,
+          "property_id": "P3",
+          "unit": "minutes from first warning to a valid local-language alert"
+        },
+        {
+          "description": "Disaster roaming is active in affected circles within T_roam of landfall",
+          "detail": {
+            "areas_missed": [],
+            "landfall_t": 6285,
+            "max_delay_min": 15,
+            "per_area": {
+              "BD-KHULNA": {
+                "cross_border": true,
+                "delay_min": 0,
+                "roaming_t": 90
+              },
+              "OD-BALASORE": {
+                "cross_border": false,
+                "delay_min": 0,
+                "roaming_t": 4155
+              },
+              "WB-KOLKATA": {
+                "cross_border": false,
+                "delay_min": 15,
+                "roaming_t": 6300
+              },
+              "WB-NORTH-24-PARGANAS": {
+                "cross_border": false,
+                "delay_min": 15,
+                "roaming_t": 6300
+              },
+              "WB-SOUTH-24-PARGANAS": {
+                "cross_border": false,
+                "delay_min": 15,
+                "roaming_t": 6300
+              }
+            },
+            "scope": [
+              "BD-KHULNA",
+              "OD-BALASORE",
+              "WB-KOLKATA",
+              "WB-NORTH-24-PARGANAS",
+              "WB-SOUTH-24-PARGANAS"
+            ],
+            "threshold_min": 360
+          },
+          "margin": 345.0,
+          "passed": true,
+          "property_id": "P4",
+          "unit": "minutes from landfall to roaming active"
+        }
+      ],
+      "run_id": "amphan_2020__fcc_mdri__rule__seed0",
+      "scenario_id": "amphan_2020",
+      "seed": 0,
+      "tick_count": 501,
+      "wall_seconds": 0.1915
+    },
+    "india_current": {
+      "agent_tier": "rule",
+      "gaps": [],
+      "ledger_head_hash": "7292efb8de09e93aafc42992757d43de46b5d65249c01fc2c61a5b19caadacea",
+      "ledger_path": "runs/amphan_2020__india_current__rule__seed0.jsonl",
+      "llm_calls": 0,
+      "mutations": [],
+      "pack_id": "india_current",
+      "properties": [
+        {
+          "description": "During any suspension, relief/emergency traffic in affected cells stays reachable",
+          "detail": {
+            "min_pct_observed": 0.0,
+            "per_area": {
+              "WB-KOLKATA@susp-tsp_network:05640:SUSPEND_SERVICE:2282": {
+                "exempt_priority_slice": false,
+                "hazard_affected_area": true,
+                "pct_relief_reachable": 0.0,
+                "window": [
+                  5640,
+                  6000
+                ]
+              },
+              "WB-KOLKATA@susp-tsp_network:05715:SUSPEND_SERVICE:2313": {
+                "exempt_priority_slice": false,
+                "hazard_affected_area": true,
+                "pct_relief_reachable": 0.0,
+                "window": [
+                  5715,
+                  6075
+                ]
+              }
+            },
+            "suspensions_examined": 2,
+            "threshold_pct": 60.0
+          },
+          "margin": -60.0,
+          "passed": false,
+          "property_id": "P1",
+          "unit": "% of affected cells reachable for relief"
+        },
+        {
+          "description": "No irreversible action executes on an unauthenticated (forged) order",
+          "detail": {
+            "count": 1,
+            "executions": [
+              {
+                "action_type": "SUSPEND_SERVICE",
+                "area": "WB-KOLKATA",
+                "at_t": 5715,
+                "order_event_id": "sim03",
+                "suspension_id": "susp-tsp_network:05715:SUSPEND_SERVICE:2313"
+              }
+            ],
+            "threshold": 0
+          },
+          "margin": -1.0,
+          "passed": false,
+          "property_id": "P2",
+          "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+        },
+        {
+          "description": "Every affected area, including across the border, gets a public alert within T_alert of the warning, in a local language",
+          "detail": {
+            "areas_missed": [
+              "BD-KHULNA"
+            ],
+            "first_warning_t": 0,
+            "never_alerted": true,
+            "per_area": {
+              "BD-KHULNA": {
+                "alert_t": null,
+                "cross_border": true,
+                "languages_used": [],
+                "reason": "no alert issued for this area",
+                "required_languages": [
+                  "bn"
+                ],
+                "warned_at": 0
+              },
+              "OD-BALASORE": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-BHADRAK": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-JAGATSINGHPUR": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "OD-KENDRAPARA": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-EAST-MEDINIPUR": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-KOLKATA": {
+                "alert_t": 1440,
+                "cross_border": false,
+                "delay_min": 5,
+                "warned_at": 1435
+              },
+              "WB-NORTH-24-PARGANAS": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              },
+              "WB-SOUTH-24-PARGANAS": {
+                "alert_t": 15,
+                "cross_border": false,
+                "delay_min": 15,
+                "warned_at": 0
+              }
+            },
+            "threshold_min": 360,
+            "warning_baseline_by_area": {
+              "BD-KHULNA": 0,
+              "OD-BALASORE": 0,
+              "OD-BHADRAK": 0,
+              "OD-JAGATSINGHPUR": 0,
+              "OD-KENDRAPARA": 0,
+              "WB-EAST-MEDINIPUR": 0,
+              "WB-KOLKATA": 1435,
+              "WB-NORTH-24-PARGANAS": 0,
+              "WB-SOUTH-24-PARGANAS": 0
+            }
+          },
+          "margin": -7140.0,
+          "passed": false,
+          "property_id": "P3",
+          "unit": "minutes from first warning to a valid local-language alert"
+        },
+        {
+          "description": "Disaster roaming is active in affected circles within T_roam of landfall",
+          "detail": {
+            "areas_missed": [
+              "BD-KHULNA",
+              "OD-BALASORE"
+            ],
+            "elapsed_min": 1215,
+            "landfall_t": 6285,
+            "never_roamed": true,
+            "per_area": {
+              "BD-KHULNA": {
+                "cross_border": true,
+                "roaming_t": null
+              },
+              "OD-BALASORE": {
+                "cross_border": false,
+                "roaming_t": null
+              },
+              "WB-KOLKATA": {
+                "cross_border": false,
+                "delay_min": 135,
+                "roaming_t": 6420
+              },
+              "WB-NORTH-24-PARGANAS": {
+                "cross_border": false,
+                "delay_min": 135,
+                "roaming_t": 6420
+              },
+              "WB-SOUTH-24-PARGANAS": {
+                "cross_border": false,
+                "delay_min": 135,
+                "roaming_t": 6420
+              }
+            },
+            "scope": [
+              "BD-KHULNA",
+              "OD-BALASORE",
+              "WB-KOLKATA",
+              "WB-NORTH-24-PARGANAS",
+              "WB-SOUTH-24-PARGANAS"
+            ],
+            "threshold_min": 360
+          },
+          "margin": -855.0,
+          "passed": false,
+          "property_id": "P4",
+          "unit": "minutes from landfall to roaming active"
+        }
+      ],
+      "run_id": "amphan_2020__india_current__rule__seed0",
+      "scenario_id": "amphan_2020",
+      "seed": 0,
+      "tick_count": 501,
+      "wall_seconds": 0.0732
+    }
+  },
+  "table": [
+    {
+      "agent_tier": "rule",
+      "margin": 40.0,
+      "pack_id": "bangladesh",
+      "passed": true,
+      "property_id": "P1",
+      "run_id": "amphan_2020__bangladesh__rule__seed0",
+      "seed": 0,
+      "unit": "% of affected cells reachable for relief"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": 0.0,
+      "pack_id": "bangladesh",
+      "passed": true,
+      "property_id": "P2",
+      "run_id": "amphan_2020__bangladesh__rule__seed0",
+      "seed": 0,
+      "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": 345.0,
+      "pack_id": "bangladesh",
+      "passed": true,
+      "property_id": "P3",
+      "run_id": "amphan_2020__bangladesh__rule__seed0",
+      "seed": 0,
+      "unit": "minutes from first warning to a valid local-language alert"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": -855.0,
+      "pack_id": "bangladesh",
+      "passed": false,
+      "property_id": "P4",
+      "run_id": "amphan_2020__bangladesh__rule__seed0",
+      "seed": 0,
+      "unit": "minutes from landfall to roaming active"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": 40.0,
+      "pack_id": "fcc_mdri",
+      "passed": true,
+      "property_id": "P1",
+      "run_id": "amphan_2020__fcc_mdri__rule__seed0",
+      "seed": 0,
+      "unit": "% of affected cells reachable for relief"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": 0.0,
+      "pack_id": "fcc_mdri",
+      "passed": true,
+      "property_id": "P2",
+      "run_id": "amphan_2020__fcc_mdri__rule__seed0",
+      "seed": 0,
+      "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": 345.0,
+      "pack_id": "fcc_mdri",
+      "passed": true,
+      "property_id": "P3",
+      "run_id": "amphan_2020__fcc_mdri__rule__seed0",
+      "seed": 0,
+      "unit": "minutes from first warning to a valid local-language alert"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": 345.0,
+      "pack_id": "fcc_mdri",
+      "passed": true,
+      "property_id": "P4",
+      "run_id": "amphan_2020__fcc_mdri__rule__seed0",
+      "seed": 0,
+      "unit": "minutes from landfall to roaming active"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": -60.0,
+      "pack_id": "india_current",
+      "passed": false,
+      "property_id": "P1",
+      "run_id": "amphan_2020__india_current__rule__seed0",
+      "seed": 0,
+      "unit": "% of affected cells reachable for relief"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": -1.0,
+      "pack_id": "india_current",
+      "passed": false,
+      "property_id": "P2",
+      "run_id": "amphan_2020__india_current__rule__seed0",
+      "seed": 0,
+      "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": -7140.0,
+      "pack_id": "india_current",
+      "passed": false,
+      "property_id": "P3",
+      "run_id": "amphan_2020__india_current__rule__seed0",
+      "seed": 0,
+      "unit": "minutes from first warning to a valid local-language alert"
+    },
+    {
+      "agent_tier": "rule",
+      "margin": -855.0,
+      "pack_id": "india_current",
+      "passed": false,
+      "property_id": "P4",
+      "run_id": "amphan_2020__india_current__rule__seed0",
+      "seed": 0,
+      "unit": "minutes from landfall to roaming active"
+    }
+  ]
+}

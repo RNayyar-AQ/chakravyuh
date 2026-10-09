@@ -1,0 +1,139 @@
+# United States (FCC) as encoded for simulation (NOT legal advice). Global comparator.
+# Citations are to 47 CFR 4.17, the MDRI's actual regulatory home, rather than to an
+# FCC news page. Source: https://www.law.cornell.edu/cfr/text/47/4.17
+# This is the "standing roaming trigger" pack. Contrast with india_current:
+#   + roaming under disaster is triggered by DIRS activation, with NO per-provider order
+#     and NO approval delay -> fastest roaming of the three
+#   + no general executive power to suspend telecom service: ORDER_SUSPENSION is ultra vires
+#   + outage reporting on a 120-minute clock where a 911 facility is affected
+#   - alerting is bilingual (English/Spanish) rather than per-local-language
+# Role ids are the simulator's fixed set, standing for US analogues
+# (competent_authority = FEMA/State EOC, cert_in = CISA, sdma_alerts = alert originator).
+pack_id: fcc_mdri
+jurisdiction: US
+version: "2026.10"
+mode: blocking
+
+rules:
+  # No ORDER_SUSPENSION rule exists for any role: the power is simply absent from this pack,
+  # so a suspension proposal (forged or genuine) returns BLOCK/ultra_vires. That is the point.
+
+  - rule_id: US.R.DECLARE_DISASTER
+    summary: "Emergency declaration / DIRS activation for an affected area"
+    clause_ids: [US.FCC.DIRS, US.CFR47.4.17.trigger]
+    actor_role: competent_authority
+    action_type: DECLARE_DISASTER
+    effect: permit
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL]
+
+  - rule_id: US.R.ORDER_DISASTER_ROAMING
+    summary: "Authority may confirm the MDRI trigger; no per-provider order is required"
+    clause_ids: [US.CFR47.4.17.trigger]
+    actor_role: competent_authority
+    action_type: ORDER_DISASTER_ROAMING
+    effect: permit
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL, DAMAGE_REPORT]
+    approval_delay_min: 0
+
+  - rule_id: US.R.ENABLE_ROAMING_STANDING
+    summary: "MDRI: roaming under disaster is owed on DIRS activation, no separate order needed"
+    clause_ids: [US.CFR47.4.17.a, US.CFR47.4.17.trigger]
+    actor_role: tsp_network
+    action_type: ENABLE_ROAMING
+    effect: oblige                       # standing trigger: the obligation, not a permission
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, IMD_WARNING]
+      param_required: [area]
+    deadline_min: 60
+
+  - rule_id: US.R.PRIORITISE_RELIEF_SLICE
+    summary: "Priority access for emergency responders and preservation of 911 reachability"
+    clause_ids: [US.CFR47.4.9, INTL.ITU.E106, INTL.ITU.CONST.art40]
+    actor_role: tsp_network
+    action_type: PRIORITISE_RELIEF_SLICE
+    effect: oblige
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, IMD_WARNING]
+      param_required: [area]
+    deadline_min: 60
+
+  - rule_id: US.R.MUTUAL_AID_RESTORE
+    summary: "MDRI mutual aid: coordinated restoration in the affected area"
+    clause_ids: [US.CFR47.4.17.b]
+    actor_role: tsp_network
+    action_type: RESTORE_SITE
+    effect: permit
+    conditions:
+      param_required: [area]
+
+  - rule_id: US.R.OUTAGE_REPORT
+    summary: "Outage affecting a 911 special facility reported within 120 minutes"
+    clause_ids: [US.CFR47.4.9, US.FCC.DIRS]
+    actor_role: tsp_network
+    action_type: REPORT_INCIDENT
+    effect: oblige
+    conditions:
+      event_seen: [SITE_DOWN, CYBER_INCIDENT, SUSPICIOUS_ORDER]
+    deadline_min: 120
+
+  - rule_id: US.R.ISSUE_WEA_ALERT
+    summary: "Alert originator transmits a WEA alert to the specified geographic area"
+    clause_ids: [US.FCC.WEA, INTL.ITU.X1303]
+    actor_role: sdma_alerts
+    action_type: ISSUE_CAP_ALERT
+    effect: oblige
+    conditions:
+      event_seen: [IMD_WARNING, LANDFALL]
+      param_required: [area, languages]
+    deadline_min: 60
+
+  - rule_id: US.R.REQUEST_CROSS_BORDER
+    summary: "Cross-border coordination request to a neighbouring authority"
+    clause_ids: [INTL.TAMPERE1998.art3, INTL.TAMPERE1998.art9]
+    actor_role: sdma_alerts
+    action_type: REQUEST_CROSS_BORDER_ALERT
+    effect: permit
+    conditions:
+      param_required: [area]
+
+  - rule_id: US.R.FLAG_FORGED_ORDER
+    summary: "Cyber agency flags a suspected forged direction to providers"
+    clause_ids: [US.CFR47.4.9]
+    actor_role: cert_in
+    action_type: FLAG_FORGED_ORDER
+    effect: permit
+    conditions:
+      param_required: [about_event_id]
+
+  - rule_id: US.R.CROSS_BORDER_ROAMING
+    summary: "MDRI-style standing trigger extended across the border under Tampere art.9"
+    clause_ids: [INTL.TAMPERE1998.art9, US.CFR47.4.17.a, US.CFR47.4.17.trigger]
+    actor_role: neighbour_authority
+    action_type: ENABLE_ROAMING
+    effect: oblige
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, CROSS_BORDER_REQUEST]
+      param_required: [area]
+    deadline_min: 60
+
+  - rule_id: US.R.NEIGHBOUR_ALERT
+    summary: "Alert originator on the far side of the border transmits to its own population"
+    clause_ids: [US.FCC.WEA, INTL.ITU.X1303]
+    actor_role: neighbour_authority
+    action_type: ISSUE_CAP_ALERT
+    effect: oblige
+    conditions:
+      event_seen: [LANDFALL, DAMAGE_REPORT, CROSS_BORDER_REQUEST]
+      param_required: [area, languages]
+    deadline_min: 60
+
+  - rule_id: US.R.NEIGHBOUR_ACK
+    summary: "Neighbouring authority acknowledges a cross-border request"
+    clause_ids: [INTL.TAMPERE1998.art4]
+    actor_role: neighbour_authority
+    action_type: ACKNOWLEDGE_CROSS_BORDER
+    effect: permit
+    conditions:
+      event_seen: CROSS_BORDER_REQUEST

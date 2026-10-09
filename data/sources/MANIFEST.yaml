@@ -1,0 +1,167 @@
+# Primary source documents. Fetched, hashed and completeness-checked by scripts/fetch_sources.py.
+#
+# WHY EVERY ENTRY CARRIES A `must_contain` AND A `unit_count`
+#   A PDF that downloads with HTTP 200 and has a text layer can still be the wrong document, a
+#   partial extract, or two documents spliced together. All three happened on the first run of
+#   this manifest, and one of them would have produced a confident FALSE finding:
+#
+#     - `thc.nic.in` served a composite: TCS Rules 2024 rules 4-8 ONLY, followed by pages of a
+#       different notification. Searching it for "authenticate" returns 0 hits -- which would
+#       have "confirmed" our negative finding using a document missing rules 1-3 and 9+.
+#     - A guessed eGazette id (258074) returned a Gramin Bank pension regulation.
+#
+#   So a fetch is not trusted because it is a PDF. It is trusted because the text it yields
+#   contains the strings only the real instrument contains, and because the number of units it
+#   segments into matches the instrument's own count. Both are asserted here, per document.
+#
+# `status: held`    = downloaded and all checks pass
+# `status: partial` = downloaded but incomplete; usable ONLY for what it provably contains,
+#                     and NEVER for an absence claim
+# `status: wanted`  = not yet obtained
+
+sources:
+  - id: IN-SUSP-2024
+    sha256: f60ca6db4d91b116b8ef9bf543faff095d019a6bb631da553c695bf020f07735
+    instrument: "Telecommunications (Temporary Suspension of Services) Rules, 2024"
+    gazette: "G.S.R. 724(E), Gazette Extraordinary No. 665, 22 Nov 2024"
+    jurisdiction: IN
+    instrument_type: rules
+    url: "https://eservices.dot.gov.in/sites/default/files/circular-notifications/temporary-suspension-of-services-rules-2024.pdf"
+    official: true
+    bilingual: true          # Hindi first, English after; language split required
+    pages: 6
+    status: held
+    feeds: [P1, P2, G3, G4]
+    must_contain:
+      - "Temporary Suspension of Telecommunication Services Rules, 2024"
+      - "G.S.R. 724(E)"
+      - "nodal officer"
+      - "Superintendent of Police"
+      - "review committee"
+    unit_count: 5            # rules 1-5; checked against the instrument
+    unit_count_source: "rule 5 is the last rule (constitution of the review committee)"
+
+  - id: IN-CERTIN-2022
+    sha256: 202c2f3953d792dcfb3ecb3634fc82ab75437ee596de89b8d59a211e8e42431f
+    instrument: "CERT-In Directions under s.70B(6) IT Act 2000"
+    gazette: "No. 20(3)/2022-CERT-In, 28 Apr 2022"
+    jurisdiction: IN
+    instrument_type: directions
+    url: "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf"
+    official: true
+    bilingual: false
+    pages: 9
+    status: held
+    feeds: [G3]
+    must_contain:
+      - "20(3)/2022-CERT-In"
+      - "6 hours"
+      - "Indian Computer Emergency Response Team"
+    unit_count: 9            # numbered directions (i)-(ix)
+
+  - id: BT-SOP
+    sha256: 8a75b10510140088e5861487fad7268558eacec3ae6c5060f304b445b06be367
+    instrument: "SOP for Telecommunication Services During Disasters (Bhutan)"
+    gazette: "DITT / MoIC, Royal Government of Bhutan"
+    jurisdiction: BT
+    instrument_type: sop
+    url: "https://tech.gov.bt/wp-content/uploads/2024/09/Final-SoP-for-Telecom-service-during-Disaster.pdf"
+    official: true
+    bilingual: false
+    pages: 26
+    status: held
+    feeds: [P4, G1, G6]
+    must_contain:
+      - "STANDARD OPERATING PROCEDURE"
+      - "Department of Information Technology and Telecom"
+    # NOTE for the absence claim: "roam" occurs ONCE in this document, at p.11, inside an
+    # equipment capability list ("multiple operation modes including ... roaming interconnect
+    # with commercial operators networks"). That is a radio spec, not a provision obliging or
+    # triggering inter-operator roaming. The absence claim must be worded to say exactly this.
+
+  - id: BD-SOD-2019
+    sha256: e562f8fb28f9bb8bec4bffca34f8a8ee0c2d123d86c552f81ec51258efbd617c
+    instrument: "Standing Orders on Disaster 2019 (Bangladesh)"
+    gazette: "Ministry of Disaster Management and Relief"
+    jurisdiction: BD
+    instrument_type: sop
+    url: "https://www.adrc.asia/documents/dm_information/BGD_SOD2019_English_FINAL.pdf"
+    official: false
+    mirror: true
+    mirror_note: "ADRC mirror; MoDMR original at modmr.gov.bd not located this session"
+    bilingual: false
+    pages: 440
+    status: held
+    feeds: [G2, G7]
+    must_contain:
+      - "Standing Orders on Disaster"
+      - "Ministry of Disaster Management and Relief"
+
+  - id: US-MDRI
+    sha256: cf2dce9870f1fe65669cc6695531801413c8a1da9d7cf370db1b3baca7c5c6c0
+    instrument: "47 CFR 4.17 Mandatory Disaster Response Initiative"
+    gazette: "FCC 22-50, Federal Register Vol. 87 No. 189, 30 Sep 2022, p. 59340"
+    jurisdiction: US
+    instrument_type: regulation
+    url: "https://govinfo.gov/content/pkg/FR-2022-09-30/pdf/2022-21295.pdf"
+    official: true
+    bilingual: false
+    pages: 3
+    status: held
+    feeds: [P4, G1, G6]
+    must_contain:
+      - "Mandatory Disaster Response Initiative"
+      - "4.17"
+      - "roaming"
+
+  # ---------------------------------------------------------------- NOT HELD
+  - id: IN-TCS-2024
+    sha256: 16f93fbc5e1bbdbdee56b3b98a020e0d49e32f98b524ed8942ac8d6f7dc81494
+    instrument: "Telecommunications (Telecom Cyber Security) Rules, 2024"
+    gazette: "G.S.R. 720(E), 21 Nov 2024"
+    jurisdiction: IN
+    instrument_type: rules
+    url: "https://www.thc.nic.in/Central%20Governmental%20Rules/Telecommunications%20(Telecom%20Cyber%20Security)%20Rules,%202024.pdf"
+    official: false
+    bilingual: true
+    status: partial
+    feeds: [P2, G3]
+    partial_reason: >-
+      The only copy obtained is a composite. Its first six pages are gazette pages 8-13 carrying
+      TCS Rules 4-8 only; rules 1-3 and anything after rule 8 are absent. Its last three pages
+      are gazette pages 5-7 of a DIFFERENT instrument (G.S.R. 771(E), 22 Oct 2025 - see
+      IN-TCS-AMEND-2025). Searching this file for authentication terms returns 0 hits, but that
+      result is WORTHLESS as evidence of absence because the file is missing most of the rules.
+    blocks: >-
+      P2 and G3 rest on the claim that the TCS Rules impose no duty to authenticate a direction.
+      That claim CANNOT be upgraded from `secondary_source` until the complete notified text is
+      held. This is the single highest-value document still missing.
+    wanted_from:
+      - "dot.gov.in - search 'Telecom Cyber Security Rules 2024 G.S.R. 720(E)'"
+      - "egazette.gov.in - locate the 21 Nov 2024 Part II Sec 3(i) issue"
+
+  - id: IN-TCS-AMEND-2025
+    instrument: "Telecommunications (Telecom Cyber Security) Amendment Rules, 2025"
+    gazette: "G.S.R. 771(E), 22 Oct 2025"
+    jurisdiction: IN
+    instrument_type: rules
+    status: wanted
+    feeds: [P2, G3]
+    # FOUND BY ACCIDENT, inside the composite above. The KB hardening plan listed a post-Nov-2024
+    # amendment as [Guessing]. It exists. Our clause records describe the 2024 Rules as they stood
+    # at notification and take no account of this amendment at all, which concerns directions to
+    # suspend the use of a telecommunication identifier -- squarely in P2's subject matter.
+    discovered_in: IN-TCS-2024
+    wanted_from:
+      - "dot.gov.in - G.S.R. 771(E) of 22 Oct 2025"
+
+  - id: IN-SOP-2020
+    instrument: "DoT SOP-2020 for Telecommunication Services for Responding to Disasters"
+    gazette: "Department of Telecommunications, 14 Dec 2020"
+    jurisdiction: IN
+    instrument_type: sop
+    status: wanted
+    feeds: [P4, G1, G2, G5, G6]
+    wanted_from:
+      - "dot.gov.in/disaster-management (official copy not located this session)"
+      - "https://dehradun.nic.in/document/standard-operating-proceduresop-2020-for-telecommunications-services-for-responding-to-disasters/ (NIC mirror, ~5 MB, may be scanned)"

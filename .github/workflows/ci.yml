@@ -1,0 +1,61 @@
+# CI: build the knowledge base, replay the demo, verify every ledger, run the tests.
+# Deliberately offline-equivalent: no secret is configured, so if anything ever starts needing a
+# provider credential this job is where it fails, not the demo.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CHAKRAVYUH_LLM_MODE: replay
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[test,ui,kb]"
+
+      - name: Lint
+        run: |
+          pip install ruff
+          ruff check chakravyuh app scripts tests --select F,E9,B
+
+      - name: Build the knowledge base
+        run: python scripts/build_kb.py
+
+      - name: Replay the demo
+        run: python scripts/run_demo.py --seed 0
+
+      - name: Verify every ledger
+        run: python scripts/verify_ledger.py --all
+
+      - name: Tamper test — an edited ledger must fail
+        run: python scripts/verify_ledger.py --tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl
+
+      - name: Tests
+        run: python -m pytest -q
+
+      - name: Rubric audit
+        run: python scripts/rubric_audit.py
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chakravyuh-artefacts
+          path: |
+            docs/
+            outputs/
+            out/
