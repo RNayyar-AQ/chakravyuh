@@ -26,6 +26,7 @@ docs/failure_atlas.md
 docs/source_check.md
 docs/run_stats.md
 docs/rubric_status.html
+docs/VIDEO_BRIEF.md
 
 # data/clauses/ is entirely a BUILD PRODUCT. `python app/scripts/build_kb.py` regenerates
 # clauses.jsonl and chunks.jsonl byte-identically in ~4 s from the three inputs that ARE
