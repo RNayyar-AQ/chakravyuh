@@ -59,6 +59,10 @@ STAGES: list[Stage] = [
      [PY, "scripts/verify_ledger.py", "--all"], False),
     ("tamper", "prove an edited ledger is detected",
      [PY, "scripts/verify_ledger.py", "--tamper-demo"], False),
+    # Last, because it reads every artefact above. The web UI renders this bundle and nothing
+    # else, so if a stage above did not run, the UI says so instead of showing a stale number.
+    ("web", "export every artefact as the web UI's data bundle",
+     [PY, "scripts/export_web.py"], False),
 ]
 
 

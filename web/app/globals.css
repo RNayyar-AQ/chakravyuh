@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* CHAKRAVYUH — an operations deck, not a brochure.
+   One dark ground, three regime colours, four verdict colours. Nothing else. */
+@theme {
+  --color-ground: #070a0f;
+  --color-panel: #0d1219;
+  --color-panel-2: #131a24;
+  --color-line: #1d2735;
+  --color-line-bright: #2b3950;
+  --color-ink: #e6edf5;
+  --color-muted: #8597ad;
+  --color-faint: #5b6a7e;
+
+  /* verdicts */
+  --color-allow: #34d399;
+  --color-block: #fb923c;
+  --color-human: #c084fc;
+  --color-fail: #fb7185;
+  --color-pass: #34d399;
+
+  /* regimes */
+  --color-india: #f0b429;
+  --color-bangladesh: #2dd4a7;
+  --color-us: #4aa8ff;
+
+  --color-brand: #ff7a45;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+}
+
+html { color-scheme: dark; }
+
+body {
+  background:
+    radial-gradient(1100px 620px at 50% -12%, #16202e 0%, transparent 62%),
+    radial-gradient(760px 420px at 92% 8%, #1a1420 0%, transparent 58%),
+    var(--color-ground);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #ff7a4533; }
+
+/* Thin scrollbars — the timeline and the tables scroll a lot. */
+* { scrollbar-width: thin; scrollbar-color: var(--color-line-bright) transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb { background: var(--color-line-bright); border-radius: 99px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes cv-spin { to { transform: rotate(360deg); } }
+@keyframes cv-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes cv-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes cv-pulse { 0%,100% { opacity: .35; } 50% { opacity: .9; } }
+
+.cv-rise { animation: cv-rise .5s cubic-bezier(.2,.7,.3,1) both; }
+
+/* Hairline grid behind panels: the "instrument" texture. */
+.cv-grid {
+  background-image:
+    linear-gradient(to right, #ffffff07 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff07 1px, transparent 1px);
+  background-size: 44px 44px;
+}
