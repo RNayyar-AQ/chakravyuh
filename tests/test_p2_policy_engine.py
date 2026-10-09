@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import ast
+import sys
+import tokenize
 from pathlib import Path
 
 import pytest
@@ -71,10 +73,54 @@ def test_whole_policy_package_is_llm_free():
         assert not any(m.startswith("chakravyuh.llm") for m in reachable), module
 
 
-def test_engine_source_mentions_no_model_call():
-    src = ENGINE.read_text(encoding="utf-8")
-    for forbidden in ("litellm", "openai", "anthropic", "LLMClient", "complete("):
-        assert forbidden not in src, f"engine references {forbidden}"
+# The engine's own imports are checked against an allowlist rather than a list of model vendors.
+# Naming vendors only catches the ones someone remembered; this catches every import that was not
+# deliberately permitted. tests/test_p10_repo_standard.py applies the same rule transitively.
+ENGINE_ALLOWED_IMPORTS = frozenset({"pydantic", "chakravyuh"})
+
+
+def test_engine_imports_nothing_outside_the_allowlist():
+    """Every top-level module the engine imports must be stdlib, pydantic, or our own."""
+    tree = ast.parse(ENGINE.read_text(encoding="utf-8"))
+    roots: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            roots |= {a.name.split(".")[0] for a in node.names}
+        elif isinstance(node, ast.ImportFrom) and not node.level and node.module:
+            roots.add(node.module.split(".")[0])
+    offending = sorted(r for r in roots
+                       if r not in sys.stdlib_module_names and r not in ENGINE_ALLOWED_IMPORTS)
+    assert not offending, f"engine imports {offending}, which are not on the allowlist"
+
+
+# Model-client handles that must never appear in the P node's executable code. Checked against
+# tokens, not raw text: the engine's docstring states this very constraint, and a plain substring
+# scan would read the rule as a breach of itself.
+FORBIDDEN_NAMES = frozenset({"LLMClient", "litellm", "Adviser"})
+
+
+def _code_names(path: Path) -> set[str]:
+    """Every NAME token in the file, with comments and string literals discarded."""
+    with path.open("rb") as fh:
+        return {tok.string for tok in tokenize.tokenize(fh.readline)
+                if tok.type == tokenize.NAME}
+
+
+def test_engine_source_makes_no_model_call():
+    """Belt and braces behind the import allowlist: no model-client handle in the P node."""
+    used = _code_names(ENGINE) & FORBIDDEN_NAMES
+    assert not used, f"engine references {sorted(used)} in executable code"
+
+
+def test_the_code_scan_ignores_prose_but_not_code(tmp_path):
+    """Positive control: a docstring mentioning the rule passes; an actual use does not."""
+    prose = tmp_path / "prose.py"
+    prose.write_text('"""This module must never touch LLMClient."""\nx = 1\n')
+    assert not (_code_names(prose) & FORBIDDEN_NAMES)
+
+    real = tmp_path / "real.py"
+    real.write_text("from chakravyuh.llm.client import LLMClient\nc = LLMClient()\n")
+    assert _code_names(real) & FORBIDDEN_NAMES
 
 
 def test_unknown_clause_id_fails_compilation(tmp_path, built_kb):

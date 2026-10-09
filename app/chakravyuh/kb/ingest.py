@@ -80,8 +80,8 @@ def _collection_for(clause: Clause) -> str:
 def chunk_clauses(clauses: Iterable[Clause], window_chars: int = 900) -> list[Chunk]:
     """One chunk per clause; split only clauses longer than window_chars, on sentence bounds.
 
-    Each chunk's text is prefixed with instrument + section -- cheap contextual retrieval
-    (Anthropic 2024: contextual embeddings cut failed retrievals ~35%).
+    Each chunk's text is prefixed with instrument + section, so an embedding carries the
+    provision it belongs to instead of a bare fragment -- cheap contextual retrieval.
     """
     chunks: list[Chunk] = []
     for c in clauses:

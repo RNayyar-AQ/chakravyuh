@@ -8,16 +8,22 @@ from __future__ import annotations
 
 import ast
 import re
+import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Any import reaching the policy engine from one of these is a failure. `jev` is included
-# pre-emptively: it is a typed-answer model and the engine must not acquire one by any route.
-FORBIDDEN_ROOTS = ("chakravyuh.llm", "ollama", "openai", "anthropic", "litellm",
-                   "langchain", "jev", "transformers", "chromadb", "sentence_transformers")
+# The engine's import closure is an ALLOWLIST, not a denylist of model vendors. A denylist only
+# catches the libraries someone thought to name; this catches anything that is not deliberately
+# permitted -- a new SDK, a vendor nobody has heard of yet, a transitive dependency that pulls one
+# in. The engine is a pure function over compiled rules, so the permitted set is small and stable.
+ALLOWED_THIRD_PARTY = frozenset({"pydantic"})
+ALLOWED_FIRST_PARTY = "chakravyuh"
+# Our own model client is first-party but still out of bounds for the P node.
+BANNED_FIRST_PARTY = "chakravyuh.llm"
+STDLIB = frozenset(sys.stdlib_module_names)
 
 ENGINE_ENTRY = "chakravyuh.policy.engine"
 
@@ -44,6 +50,14 @@ def _project_imports(module: str) -> list[str]:
     return names
 
 
+def _permitted(name: str) -> bool:
+    """True if the P node may import this. Everything else fails, by construction."""
+    if name == BANNED_FIRST_PARTY or name.startswith(BANNED_FIRST_PARTY + "."):
+        return False
+    root = name.split(".")[0]
+    return root in STDLIB or root in ALLOWED_THIRD_PARTY or root == ALLOWED_FIRST_PARTY
+
+
 def test_policy_engine_cannot_reach_any_model_transitively():
     """The P node must be a pure function. Checked across the whole import graph, not one file."""
     seen: set[str] = set()
@@ -55,18 +69,25 @@ def test_policy_engine_cannot_reach_any_model_transitively():
             continue
         seen.add(module)
         for name in _project_imports(module):
-            for bad in FORBIDDEN_ROOTS:
-                if name == bad or name.startswith(bad + "."):
-                    route, hop = [module], module
-                    while hop in came_from:
-                        hop = came_from[hop]
-                        route.append(hop)
-                    pytest.fail(f"policy engine reaches {name!r} via "
-                                + " -> ".join(reversed(route)))
+            if not _permitted(name):
+                route, hop = [module], module
+                while hop in came_from:
+                    hop = came_from[hop]
+                    route.append(hop)
+                pytest.fail(f"policy engine reaches {name!r}, which is not on the allowlist, via "
+                            + " -> ".join(reversed(route)))
             if name.startswith("chakravyuh") and name not in seen:
                 came_from.setdefault(name, module)
                 stack.append(name)
     assert len(seen) > 5, "the import walk found almost nothing; the test is not doing its job"
+
+
+def test_the_allowlist_rejects_an_unlisted_package():
+    """Positive control for the allowlist itself: anything unnamed must fail, not pass."""
+    assert _permitted("json") and _permitted("pydantic") and _permitted("chakravyuh.schemas")
+    assert not _permitted("chakravyuh.llm.client")
+    for unlisted in ("litellm", "some_future_sdk", "torch", "requests"):
+        assert not _permitted(unlisted), f"{unlisted} slipped through the allowlist"
 
 
 def test_the_purity_check_would_actually_catch_a_violation():

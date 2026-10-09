@@ -1,7 +1,7 @@
 """Generic role-bound LLM agent returning typed JSON. Y.3172 node: M.
 
-Delegation follows Anthropic's lesson (§5.2): every prompt carries an objective, an output
-schema, the allowed actions, and explicit boundaries ("you cannot see X; if unsure, ASK").
+Delegation is explicit (§5.2): every prompt carries an objective, an output schema, the
+allowed actions, and explicit boundaries ("you cannot see X; if unsure, ASK").
 
 The agent PROPOSES ONLY. It cannot change the world, and it is not asked whether its action is
 legal -- the policy engine decides that. An LLM proposal outside the role's powers is not

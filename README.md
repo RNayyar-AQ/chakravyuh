@@ -143,8 +143,8 @@ ollama pull qwen2.5:14b && ollama pull nomic-embed-text
 CHAKRAVYUH_LLM_MODE=record python app/scripts/run_demo.py --tier llm
 
 # B. Hosted — one model, for the showcase run only. Needs that provider's key.
-export CHAKRAVYUH_HOSTED_MODEL=anthropic/claude-sonnet-5
-export ANTHROPIC_API_KEY=sk-ant-...
+export CHAKRAVYUH_HOSTED_MODEL=openai/gpt-4o
+export OPENAI_API_KEY=sk-...
 CHAKRAVYUH_LLM_MODE=record python app/scripts/run_demo.py --tier llm --hosted
 
 # Then replay forever, offline and identical every time, with no key and no provider:
@@ -157,7 +157,7 @@ python app/scripts/run_demo.py --tier llm
 | Local LLM agents / Adviser | `OLLAMA_BASE_URL`, `CHAKRAVYUH_LOCAL_MODEL` | **none** (Ollama running) |
 | ITU Chroma vector KB | `CHROMA_PATH` | **none** |
 | Optional reranker | `CHAKRAVYUH_RERANKER` | **none** (local weights) |
-| Hosted showcase run | `CHAKRAVYUH_HOSTED_MODEL` + `--hosted` | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` |
+| Hosted showcase run | `CHAKRAVYUH_HOSTED_MODEL` + `--hosted` | `OPENAI_API_KEY` / `GEMINI_API_KEY` / `MISTRAL_API_KEY` |
 | Adviser eval's LLM judge | `--judge-model <id>` | that provider's key |
 
 Keys are read by LiteLLM, never by this code. The scripts preflight the one variable your chosen

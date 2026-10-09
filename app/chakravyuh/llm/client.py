@@ -30,8 +30,6 @@ DEFAULT_CACHE = Path(os.environ.get("CHAKRAVYUH_LLM_CACHE", "cache"))
 # clause store, properties, gaps, fuzzing and the extractive Adviser all run with no credential.
 PROVIDER_CREDENTIALS: tuple[tuple[str, str], ...] = (
     ("ollama/", ""),                      # local, no key; needs OLLAMA_BASE_URL reachable
-    ("anthropic/", "ANTHROPIC_API_KEY"),
-    ("claude-", "ANTHROPIC_API_KEY"),
     ("openai/", "OPENAI_API_KEY"),
     ("gpt-", "OPENAI_API_KEY"),
     ("o1-", "OPENAI_API_KEY"),

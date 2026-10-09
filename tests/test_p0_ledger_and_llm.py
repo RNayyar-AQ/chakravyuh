@@ -98,22 +98,22 @@ def test_resolve_model_prefers_explicit_then_hosted_then_local(monkeypatch):
         "asking for hosted with none configured must fall back, not fail"
 
     monkeypatch.setenv("CHAKRAVYUH_LOCAL_MODEL", "ollama/local-x")
-    monkeypatch.setenv("CHAKRAVYUH_HOSTED_MODEL", "anthropic/hosted-y")
+    monkeypatch.setenv("CHAKRAVYUH_HOSTED_MODEL", "openai/hosted-y")
     assert resolve_model() == "ollama/local-x"
-    assert resolve_model(prefer_hosted=True) == "anthropic/hosted-y"
+    assert resolve_model(prefer_hosted=True) == "openai/hosted-y"
     assert resolve_model(prefer_hosted=True, explicit="openai/gpt-z") == "openai/gpt-z"
 
 
 def test_client_honours_prefer_hosted(monkeypatch, tmp_path):
-    monkeypatch.setenv("CHAKRAVYUH_HOSTED_MODEL", "anthropic/claude-sonnet-5")
+    monkeypatch.setenv("CHAKRAVYUH_HOSTED_MODEL", "openai/gpt-4o")
     monkeypatch.setenv("CHAKRAVYUH_LOCAL_MODEL", "ollama/qwen2.5:14b")
     assert LLMClient(cache_dir=tmp_path).model == "ollama/qwen2.5:14b"
-    assert LLMClient(cache_dir=tmp_path, prefer_hosted=True).model == "anthropic/claude-sonnet-5"
+    assert LLMClient(cache_dir=tmp_path, prefer_hosted=True).model == "openai/gpt-4o"
 
 
 @pytest.mark.parametrize("model,expected", [
     ("ollama/qwen2.5:14b", None),                     # local: no credential at all
-    ("anthropic/claude-sonnet-5", "ANTHROPIC_API_KEY"),
+    ("openai/gpt-4o", "OPENAI_API_KEY"),
     ("openai/gpt-4o", "OPENAI_API_KEY"),
     ("gemini/gemini-2.0-flash", "GEMINI_API_KEY"),
     ("some-unknown/model", None),                      # unknown: defer to LiteLLM, do not guess
@@ -125,21 +125,21 @@ def test_credential_env_for(model, expected):
 
 def test_missing_credential_respects_the_environment(monkeypatch):
     from chakravyuh.llm.client import missing_credential
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    assert missing_credential("anthropic/claude-sonnet-5") == "ANTHROPIC_API_KEY"
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
-    assert missing_credential("anthropic/claude-sonnet-5") is None
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "")
-    assert missing_credential("anthropic/claude-sonnet-5") == "ANTHROPIC_API_KEY", \
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    assert missing_credential("openai/gpt-4o") == "OPENAI_API_KEY"
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    assert missing_credential("openai/gpt-4o") is None
+    monkeypatch.setenv("OPENAI_API_KEY", "")
+    assert missing_credential("openai/gpt-4o") == "OPENAI_API_KEY", \
         "an empty string is not a credential"
     assert missing_credential("ollama/qwen2.5:14b") is None
 
 
 def test_replay_mode_needs_no_credential_at_all(monkeypatch, tmp_path):
     """The whole point of replay: the demo runs with no provider and no key."""
-    for var in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY"):
+    for var in ("OPENAI_API_KEY", "GEMINI_API_KEY", "MISTRAL_API_KEY"):
         monkeypatch.delenv(var, raising=False)
-    client = LLMClient(model="anthropic/claude-sonnet-5", mode="replay", cache_dir=tmp_path)
+    client = LLMClient(model="openai/gpt-4o", mode="replay", cache_dir=tmp_path)
     client.seed_cache("q", '{"action_type": "NOOP"}', "Proposal")
     assert client.complete("q", schema_name="Proposal").text == '{"action_type": "NOOP"}'
 
@@ -147,9 +147,9 @@ def test_replay_mode_needs_no_credential_at_all(monkeypatch, tmp_path):
 def test_record_mode_names_the_missing_variable(monkeypatch, tmp_path):
     from chakravyuh.llm.client import LLMUnavailable
     pytest.importorskip("litellm", reason="preflight only fires once litellm is installed")
-    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    client = LLMClient(model="anthropic/claude-sonnet-5", mode="record", cache_dir=tmp_path)
-    with pytest.raises(LLMUnavailable, match="ANTHROPIC_API_KEY"):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    client = LLMClient(model="openai/gpt-4o", mode="record", cache_dir=tmp_path)
+    with pytest.raises(LLMUnavailable, match="OPENAI_API_KEY"):
         client.complete("q", schema_name="Proposal")
 
 

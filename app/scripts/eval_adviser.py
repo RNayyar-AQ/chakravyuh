@@ -16,7 +16,7 @@ humans catch what judges miss. Rows with no judge are reported as `unjudged`, ne
 
   python app/scripts/eval_adviser.py                  # extractive adviser, mechanical criteria only
   python app/scripts/eval_adviser.py --use-llm        # LLM adviser (needs a populated replay cache)
-  python app/scripts/eval_adviser.py --judge-model anthropic/claude-sonnet-5
+  python app/scripts/eval_adviser.py --judge-model openai/gpt-4o
 """
 from __future__ import annotations
 
