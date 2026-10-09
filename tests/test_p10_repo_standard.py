@@ -101,14 +101,29 @@ def _repo_files(*suffixes: str):
         yield path, rel
 
 
+# A line that FORBIDS a phrase has to contain the phrase. docs/VIDEO_BRIEF.md lists the claims a
+# video must never make, each marked with a cross; a style guide does the same thing. Recognise an
+# explicit prohibition and keep asserting on every other line, rather than exempting whole files.
+_PROHIBITION = re.compile(
+    r"❌|\bmust not\b|\bnever (say|claim|write)\b|\bdo not (say|claim|write)\b|\bforbid", re.I)
+
+
 def test_no_claim_of_itu_certification_or_compliance():
     """We are ALIGNED WITH and MAPPED TO ITU recommendations. Nothing more may be claimed."""
     bad = []
     for path, rel in _repo_files(".md", ".py", ".yaml", ".html"):
         for i, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-            if OVERCLAIM.search(line):
+            if OVERCLAIM.search(line) and not _PROHIBITION.search(line):
                 bad.append(f"{rel}:{i}: {line.strip()[:90]}")
     assert not bad, "overclaimed ITU endorsement:\n" + "\n".join(bad)
+
+
+def test_the_overclaim_check_still_catches_a_real_claim():
+    """Positive control: loosening the check must not blind it."""
+    claim = "CHAKRAVYUH is ITU-certified and compliant with Y.3172"
+    assert OVERCLAIM.search(claim) and not _PROHIBITION.search(claim)
+    forbidden = '- ❌ "ITU-certified", "ITU-approved" — never say these'
+    assert OVERCLAIM.search(forbidden) and _PROHIBITION.search(forbidden)
 
 
 # Mentioning a confidence interval to DISCLAIM it is correct and must not trip the check --
@@ -130,7 +145,7 @@ def test_no_accuracy_or_confidence_interval_claims():
             # A disclaimer routinely wraps: "No money, no casualties, no / confidence intervals."
             # so the negation can sit on the line above. Check the sentence, not the line.
             window = " ".join(lines[max(0, i - 2):i + 1])
-            if not _DENIAL.search(window):
+            if not (_DENIAL.search(window) or _PROHIBITION.search(line)):
                 bad.append(f"{rel}:{i}: {line.strip()[:90]}")
     assert not bad, ("a confidence interval or accuracy figure is asserted rather than "
                      "disclaimed:\n" + "\n".join(bad))

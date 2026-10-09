@@ -575,6 +575,9 @@ def g3_no_overclaim() -> Result:
     import re as _re
     pattern = _re.compile(r"(itu[- ]?(certified|approved|endorsed))|(certified\s+(by\s+)?(the\s+)?itu)"
                           r"|(compliant\s+with\s+(itu|y\.3172|x\.1303))", _re.I)
+    # A line that forbids the phrase necessarily contains it; that is the opposite of a claim.
+    prohibition = _re.compile(
+        r"❌|\bmust not\b|\bnever (say|claim|write)\b|\bdo not (say|claim|write)\b|\bforbid", _re.I)
     skip = {"CHAKRAVYUH_REPO_STANDARD.md", "CHAKRAVYUH_RUBRIC_SHOWCASE.md",
             "CHAKRAVYUH_IMPLEMENTATION.md", "CHAKRAVYUH_REAL_DATA.md",
             "CHAKRAVYUH_KB_HARDENING.md", "rubric_audit.py", "test_p10_repo_standard.py",
@@ -585,7 +588,7 @@ def g3_no_overclaim() -> Result:
         if rel.startswith((".venv", "out/", "kb_raw", ".git")) or path.name in skip:
             continue
         for i, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-            if pattern.search(line):
+            if pattern.search(line) and not prohibition.search(line):
                 bad.append(f"{rel}:{i}")
     if bad:
         return _no(f"{len(bad)} line(s) claim ITU certification or compliance: {bad[:4]}")

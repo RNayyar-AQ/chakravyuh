@@ -413,7 +413,8 @@ app/
   dev.py        starts the backend and the frontend together
 
 data/     inputs only — see data/README.md
-docs/     the five documents the ITU architecture names; everything else is generated
+docs/     the five documents the ITU architecture names, plus VIDEO_BRIEF.md;
+          everything else in here is generated
 tests/    every acceptance gate
 
 outputs/  generated: gap_register.csv · audit_sample.jsonl · comparison.json   (gitignored)
