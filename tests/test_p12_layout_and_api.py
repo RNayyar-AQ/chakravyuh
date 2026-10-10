@@ -55,30 +55,83 @@ def test_one_command_runs_both_halves():
     assert "npm" in dev and "dev" in dev, "dev.py does not start the frontend"
 
 
-def test_api_is_read_only():
-    """No endpoint may run the simulator, write a ledger or shell out."""
+def test_api_writes_nothing():
+    """The API may read artefacts and it may start the narrator. It may not edit anything."""
     source = (APP / "backend" / "main.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
 
-    banned_calls = {"run", "Popen", "system", "append", "write_text", "write_bytes", "unlink"}
-    found = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Call):
-            fn = node.func
-            name = fn.attr if isinstance(fn, ast.Attribute) else getattr(fn, "id", "")
-            if name in banned_calls and name != "append":
-                found.append(name)
-    assert not found, f"the API tier calls {sorted(set(found))}; it must only read"
+    # `run` and `system` would let any command through; the write calls would let the API edit
+    # the artefacts it is supposed to be reporting on. `Popen` is allowed, but only for the one
+    # command checked below -- see test_the_api_may_only_shell_out_to_the_narrator.
+    banned_calls = {"run", "system", "write_text", "write_bytes", "unlink", "mkdir", "rmtree"}
+    found = [
+        name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        for name in [node.func.attr if isinstance(node.func, ast.Attribute)
+                     else getattr(node.func, "id", "")]
+        if name in banned_calls
+    ]
+    assert not found, f"the API tier calls {sorted(set(found))}; it must not write"
 
-    banned_imports = {"subprocess", "os.system", "chakravyuh.sim", "chakravyuh.policy"}
+
+def test_api_never_runs_the_simulator_in_process():
+    """Importing the simulator into the web process would put a decision inside the API."""
+    source = (APP / "backend" / "main.py").read_text(encoding="utf-8")
+    banned_imports = {"os.system", "chakravyuh.sim", "chakravyuh.policy", "chakravyuh.agents",
+                      "chakravyuh.world", "chakravyuh.fuzz"}
     imported = set()
-    for node in ast.walk(tree):
+    for node in ast.walk(ast.parse(source)):
         if isinstance(node, ast.Import):
             imported |= {a.name for a in node.names}
         elif isinstance(node, ast.ImportFrom) and node.module:
             imported.add(node.module)
     overlap = {m for m in imported if any(m.startswith(b) for b in banned_imports)}
-    assert not overlap, f"the API tier imports {sorted(overlap)}; it must not run the simulator"
+    assert not overlap, (f"the API tier imports {sorted(overlap)}; a narrated run must be a "
+                         f"subprocess, so the API cannot hold simulator state between requests")
+
+
+def test_the_api_may_only_shell_out_to_the_narrator():
+    """One subprocess, one script, and the script is the narrator -- not an argument from a client.
+
+    `/api/narrate` is the single endpoint that executes anything. The command it builds has to
+    be assembled from constants, so no request body can reach the shell: the only value a
+    caller supplies is `pack`, and that is checked against the packs on disk before use.
+    """
+    source = (APP / "backend" / "main.py").read_text(encoding="utf-8")
+    tree = ast.parse(source)
+
+    popens = [n for n in ast.walk(tree)
+              if isinstance(n, ast.Call)
+              and (n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", ""))
+              == "Popen"]
+    assert len(popens) == 1, f"expected exactly one Popen in the API tier, found {len(popens)}"
+
+    call = popens[0]
+    assert not any(kw.arg == "shell" and getattr(kw.value, "value", False) is True
+                   for kw in call.keywords), "the API must never use shell=True"
+
+    # The command list is built once, from constants. Find it and check what it is made of.
+    assigns = [n for n in ast.walk(tree)
+               if isinstance(n, ast.Assign)
+               and any(getattr(t, "id", "") == "cmd" for t in n.targets)]
+    assert len(assigns) == 1, "the narrate command should be built in exactly one place"
+    literals = {e.value for e in ast.walk(assigns[0].value)
+                if isinstance(e, ast.Constant) and isinstance(e.value, str)}
+    assert "--color" in literals, "the narrator is invoked with explicit flags, not a free string"
+    names = {getattr(e, "id", "") for e in ast.walk(assigns[0].value) if isinstance(e, ast.Name)}
+    assert "NARRATE" in names, "the script path must come from the module constant"
+
+    assert "req.pack not in available" in source, (
+        "the pack a caller asks for must be checked against the packs on disk before it is used")
+
+
+def test_narration_is_refused_where_it_cannot_run():
+    """The public deployment is a static export with a read-only function. It must say so."""
+    source = (APP / "backend" / "main.py").read_text(encoding="utf-8")
+    assert 'os.environ.get("VERCEL")' in source, (
+        "the serverless deployment cannot execute the simulator; narration must refuse there")
+    assert "503" in source, "an unavailable narrator should answer 503, not fail at the shell"
 
 
 def test_api_binds_to_localhost_only():
@@ -209,7 +262,7 @@ def test_the_bundle_ships_a_verifiable_ledger_pair():
 
 
 # --------------------------------------------------------------------------------------------
-# The demo is one page plus the rubric. A judge with seven minutes should not have to find a tab.
+# The demo is one page plus the rubric. A reader with seven minutes should not have to find a tab.
 
 WEB_APP = APP / "web" / "app"
 

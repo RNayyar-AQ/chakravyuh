@@ -362,19 +362,6 @@
    "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=XXV-4&chapter=25",
    "text": "A State Party requiring telecommunication assistance for disaster mitigation and relief may request such assistance from any other State Party, and the requested State Party shall promptly determine and notify the requesting State Party whether it will render the assistance requested, directly or otherwise, and the scope of and terms on which such assistance might be rendered.",
    "verbatim_status": "unverified_summary"
-  },
-  "US.FCC.WEA": {
-   "clause_id": "US.FCC.WEA",
-   "instrument": "FCC Wireless Emergency Alerts rules (United States)",
-   "jurisdiction": "US",
-   "page": null,
-   "provenance": "model_written",
-   "quotable": false,
-   "section": "WEA multilingual alerting",
-   "sha256": "38aa998c0b23f0b0",
-   "source_url": "https://www.fcc.gov/consumers/guides/wireless-emergency-alerts-wea",
-   "text": "Participating Commercial Mobile Service providers shall support transmission of Wireless Emergency Alerts in English and Spanish, and shall transmit alerts received from the Alert Gateway to the geographic area specified by the alert originator.",
-   "verbatim_status": "unverified_summary"
   }
  },
  "derivations": [
@@ -918,7 +905,7 @@
    "title": "The Game Master resolves"
   },
   {
-   "body": "Every entry commits to the one before it. The four properties are checked against the finished world, and 612 mutated worlds are fuzzed to find the minimal case.",
+   "body": "Every entry commits to the one before it. The four properties are checked against the finished world, and a budget of 300 mutated worlds is searched for the minimal case.",
    "command": "python app/scripts/verify_ledger.py --all",
    "measure": "13122 ledger entries",
    "measure_sub": "11 registered gaps",
@@ -930,57 +917,30 @@
  "fuzz": {
   "cards": [
    {
-    "failure_id": "F-P3-e1666bd00c",
+    "failure_id": "F-P3-44e1860626",
     "gap_class": "execution",
     "margin": -7140.0,
     "mutations": [
      {
       "args": {
        "area": "OD-COAST",
-       "cells_down": 2,
+       "cells_down": 5,
        "seq": 0,
-       "t": 0
+       "t": 15
       },
-      "created_event_id": "fz-damage-OD-COAST-0-0",
+      "created_event_id": "fz-damage-OD-COAST-15-0",
       "family": "damage",
       "op": "escalate_damage"
      }
     ],
     "pack_id": "bangladesh",
     "passes_under_packs": [],
-    "replay_cmd": "python app/scripts/run_fuzz.py --replay F-P3-e1666bd00c --pack bangladesh --scenario amphan_2020",
+    "replay_cmd": "python app/scripts/run_fuzz.py --replay F-P3-44e1860626 --pack bangladesh --scenario amphan_2020",
     "responsible_clause_ids": [
      "BD.CPP.WARNING",
      "BD.DMA2012.s24",
      "BD.SOD2019.ptd",
      "INTL.ITU.X1303"
-    ],
-    "seed": 0,
-    "violated_property": "P3"
-   },
-   {
-    "failure_id": "F-P3-0f20fcbe57",
-    "gap_class": "execution",
-    "margin": -7140.0,
-    "mutations": [
-     {
-      "args": {
-       "area": "OD-COAST",
-       "cells_down": 2,
-       "seq": 0,
-       "t": 0
-      },
-      "created_event_id": "fz-damage-OD-COAST-0-0",
-      "family": "damage",
-      "op": "escalate_damage"
-     }
-    ],
-    "pack_id": "fcc_mdri",
-    "passes_under_packs": [],
-    "replay_cmd": "python app/scripts/run_fuzz.py --replay F-P3-0f20fcbe57 --pack fcc_mdri --scenario amphan_2020",
-    "responsible_clause_ids": [
-     "INTL.ITU.X1303",
-     "US.FCC.WEA"
     ],
     "seed": 0,
     "violated_property": "P3"
@@ -999,57 +959,14 @@
      "P3": true,
      "P4": false
     },
+    "examples_budgeted": 300,
     "excluded_at_baseline": [
      "P4"
     ],
     "found": true,
     "max_examples": 300,
     "pack_id": "bangladesh",
-    "runs_completed": 310,
-    "unique_minimal_failures": 1,
-    "wall_seconds": 88.41
-   },
-   {
-    "asserted_properties": [
-     "P1",
-     "P2",
-     "P3",
-     "P4"
-    ],
-    "baseline": {
-     "P1": true,
-     "P2": true,
-     "P3": true,
-     "P4": true
-    },
-    "excluded_at_baseline": [],
-    "found": true,
-    "max_examples": 300,
-    "pack_id": "fcc_mdri",
-    "runs_completed": 302,
-    "unique_minimal_failures": 1,
-    "wall_seconds": 4.8
-   },
-   {
-    "asserted_properties": [],
-    "baseline": {
-     "P1": false,
-     "P2": false,
-     "P3": false,
-     "P4": false
-    },
-    "excluded_at_baseline": [
-     "P1",
-     "P2",
-     "P3",
-     "P4"
-    ],
-    "found": null,
-    "max_examples": 300,
-    "pack_id": "india_current",
-    "runs_completed": 0,
-    "unique_minimal_failures": 0,
-    "wall_seconds": 0.0
+    "unique_minimal_failures": 1
    }
   ]
  },
@@ -2120,7 +2037,7 @@
    },
    {
     "criterion": "Audit",
-    "detail": "11/11 ledgers verify; the tamper demo alters one character and the chain catches it -- 3. verify the altered copy      : FAIL payload tampered at seq 45: hash mismatch",
+    "detail": "3/3 demo ledgers verify, as does every replay ledger the fuzz campaigns wrote; the tamper demo alters one character and the chain catches it -- 3. verify the altered copy      : FAIL payload tampered at seq 45: hash mismatch",
     "id": "D1",
     "question": "ledger chain verifies and tampering is detected",
     "status": "PASS",
@@ -4187,7 +4104,7 @@
    "node": "D"
   },
   {
-   "count": 23,
+   "count": 24,
    "description": "Sink: ledger, failure atlas, gap register, UI",
    "members": [
     [
@@ -4304,6 +4221,11 @@
      "chakravyuh.fuzz.shrink_report",
      "write_cards",
      ""
+    ],
+    [
+     "chakravyuh.narrate",
+     "Narrator",
+     "Writes the story of a run to a stream, and keeps a plain-text copy of every line."
     ]
    ],
    "node": "SINK"

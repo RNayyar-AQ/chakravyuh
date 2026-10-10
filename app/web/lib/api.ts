@@ -2,7 +2,7 @@
  * Where the UI reads artefacts from.
  *
  * Two modes, both real. `make dev` sets NEXT_PUBLIC_API_BASE and the page reads through the
- * backend, so a judge can ask it to re-verify the hash chains live. `next build` leaves it unset
+ * backend, so a reader can ask it to re-verify the hash chains live. `next build` leaves it unset
  * and the page reads the same artefacts as static files, so the production export needs no server
  * and survives having the Wi-Fi switched off. The static path is the submission path; the API is
  * the development and demo convenience.
@@ -44,4 +44,35 @@ export async function verifyLedgers(): Promise<VerifyResult> {
   const res = await fetch(apiUrl("/api/verify"), { method: "POST" });
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   return (await res.json()) as VerifyResult;
+}
+
+export interface NarrateResult {
+  pack: string;
+  ok: boolean;
+  exit_code: number;
+  seconds: number;
+  line_count: number;
+  command: string;
+  lines: string[];
+}
+
+/**
+ * Ask the backend to run the simulator and narrate it.
+ *
+ * The same lines stream into the terminal running `make dev` as they are produced; what comes
+ * back here is that transcript with the escape codes stripped. Only available with the backend
+ * running, because it executes the pipeline rather than reading an artefact.
+ */
+export async function narrateRun(pack: string, full = false): Promise<NarrateResult> {
+  if (!HAS_BACKEND) throw new Error("no backend");
+  const res = await fetch(apiUrl("/api/narrate"), {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ pack, full }),
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`HTTP ${res.status}: ${detail.slice(0, 300)}`);
+  }
+  return (await res.json()) as NarrateResult;
 }

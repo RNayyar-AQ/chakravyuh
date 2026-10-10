@@ -3,7 +3,7 @@ import { tPlus } from "@/lib/format";
 import type { RunFooter } from "@/lib/types";
 
 /**
- * The run's own closing accounting. It is the part a judge should read first, because it is where
+ * The run's own closing accounting. It is the part to read first, because it is where
  * the system reports against itself — including the fact that the human gate auto-released.
  */
 export function RunFooterPanel({ footer }: { footer: RunFooter }) {

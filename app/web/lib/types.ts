@@ -49,11 +49,13 @@ export interface FuzzRun {
   asserted_properties: string[];
   excluded_at_baseline: string[];
   baseline: Record<string, boolean>;
-  runs_completed: number;
   max_examples: number;
+  /** The declared budget for campaigns that actually ran; 0 where the baseline already failed.
+   *  The number of examples a randomised search *completes* is not reproducible, so it stays in
+   *  outputs/fuzz_summary.json rather than in a bundle that must rebuild byte for byte. */
+  examples_budgeted: number;
   unique_minimal_failures: number;
   found: boolean;
-  wall_seconds: number;
 }
 
 export interface LedgerRun {

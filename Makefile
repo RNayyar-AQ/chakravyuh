@@ -8,7 +8,7 @@
 PY ?= $(shell [ -x .venv/bin/python ] && echo .venv/bin/python || echo python3)
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev build artefacts test lint api web clean
+.PHONY: help install dev narrate build artefacts artefacts-fast test lint api web clean
 
 help:            ## Show this list
 	@grep -hE '^[a-z-]+:.*?##' $(MAKEFILE_LIST) | sort | awk -F':.*?## ' '{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -20,9 +20,14 @@ install:         ## Install Python and Node dependencies
 dev:             ## Run backend and frontend together (http://localhost:3000)
 	$(PY) app/dev.py
 
-artefacts:       ## Run the pipeline and export the UI's data bundle
+narrate:         ## Run one simulation and narrate it: retrieval, agents, engine, Game Master
+	$(PY) app/scripts/narrate_run.py $(ARGS)
+
+artefacts:       ## Run the whole pipeline and export the UI bundle — commit what this writes
+	$(PY) app/scripts/showcase.py
+
+artefacts-fast:  ## Same without the slow stages: a local preview, never a commit
 	$(PY) app/scripts/showcase.py --fast
-	$(PY) app/scripts/export_web.py
 
 build:           ## Produce the static site in app/web/out
 	$(MAKE) artefacts

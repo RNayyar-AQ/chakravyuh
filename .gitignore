@@ -11,7 +11,7 @@ __pycache__/
 # --- regenerable build products -------------------------------------------------
 # `bash app/scripts/replay_demo.sh` rebuilds every one of these in ~35 s, offline, and the
 # runs are deterministic: the same seed replays to the same ledger head hash, which a
-# test asserts. Committing generated evidence would mean a judge comparing a snapshot
+# test asserts. Committing generated evidence would mean someone comparing a snapshot
 # against a rerun and finding two sources of truth, so only the FIVE documents the ITU
 # architecture actually names are committed:
 #     docs/architecture.md        docs/limits.md          (hand-written)
@@ -35,7 +35,7 @@ data/chroma/
 data/clauses/
 
 # Run ledgers. NOT committed, and this is safe because the runs are deterministic:
-# the same seed replays to the same head hash, which is asserted by a test. A judge
+# the same seed replays to the same head hash, which is asserted by a test. Anyone
 # regenerates all 11 in ~30 s with `bash app/scripts/replay_demo.sh`. What IS committed is
 # outputs/audit_sample.jsonl — the first 50 entries of the India run, which verify as a
 # hash chain on their own. 13 MB of regenerable JSONL does not belong in a submission.

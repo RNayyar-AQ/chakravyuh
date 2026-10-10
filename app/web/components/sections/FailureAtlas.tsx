@@ -14,7 +14,7 @@ export function FailureAtlas({ runs, cards }: { runs: FuzzRun[]; cards: FuzzCard
           title="Campaign baselines"
           right={
             <Pill accent="var(--color-block)">
-              {runs.reduce((n, r) => n + (r.runs_completed ?? 0), 0).toLocaleString()} worlds
+              {runs.reduce((n, r) => n + (r.examples_budgeted ?? 0), 0).toLocaleString()} worlds
             </Pill>
           }
         />
@@ -25,7 +25,7 @@ export function FailureAtlas({ runs, cards }: { runs: FuzzRun[]; cards: FuzzCard
                 <th className="px-5 py-2.5 font-medium">Pack</th>
                 <th className="px-4 py-2.5 font-medium">Asserted</th>
                 <th className="px-4 py-2.5 font-medium">Excluded at baseline</th>
-                <th className="px-4 py-2.5 font-medium">Runs</th>
+                <th className="px-4 py-2.5 font-medium">Budget</th>
                 <th className="px-5 py-2.5 font-medium">Unique failures</th>
               </tr>
             </thead>
@@ -61,7 +61,7 @@ export function FailureAtlas({ runs, cards }: { runs: FuzzRun[]; cards: FuzzCard
                     </span>
                   </td>
                   <td className="px-4 py-3 font-mono tabular-nums text-muted">
-                    {r.runs_completed?.toLocaleString()}
+                    {r.examples_budgeted.toLocaleString()}
                   </td>
                   <td className="px-5 py-3 font-mono tabular-nums text-ink">
                     {r.unique_minimal_failures}

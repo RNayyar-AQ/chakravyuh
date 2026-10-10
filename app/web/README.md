@@ -27,7 +27,7 @@ npx serve out            # or: python3 -m http.server -d out 8080
 
 ## Layout
 
-Two routes. The demo is one page you scroll, because a judge with seven minutes should never have
+Two routes. The demo is one page you scroll, because a reader with seven minutes should never have
 to find a tab.
 
 | Path | What it is |

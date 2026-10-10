@@ -35,14 +35,18 @@ STAGES: list[Stage] = [
     ("run_stats", "read back wall time, LLM calls and tokens per run",
      [PY, "app/scripts/gen_run_stats.py"], False),
     ("urls", "check every clause source URL still resolves",
-     [PY, "app/scripts/check_sources.py"], True),
+     [PY, "app/scripts/check_sources.py"], True),  # network; opt in with --check-urls
     ("ledgers", "verify every run ledger's hash chain",
      [PY, "app/scripts/verify_ledger.py", "--all"], False),
     ("tamper", "prove an edited ledger is detected",
      [PY, "app/scripts/verify_ledger.py", "--tamper-demo"], False),
+    ("audit", "check A1..G4 and write docs/rubric_status.html + outputs/rubric_status.json",
+     [PY, "app/scripts/rubric_audit.py"], False),
     ("web", "export every artefact as the web UI's data bundle",
      [PY, "app/scripts/export_web.py"], False),
 ]
+
+NETWORK_STAGES = {"urls"}
 
 
 def run(cmd: list[str], label: str) -> tuple[int, float]:
@@ -55,7 +59,10 @@ def run(cmd: list[str], label: str) -> tuple[int, float]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--fast", action="store_true", help="skip the slow stages (fuzz, URL check)")
+    ap.add_argument("--fast", action="store_true",
+                    help="skip the slow stages; the bundle this produces is not committable")
+    ap.add_argument("--check-urls", action="store_true",
+                    help="also run the one stage that needs the network")
     ap.add_argument("--audit-only", action="store_true", help="only re-run the rubric audit")
     ap.add_argument("--strict", action="store_true", help="a waived rubric check fails the run")
     ap.add_argument("--only", nargs="*", help="run only these stage names")
@@ -63,14 +70,24 @@ def main() -> int:
 
     failures: list[tuple[str, int]] = []
     timings: list[tuple[str, float]] = []
+    # Anything short of a full run leaves an artefact missing, and the exporter refuses to write
+    # a partial bundle unless it is told the omission was deliberate.
+    partial = bool(args.fast or args.only)
 
     if not args.audit_only:
         for name, desc, cmd, slow in STAGES:
             if args.only and name not in args.only:
                 continue
+            if name in NETWORK_STAGES and not args.check_urls:
+                print(f"\n=== {name} === skipped (needs the network; --check-urls runs it): {desc}")
+                continue
             if args.fast and slow:
                 print(f"\n=== {name} === skipped (--fast): {desc}")
                 continue
+            if name == "web" and partial:
+                cmd = [*cmd, "--allow-incomplete"]
+            if name == "audit" and args.strict:
+                cmd = [*cmd, "--strict"]
             code, secs = run(cmd, f"{name}  —  {desc}")
             timings.append((name, secs))
             if code != 0:
@@ -81,11 +98,12 @@ def main() -> int:
                           file=sys.stderr)
                     break
 
-    audit_cmd = [PY, "app/scripts/rubric_audit.py"] + (["--strict"] if args.strict else [])
-    code, secs = run(audit_cmd, "rubric_audit  —  check A1..G4 and write docs/rubric_status.html")
-    timings.append(("rubric_audit", secs))
-    if code != 0:
-        failures.append(("rubric_audit", code))
+    if args.audit_only:
+        audit_cmd = [PY, "app/scripts/rubric_audit.py"] + (["--strict"] if args.strict else [])
+        code, secs = run(audit_cmd, "audit  —  check A1..G4 and write docs/rubric_status.html")
+        timings.append(("audit", secs))
+        if code != 0:
+            failures.append(("audit", code))
 
     print("\n\033[1m=== timings ===\033[0m")
     for name, secs in timings:

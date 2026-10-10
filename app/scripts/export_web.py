@@ -1,8 +1,10 @@
 """Export the pipeline's artefacts as one JSON bundle for the web UI. Y.3172 node: SINK."""
 from __future__ import annotations
 
+import argparse
 import csv
 import json
+import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -99,18 +101,27 @@ def gap_rows() -> list[dict]:
 
 
 def fuzz_cards(summary: list) -> dict:
+    """Campaign results, minus the two numbers a randomised search cannot reproduce.
+
+    `runs_completed` counts shrink attempts as well as generated examples, and Hypothesis bounds
+    shrinking by wall clock, so both it and `wall_seconds` differ between two runs of the same
+    command on the same machine. They are honest measurements and they stay in
+    outputs/fuzz_summary.json; they do not belong in a bundle whose whole justification is that
+    it reproduces byte for byte. What the page reports instead is the declared budget, and the
+    counterexamples themselves -- which do converge, because shrinking converges.
+    """
     runs, cards = [], []
     for s in summary or []:
+        asserted = s.get("asserted_properties", [])
         runs.append({
             "pack_id": s.get("pack_id"),
-            "asserted_properties": s.get("asserted_properties", []),
+            "asserted_properties": asserted,
             "excluded_at_baseline": s.get("excluded_at_baseline", []),
             "baseline": s.get("baseline", {}),
-            "runs_completed": s.get("runs_completed"),
             "max_examples": s.get("max_examples"),
+            "examples_budgeted": s.get("max_examples", 0) if asserted else 0,
             "unique_minimal_failures": s.get("unique_minimal_failures"),
             "found": s.get("hypothesis_found_counterexample"),
-            "wall_seconds": s.get("wall_seconds"),
         })
         for c in s.get("cards", []):
             cards.append({**c, "pack_id": s.get("pack_id")})
@@ -744,7 +755,7 @@ def flow(bundle: dict, rows_by_pack: dict[str, Counter]) -> list[dict]:
     kb = bundle["kb_graph"]
     held = sum(1 for s in bundle["sources"] if s["status"] == "held")
     rules = sum(p["rule_count"] for p in bundle["packs"])
-    fuzz_runs = sum(r.get("runs_completed") or 0 for r in bundle["fuzz"]["runs"])
+    fuzz_runs = sum(r.get("examples_budgeted") or 0 for r in bundle["fuzz"]["runs"])
     stages = [
         ("SRC", "Primary sources", "data/sources/MANIFEST.yaml",
          "python app/scripts/fetch_sources.py --check",
@@ -786,7 +797,8 @@ def flow(bundle: dict, rows_by_pack: dict[str, Counter]) -> list[dict]:
          f"{sum(r['entries'] for r in bundle['ledger']['runs'])} ledger entries",
          f"{len(bundle['gaps'])} registered gaps",
          "Every entry commits to the one before it. The four properties are checked against the "
-         f"finished world, and {fuzz_runs:,} mutated worlds are fuzzed to find the minimal case."),
+         f"finished world, and a budget of {fuzz_runs:,} mutated worlds is searched for the "
+         "minimal case."),
     ]
     return [{"node": n, "title": t, "module": m, "command": c,
              "measure": a, "measure_sub": b, "body": body}
@@ -820,7 +832,48 @@ def cited_clause_ids(bundle: dict) -> set[str]:
     return {i for i in ids if i}
 
 
+# Every section of the bundle comes from one of these. Export them absent and the page quietly
+# loses a whole band -- which reads downstream as "the committed bundle is stale" rather than
+# "the pipeline did not finish". Name them, and say which command writes each one.
+REQUIRED = (
+    ("data/clauses/clauses.sqlite", "python app/scripts/build_kb.py"),
+    ("outputs/comparison.json", "python app/scripts/run_demo.py --seed 0"),
+    ("outputs/gap_register.csv", "python app/scripts/run_demo.py --seed 0"),
+    ("outputs/retrieval_eval.json", "python app/scripts/eval_retrieval.py"),
+    ("outputs/adviser_eval.json", "python app/scripts/eval_adviser.py"),
+    ("outputs/fuzz_summary.json", "python app/scripts/run_fuzz.py"),
+    ("outputs/rubric_status.json", "python app/scripts/rubric_audit.py"),
+)
+
+
+def missing_artefacts() -> list[tuple[str, str]]:
+    return [(rel, cmd) for rel, cmd in REQUIRED if not (ROOT / rel).exists()]
+
+
 def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--allow-incomplete", action="store_true",
+                    help="export anyway when a stage has not run; the result is not committable")
+    args = ap.parse_args()
+
+    # The clause store and the Chroma path are declared relative to the repository root, so an
+    # export run from anywhere else silently reads an empty store and writes a degraded bundle.
+    # Pin the working directory rather than trusting the caller's.
+    os.chdir(ROOT)
+
+    gaps = missing_artefacts()
+    if gaps:
+        print("the pipeline has not finished; these artefacts are missing:", file=sys.stderr)
+        for rel, cmd in gaps:
+            print(f"  {rel:<34} written by  {cmd}", file=sys.stderr)
+        if not args.allow_incomplete:
+            print("\nrefusing to write a partial bundle. Run `make artefacts`, or pass "
+                  "--allow-incomplete for a local preview that must not be committed.",
+                  file=sys.stderr)
+            return 1
+        print("\n--allow-incomplete: exporting without them. Do not commit this bundle.\n",
+              file=sys.stderr)
+
     OUT.mkdir(parents=True, exist_ok=True)
     comparison = _load_json(OUTPUTS / "comparison.json", {}) or {}
     retrieval = _load_json(OUTPUTS / "retrieval_eval.json", []) or []

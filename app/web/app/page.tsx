@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Chakra } from "@/components/Chakra";
 import { GapExplorer } from "@/components/GapExplorer";
+import { LiveRun } from "@/components/LiveRun";
 import { Scorecard } from "@/components/Scorecard";
 import { TimelineExplorer } from "@/components/TimelineExplorer";
 import { Agents } from "@/components/sections/Agents";
@@ -22,7 +23,7 @@ export default function Home() {
   const packs = [...b.packs].sort((a, c) => packOrder(a.pack_id, c.pack_id));
   const totalEntries = b.ledger.runs.reduce((n, r) => n + r.entries, 0);
   const tamperCaught = b.ledger.tamper.length > 0 && b.ledger.tamper.every((t) => !t.verified);
-  const fuzzRuns = b.fuzz.runs.reduce((n, r) => n + (r.runs_completed ?? 0), 0);
+  const fuzzBudget = b.fuzz.runs.reduce((n, r) => n + (r.examples_budgeted ?? 0), 0);
   const indiaFails = b.scorecard.properties.filter((p) => p.fails_under.includes("india_current"));
   const certain = b.gaps.filter((g) => g.confidence === "certain").length;
   const negative = b.gaps.filter((g) => g.negative_finding === "yes").length;
@@ -53,14 +54,20 @@ export default function Home() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href="#flow"
+              href="#live"
               className="rounded-lg bg-brand px-5 py-2.5 text-[13px] font-semibold text-ground transition-opacity hover:opacity-90"
             >
-              Walk the pipeline →
+              ▶ Run the backend live
+            </a>
+            <a
+              href="#flow"
+              className="rounded-lg border border-line-bright px-5 py-2.5 text-[13px] font-medium text-ink transition-colors hover:bg-panel-2"
+            >
+              Walk the pipeline
             </a>
             <a
               href="#trace"
-              className="rounded-lg border border-line-bright px-5 py-2.5 text-[13px] font-medium text-ink transition-colors hover:bg-panel-2"
+              className="rounded-lg border border-line px-5 py-2.5 text-[13px] font-medium text-muted transition-colors hover:bg-panel-2 hover:text-ink"
             >
               Follow one cyclone warning
             </a>
@@ -96,6 +103,9 @@ export default function Home() {
           <Chakra size={330} />
         </div>
       </section>
+
+      {/* ------------------------------------------------------- run it from here */}
+      <LiveRun packs={packs.map((p) => p.pack_id)} />
 
       {/* ---------------------------------------------------------- the scorecard */}
       <Panel className="overflow-hidden">
@@ -202,8 +212,8 @@ export default function Home() {
               accent="var(--color-allow)"
             />
             <Stat
-              value={fuzzRuns.toLocaleString()}
-              label="worlds fuzzed"
+              value={fuzzBudget.toLocaleString()}
+              label="worlds searched"
               sub={`${b.fuzz.cards.length} minimal counterexamples`}
               accent="var(--color-block)"
             />

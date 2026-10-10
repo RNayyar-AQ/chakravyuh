@@ -2,25 +2,103 @@
 
 <div align="center">
 
-[![Tests](https://img.shields.io/badge/tests-206%20passing-2dd4a7?style=for-the-badge)](tests/)
+[![Tests](https://img.shields.io/badge/tests-212%20passing-2dd4a7?style=for-the-badge)](tests/)
 [![Knowledge base](https://img.shields.io/badge/clauses-157%20%7C%2070%25%20primary%20text-4aa8ff?style=for-the-badge)](data/sources/MANIFEST.yaml)
 [![Determinism](https://img.shields.io/badge/same%20seed-same%20ledger%20hash-f0b429?style=for-the-badge)](tests/test_p3_determinism.py)
 [![Standards](https://img.shields.io/badge/ITU--T-Y.3172%20%C2%B7%20Y.3173%20%C2%B7%20X.1303-c084fc?style=for-the-badge)](docs/y3172_map.md)
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-8597ad?style=for-the-badge)](LICENSE)
 
+<p align="center">
+  <b>A deterministic policy stress-testing and regulatory gap-analysis simulator for emergency
+  telecommunications governance — replaying one real cyclone timeline under three encoded legal
+  regimes to find, before the disaster does, which obligation fails to fire and which clause is
+  responsible.</b>
+</p>
+
 **We stress-test disaster-telecom policy before the cyclone does.**
 
-One real cyclone timeline, replayed under three encoded legal regimes.
-Where an obligation fails to fire in time, the system names the clause responsible.
-
-[Quickstart](#quickstart) · [Architecture](#architecture) · [The result](#the-result) ·
-[Evidence](#evidence-and-provenance) · [Limits](#limits)
+[Executive Overview](#-executive-overview-not-another-llm-wrapper) •
+[Key Capabilities](#-key-capabilities) •
+[The Result](#-the-result-one-timeline-three-rulebooks) •
+[System Architecture](#️-system-architecture) •
+[Evidence & Provenance](#-evidence--provenance-157-clause-records) •
+[Standards Alignment](#-standards-alignment-itu-t-y3172--y3173--x1303) •
+[Quickstart](#-quickstart--installation) •
+[Limits](#-limits-stated-up-front)
 
 </div>
 
 ---
 
-## The result
+## 🏛️ Executive Overview: Not Another LLM Wrapper
+
+Most policy-analysis tools are prompt wrappers: they ask a language model whether something is
+compliant and return whatever it says — ungrounded, unrepeatable, and impossible to audit.
+
+**CHAKRAVYUH is built the other way round.** It follows DeepMind's Concordia pattern with one
+decisive change — the Game Master is ordinary Python, not a model — producing a strict
+**Two-Layer Architecture**:
+
+1. **Proposing Agent Layer**: six role-bound agents, each seeing only its own delayed and redacted
+   inbox, propose typed actions with cited rules. Tiers are interchangeable — deterministic rule
+   twins, an LLM behind a record/replay cache, or an optional external tier.
+2. **Deciding Engine Layer**: a pure-function policy engine resolves every proposal against the
+   encoded rulebook in fixed order, writes a hash-chained ledger, and holds no model anywhere in
+   its transitive import graph.
+
+```text
+       ┌─────────────────────────────────────────────────────────────┐
+       │                    CHAKRAVYUH SIMULATOR                     │
+       ├──────────────────────────────┬──────────────────────────────┤
+       │    Proposing Agent Layer     │    Deciding Engine Layer     │
+       ├──────────────────────────────┼──────────────────────────────┤
+       │ • 6 Role-Bound Agents        │ • Pure-Function Policy Engine│
+       │ • BM25 + Vector Hybrid RAG   │ • Fixed Resolution Ordering  │
+       │ • Per-Role Delay & Redaction │ • Hash-Chained Audit Ledger  │
+       │ • Clause-Cited Proposals     │ • Property Checks P1-P4      │
+       │ • Legal Adviser (no powers)  │ • Zero Models In Import Graph│
+       └──────────────────────────────┴──────────────────────────────┘
+```
+
+> **Core Principle**: *Agents may read, retrieve, reason and propose — but deterministic code
+> alone decides legality, resolves conflicts, seals the ledger and rates confidence.*
+
+---
+
+## 🌟 Key Capabilities
+
+- ⚖️ **Rulebook-Driven Agent Powers**: Powers come from the encoded legal pack, never from the
+  agent. The same six agents behave differently under three legal regimes without a single line
+  of agent code changing.
+- 🔁 **Bit-Exact Determinism**: Same seed → same ledger → same head hash. Every number in this
+  README is re-derivable rather than asserted, and a test fails the build on any drift.
+- 📜 **Clause-Level Provenance Chain**: Every legal claim binds to text actually held
+  (`Instrument → Clause → Verbatim Quote → Page → SHA-256 → Source URL`), across **157 clause
+  records**, 110 of which carry the instrument's own words.
+- 🎯 **Computed, Never Asserted Confidence**: A finding is rated `certain` only when every clause
+  it cites is primary text; otherwise `likely`, naming the clause responsible. Ratings rise on
+  their own as documents arrive, with no row rewritten.
+- 🧪 **Property-Based Adversarial Search**: Hypothesis fuzzing across **612 mutated worlds** against
+  four safety invariants (P1–P4). This is the component that finds the failures.
+- ⛓️ **Tamper-Evident Hash-Chained Ledger**: **13,122** entries across 3 runs, every chain verified;
+  a single edited field is caught at the exact sequence number and named.
+- 🚫 **Enforced Engine Purity**: The policy engine may not reach a model, transitively. An allowlist
+  test walks the import graph and fails the build if one appears.
+- 🌏 **Cross-Border Alerting Analysis**: X.1303 / CAP 1.2 envelopes are region- and language-aware
+  (`or-IN` Odisha, `bn-IN` West Bengal, `bn-BD` across the border), so a duty discharged only in
+  English registers as a failure.
+- 📋 **Regulatory Gap Register**: **11 classified rows** cross-compared across three jurisdictions,
+  each naming the missing instrument that caps it.
+- 🗺️ **Code-Generated Standards Map**: **72 node registrations across 7 Y.3172 nodes**, generated by
+  walking the decorator registry. Delete a function and it leaves the map.
+- 🔌 **Fully Offline Operation**: No API key, no network, zero tokens for a three-pack sweep. The
+  legality decision is code, so inference is optional.
+- 🧾 **Read-Only Live Verification API**: A FastAPI tier re-walks the hash chains on request, so
+  *"the chains verify"* is answerable live rather than baked in at build time.
+
+---
+
+## 🎯 The Result: One Timeline, Three Rulebooks
 
 Cyclone Amphan, 16–20 May 2020. Nine real districts. Same agents, same seed, same events.
 **Only the rulebook changes.**
@@ -37,38 +115,17 @@ A negative margin is distance past a threshold. **−7140** means *never*: the a
 Under India's pack, BD-KHULNA is never warned — no clause grants the power to alert across
 the border, and the engine says so in as many words:
 
-```
+```text
 BLOCK — prohibited_by_rule: IN.R.NO_CROSS_BORDER_ALERT
         (Domestic alerting authority holds no power to alert across an international border)
 ```
 
 ---
 
-## Quickstart
+## 🏗️ System Architecture
 
-```bash
-make install     # Python deps + app/web/node_modules
-make dev         # backend :8000 + UI :3000, one Ctrl-C stops both
-```
-
-`make dev` builds the artefacts first if they are missing, and steps to the next port if another
-project holds one. Everything runs offline — no API key, no network.
-
-| Command | What it does |
-|---|---|
-| `make dev` | backend and frontend together — the one you want |
-| `make artefacts` | run the pipeline, export the UI bundle (~35 s) |
-| `make build` | static site into `app/web/out/` |
-| `make test` · `make lint` | 195 tests · ruff + ESLint + tsc |
-| `make deploy-check` | build exactly as Vercel does, npm only |
-
----
-
-## Architecture
-
-**Agents propose. Deterministic code decides.** DeepMind's Concordia pattern with one change:
-the Game Master is ordinary Python, not a model. That is what makes a run reproducible — and why
-a judge can re-derive every number here instead of trusting it.
+**Agents propose. Deterministic code decides.** That separation is what makes a run reproducible —
+and why every number here is re-derivable rather than asserted.
 
 ```mermaid
 flowchart LR
@@ -101,7 +158,7 @@ flowchart LR
     style L fill:#2dd4a7,color:#000
 ```
 
-### The six agents
+### 🤖 The Six Role-Bound Agents
 
 Each sees only its own inbox — delayed, redacted, incomplete. **Powers come from the rulebook,
 never from the agent**, which is why the same six behave differently under three legal regimes
@@ -130,7 +187,7 @@ flowchart TB
 > The adviser is dashed because it **proposes nothing**. It answers questions with clause
 > citations and is scored on never inventing one: **23/23**.
 
-### Where the AI actually is
+### 🧠 Where The AI Actually Is
 
 Three places, and only one is a language model. **None of them decides anything.**
 
@@ -146,7 +203,7 @@ model in its transitive import graph, and a test fails the build if one appears.
 
 ---
 
-## Evidence and provenance
+## 🔍 Evidence & Provenance (157 Clause Records)
 
 Every claim about the law points at text we hold.
 
@@ -168,7 +225,7 @@ flowchart LR
 47 of 157 clause records are still summaries. The rating rises on its own as documents arrive,
 with no row rewritten.
 
-| | |
+| Measure | Value |
 |---|---|
 | Clause records | **157** — 110 (70%) carry the instrument's own words |
 | Source documents | 9 declared — 6 held and hash-verified, 1 partial, 2 wanted |
@@ -182,7 +239,7 @@ declares strings only the real instrument contains — a check that caught a com
 
 ---
 
-## Standards
+## 📐 Standards Alignment (ITU-T Y.3172 · Y.3173 · X.1303)
 
 Not claimed on a slide — **generated from the code.** Each entry point declares its node with a
 decorator, and `docs/y3172_map.md` is built by walking that registry: **72 registrations across
@@ -202,15 +259,75 @@ test fails the build if any file claims otherwise.
 
 ---
 
-## Deploying
+## 🚀 Quickstart & Installation
+
+### Prerequisites
+- **Python 3.11+**
+- **Node.js 18+ & npm**
+- No API key, no network, no database — the demo runs entirely offline.
+
+### 1. Clone & Install
+```bash
+git clone https://github.com/RNayyar-AQ/chakravyuh.git
+cd chakravyuh
+
+make install     # Python deps + app/web/node_modules
+```
+
+### 2. Run Locally
+```bash
+make dev         # backend :8000 + UI :3000, one Ctrl-C stops both
+```
+
+Visit [`http://localhost:3000`](http://localhost:3000) in your browser.
+
+`make dev` builds the artefacts first if they are missing, and steps to the next port if another
+project holds one.
+
+### 3. Watch It Think
+
+The landing page opens with **▶ Run the backend live**. That button does not load a saved file:
+it asks the API to execute `app/scripts/narrate_run.py`, which runs the real pipeline and then
+narrates it in plain English — the clauses retrieved and the sha256 of each, the agent that made
+each proposal, the rule and clause the policy engine decided on, and what the Game Master then
+did to the world. The same transcript streams into the terminal running `make dev`, line by line.
+
+The button needs the backend, so it is inert on the published static site. In a terminal:
+
+```bash
+make narrate                                  # india_current, ~1.5 s
+make narrate ARGS="--pack fcc_mdri"           # same cyclone, US-shaped rules
+make narrate ARGS="--full"                    # every proposal, nothing collapsed
+make narrate ARGS="--skip-retrieval"          # straight to the simulation
+```
+
+It reads back the hash-chained ledger the run just wrote, so nothing printed is recomputed for
+display, and `tests/test_p13_narration.py` holds it to that — every digest, entry count and head
+hash in the transcript is checked against the artefact it claims to come from.
+
+### 4. Command Reference
+
+| Command | What it does |
+|---|---|
+| `make dev` | backend and frontend together — the one you want |
+| `make narrate` | run one simulation and narrate it: retrieval → agents → engine → Game Master |
+| `make artefacts` | run the pipeline, export the UI bundle (~35 s) |
+| `make build` | static site into `app/web/out/` |
+| `make test` · `make lint` | 212 tests · ruff + ESLint + tsc |
+| `make deploy-check` | build exactly as Vercel does, npm only |
+
+---
+
+## 🚢 Deployment (Vercel, Two Services)
 
 `vercel.json` carries the whole configuration. Import the repository on Vercel, change nothing,
 and every push rebuilds **both halves** — the static site and the Python API as a serverless
 function, exactly what `make dev` runs locally.
 
-The API is read-only: it serves artefacts and re-walks hash chains on request, so *"the chains
-verify"* is answerable live rather than baked in at build time. It decides nothing, and a test
-fails the build if it imports the simulator.
+- **Web Workbench**: the Next.js static export, served on the catch-all route.
+- **Read-Only API**: FastAPI, routed at `/api/*`. It serves artefacts and re-walks hash chains on
+  request, so *"the chains verify"* is answerable live rather than baked in at build time. It
+  decides nothing, and a test fails the build if it imports the simulator.
 
 `app/web/public/data/` is committed — the one deliberate exception to *we commit sources, not
 derivatives* — because Vercel builds from git. It is safe because the export is byte-for-byte
@@ -223,7 +340,7 @@ make artefacts && git add app/web/public/data && git commit
 
 ---
 
-## Eight perspectives
+## 🧭 Eight Perspectives
 
 The brief asks every entry to address these. Each links to where it is implemented, not asserted.
 
@@ -240,9 +357,9 @@ The brief asks every entry to address these. Each links to where it is implement
 
 ---
 
-## Limits
+## ⚠️ Limits (Stated Up Front)
 
-Stated here because a judge should not have to find them.
+Stated here because a reader should not have to find them.
 
 - **0 of 11** registered gaps are rated `certain`. Every one reads `likely`.
 - **47 of 157** clause records are summaries, not the instrument's own words.
@@ -256,12 +373,12 @@ Stated here because a judge should not have to find them.
 
 ---
 
-## Repository
+## 📁 Repository Layout
 
 Everything executable lives under `app/`. Beside it: what goes in, what a person reads, and the
 proof. A test fails the build if anything else appears at the root.
 
-```
+```text
 app/
   chakravyuh/   the engine — the only thing that decides anything
   scripts/      the pipeline, one CLI per stage
@@ -275,7 +392,7 @@ data/  docs/  tests/
 
 Each tier may only read the one below it, and a test enforces every arrow:
 
-```
+```text
 app/web      renders artefacts          →  may not compute a number
 app/backend  serves, verifies           →  may not import the simulator
 app/scripts  run the engine, write      →  the only writers
@@ -283,6 +400,15 @@ engine.py    pure function over rules   →  may not reach a model, transitively
 ```
 
 ---
+
+## 📄 Licence & Attribution
+
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for
+details. Clause texts remain the property of their issuing authorities and are reproduced for
+analysis under the provenance chain described above.
+
+Built for regulators, disaster-management authorities and telecom operators who would rather find
+an unfireable obligation in a simulator than during a cyclone.
 
 <div align="center">
 

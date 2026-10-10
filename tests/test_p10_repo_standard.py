@@ -164,7 +164,7 @@ def test_the_ci_check_would_catch_a_real_assertion():
     "docs/limits.md", "docs/architecture.md", "data/sources/MANIFEST.yaml",
 ])
 def test_submission_file_exists(name):
-    assert (ROOT / name).exists(), f"{name} is missing; a judge is told it is there"
+    assert (ROOT / name).exists(), f"{name} is missing; SUBMISSION.md says it is there"
 
 
 def test_replay_script_pins_replay_mode_and_is_executable():

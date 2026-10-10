@@ -33,29 +33,19 @@ jobs:
           pip install ruff
           ruff check app tests --select F,E9,B
 
-      - name: Build the knowledge base
-        run: python app/scripts/build_kb.py
-
-      - name: Replay the demo
-        run: python app/scripts/run_demo.py --seed 0
-
-      - name: Verify every ledger
-        run: python app/scripts/verify_ledger.py --all
-
-      - name: Tamper test — an edited ledger must fail
-        run: python app/scripts/verify_ledger.py --tamper-demo runs/amphan_2020__india_current__rule__seed0.jsonl
+      # The whole pipeline, in dependency order: sources, knowledge base, retrieval and adviser
+      # evaluations, the demo under every pack, the fuzz campaigns, the ledger and tamper checks,
+      # the rubric audit, and finally the web export. Running stages piecemeal here was how the
+      # bundle came to look stale: the export cannot write a section whose artefact never got
+      # built. The one stage needing the network stays off, which keeps this job offline.
+      - name: Run the pipeline
+        run: python app/scripts/showcase.py
 
       - name: Tests
         run: python -m pytest -q
 
-      - name: Rubric audit
-        run: python app/scripts/rubric_audit.py
-
-      - name: Export the UI data bundle
-        run: python app/scripts/export_web.py
-
       # The bundle is committed so Vercel can build without Python. That is only safe while it
-      # is identical to a fresh run, so regenerate it here and fail on any drift.
+      # is identical to a fresh run, so fail on any drift from what the pipeline just wrote.
       - name: The committed bundle must match a fresh export
         run: |
           if ! git diff --exit-code --stat -- app/web/public/data; then

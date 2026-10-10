@@ -28,7 +28,7 @@ interface PackView {
 
 const EMPTY_VIEW = { data: null, error: "", limit: PAGE, open: null } as const;
 
-/** The default view hides repetitive ALLOWs: a judge wants the refusals and the consequences. */
+/** The default view hides repetitive ALLOWs: the refusals and the consequences are what matter. */
 function isSignificant(i: TimelineItem): boolean {
   if (i.kind !== "PROPOSAL") return true;
   if (i.action === "NOOP") return false;

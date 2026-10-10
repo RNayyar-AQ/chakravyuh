@@ -4,13 +4,16 @@ export function Panel({
   children,
   className = "",
   grid = false,
+  id,
 }: {
   children: ReactNode;
   className?: string;
   grid?: boolean;
+  id?: string;
 }) {
   return (
     <section
+      id={id}
       className={`rounded-xl border border-line bg-panel/70 backdrop-blur-sm ${grid ? "cv-grid" : ""} ${className}`}
     >
       {children}
@@ -100,7 +103,7 @@ export function Dot({ accent }: { accent: string }) {
   );
 }
 
-/** A claim the judges should be able to check, with the command that checks it. */
+/** A claim anyone should be able to check, with the command that checks it. */
 export function Provenance({ children }: { children: ReactNode }) {
   return (
     <p className="mt-3 border-l-2 border-line-bright pl-3 font-mono text-[11px] leading-relaxed text-faint">

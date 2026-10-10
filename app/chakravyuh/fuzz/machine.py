@@ -146,5 +146,12 @@ def make_test(max_examples: int = 300, stateful_step_count: int = 6, deadline_ms
         deadline=deadline_ms,
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.filter_too_much],
         print_blob=True,
+        # A campaign that explores different worlds on each machine produces a different
+        # counterexample on each machine -- the minimal case is not unique, and a warm example
+        # database finds a different one from a cold CI runner. derandomize pins generation to a
+        # fixed seed and database=None stops a local cache replaying what CI has never seen, so
+        # the card the page shows is the card any run of the same command produces.
+        derandomize=True,
+        database=None,
     )
     return PolicyFuzzMachine.TestCase

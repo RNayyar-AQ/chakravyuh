@@ -391,8 +391,13 @@ def d1_ledger_chain() -> Result:
     if not caught:
         return _no(f"tamper demo did not detect an edited ledger (exit {proc.returncode})")
     seq = next((ln.strip() for ln in proc.stdout.splitlines() if "tampered at seq" in ln), "")
-    return _ok(f"{len(runs)}/{len(runs)} ledgers verify; the tamper demo alters one character and "
-               f"the chain catches it -- {seq or 'hash mismatch reported'}")
+    # Count only the demo ledgers. Every ledger under runs/ was verified above, replay ledgers
+    # included, but their number grows with each fuzz campaign a machine has ever run -- and this
+    # sentence is embedded in a bundle that has to rebuild byte for byte.
+    demos = len(sorted(Path("runs").glob("*.jsonl")))
+    return _ok(f"{demos}/{demos} demo ledgers verify, as does every replay ledger the fuzz "
+               f"campaigns wrote; the tamper demo alters one character and the chain catches "
+               f"it -- {seq or 'hash mismatch reported'}")
 
 
 def d2_trace_fields() -> Result:
@@ -509,7 +514,7 @@ def _corrections() -> Result:
 
 
 def g1_submission_surface() -> Result:
-    """The files a judge is told exist must exist, and SUBMISSION.md's links must resolve."""
+    """The files SUBMISSION.md promises must exist, and its links must resolve."""
     required = ["LICENSE", "NOTICE", "CITATION.cff", "SUBMISSION.md", "README.md",
                 "requirements.lock", ".env.example", "app/scripts/replay_demo.sh",
                 "docs/limits.md", "docs/architecture.md", ".github/workflows/ci.yml"]

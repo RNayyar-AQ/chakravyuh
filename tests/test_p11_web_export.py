@@ -133,6 +133,15 @@ def test_no_other_build_product_is_committed():
     assert not offenders, "build products are tracked:\n" + "\n".join(offenders)
 
 
+def _key_diff(before: bytes, after: bytes) -> list[str]:
+    """Which top-level sections changed -- so a drift says what moved, not just that it did."""
+    try:
+        a, b = json.loads(before), json.loads(after)
+    except json.JSONDecodeError:
+        return ["<unparseable>"]
+    return sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))
+
+
 def test_the_committed_bundle_matches_a_fresh_export():
     """A stale bundle would be a second source of truth. Regenerate and compare, byte for byte."""
     if not BUNDLE.exists():
@@ -140,10 +149,16 @@ def test_the_committed_bundle_matches_a_fresh_export():
     before = {p: p.read_bytes() for p in sorted(DATA.glob("*.json"))}
     proc = subprocess.run([sys.executable, str(EXPORTER)], cwd=ROOT,
                           capture_output=True, text=True, check=False)
+    # A non-zero exit here means the pipeline did not finish: the exporter names the artefact
+    # that is missing and the command that writes it, which is a far more useful failure than
+    # the empty sections it used to emit and the "stale bundle" they looked like.
     assert proc.returncode == 0, proc.stderr
-    drifted = [p.name for p, data in before.items() if p.read_bytes() != data]
+    drifted = {p.name: p.read_bytes() for p, data in before.items() if p.read_bytes() != data}
+    detail = "; ".join(
+        f"{name} (sections: {', '.join(_key_diff(before[DATA / name], data)) or 'n/a'})"
+        for name, data in drifted.items())
     assert not drifted, (
-        f"the committed bundle is stale: {drifted}. Run `make artefacts` and commit the result.")
+        f"the committed bundle is stale: {detail}. Run `make artefacts` and commit the result.")
 
 
 def test_exporter_reruns_cleanly(tmp_path):
@@ -298,3 +313,98 @@ def test_the_kb_graph_agrees_with_the_clause_store_summary(bundle):
     assert g["real_text"] == real
     assert g["quotable"] <= g["real_text"]
     assert g["chunks"] >= g["clauses"], "fewer chunks than clauses means a clause was dropped"
+
+
+# --------------------------------------------------------------------------------------------
+# The bundle is only committable after a full run. These pin the two halves of that: the export
+# refuses to write a partial one, and CI runs the pipeline that makes it whole.
+
+
+def _exporter_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("export_web_probe", EXPORTER)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_exporter_refuses_to_write_a_partial_bundle(tmp_path, monkeypatch):
+    """A missing stage used to produce an empty section, which then read as a stale bundle."""
+    mod = _exporter_module()
+    required = dict(mod.REQUIRED)
+    for rel in ("outputs/retrieval_eval.json", "outputs/adviser_eval.json",
+                "outputs/fuzz_summary.json", "outputs/rubric_status.json"):
+        assert rel in required, f"{rel} feeds a section of the bundle but is not required"
+        assert required[rel].startswith("python app/scripts/"), \
+            f"{rel} does not say which command writes it"
+
+    assert mod.missing_artefacts() == [], \
+        "this checkout is missing an artefact the bundle needs; run `make artefacts`"
+
+    # main() pins the working directory to its own ROOT, which is patched below. monkeypatch
+    # restores the attribute but never the process cwd, so without this the rest of the session
+    # runs from tmp_path and every path-relative fixture -- the clause store first -- reads empty.
+    monkeypatch.chdir(ROOT)
+    monkeypatch.setattr(mod, "ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["export_web.py"])
+    assert [rel for rel, _ in mod.missing_artefacts()] == [rel for rel, _ in mod.REQUIRED]
+    assert mod.main() == 1, "the exporter wrote a bundle with every artefact missing"
+
+    monkeypatch.setattr(sys, "argv", ["export_web.py", "--allow-incomplete"])
+    assert mod.missing_artefacts(), "--allow-incomplete must still report what is absent"
+
+
+def test_ci_runs_the_pipeline_that_the_bundle_is_checked_against():
+    """Checking the bundle against a half-run pipeline is a test of the pipeline, not the bundle."""
+    ci = ROOT / ".github" / "workflows" / "ci.yml"
+    if not ci.exists():
+        pytest.skip("no CI workflow")
+    text = ci.read_text(encoding="utf-8")
+    assert "app/scripts/showcase.py" in text, "CI does not run the pipeline end to end"
+    assert "--fast" not in text, "CI skips stages, so its export cannot match the committed bundle"
+    assert text.index("showcase.py") < text.index("pytest"), "the pipeline must precede the tests"
+
+
+def test_the_showcase_audits_before_it_exports():
+    """outputs/rubric_status.json is a bundle input, so the audit cannot run after the export."""
+    text = (ROOT / "app" / "scripts" / "showcase.py").read_text(encoding="utf-8")
+    assert text.index("rubric_audit.py") < text.index("export_web.py"), \
+        "the rubric audit runs after the export, so the bundle would ship the previous audit"
+
+
+def test_the_export_does_not_depend_on_where_it_is_run_from(tmp_path):
+    """The clause store is declared relative to the root; a stray cwd used to empty the bundle."""
+    if not BUNDLE.exists():
+        pytest.skip("no bundle")
+    before = BUNDLE.read_bytes()
+    proc = subprocess.run([sys.executable, str(EXPORTER)], cwd=tmp_path,
+                          capture_output=True, text=True, check=False)
+    assert proc.returncode == 0, proc.stderr
+    assert BUNDLE.read_bytes() == before, (
+        "running the exporter from another directory produced a different bundle")
+
+
+def test_the_bundle_holds_no_number_a_rerun_would_change(bundle):
+    """A randomised search's sample count and wall clock differ every run; they cannot be here.
+
+    This is the defect that made the committed bundle look permanently stale: the fuzz campaign
+    reported `runs_completed` and `wall_seconds`, both of which move between two runs of the same
+    command on the same machine. The measurements stay in outputs/fuzz_summary.json, where a
+    measurement belongs. What the bundle carries is the declared budget and the counterexamples.
+    """
+    volatile = {"runs_completed", "wall_seconds"}
+    for run in bundle["fuzz"]["runs"]:
+        present = volatile & set(run)
+        assert not present, f"{run['pack_id']} exports {sorted(present)}, which a rerun changes"
+        assert "examples_budgeted" in run, "the reproducible budget is missing"
+        # A campaign excluded at baseline searched nothing, and must not claim a budget.
+        expected = run["max_examples"] if run["asserted_properties"] else 0
+        assert run["examples_budgeted"] == expected
+
+    summary = ROOT / "outputs" / "fuzz_summary.json"
+    if summary.exists():
+        rows = json.loads(summary.read_text(encoding="utf-8"))
+        assert any("wall_seconds" in r for r in rows), (
+            "the measurement was deleted rather than moved; it belongs in the artefact")
