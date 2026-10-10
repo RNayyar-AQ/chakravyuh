@@ -273,17 +273,23 @@ def test_the_site_is_one_page_plus_the_rubric():
 
 
 def test_every_nav_anchor_is_a_section_that_exists():
-    """A nav link to a section that was renamed scrolls nowhere and says nothing about it."""
+    """A nav link to a section that was renamed scrolls nowhere and says nothing about it.
+
+    The anchor may sit on the page or inside a component the page renders — `live` is
+    owned by LiveRun — so both are searched.
+    """
     nav = (APP / "web" / "components" / "Nav.tsx").read_text(encoding="utf-8")
-    page = (WEB_APP / "page.tsx").read_text(encoding="utf-8")
+    sources = [WEB_APP / "page.tsx", *(APP / "web" / "components").rglob("*.tsx")]
     linked = set(re.findall(r'\{\s*id:\s*"([a-z]+)"', nav))
-    rendered = set(re.findall(r'\n\s+id="([a-z]+)"', page))
+    rendered = set()
+    for src in sources:
+        rendered |= set(re.findall(r'id="([a-z]+)"', src.read_text(encoding="utf-8")))
     assert linked, "the nav lists no sections"
     assert linked <= rendered, f"nav links to missing sections: {sorted(linked - rendered)}"
 
 
-def test_the_page_renders_the_sections_that_explain_the_numbers():
-    """These four are the ask: the flow, the knowledge base, the retrieval, and the arithmetic."""
+def test_the_page_renders_the_three_things_it_promises():
+    """The page is deliberately narrow: run it, see the flow, see what it is built on."""
     page = (WEB_APP / "page.tsx").read_text(encoding="utf-8")
-    for component in ("<Flow", "<KnowledgeBase", "<Retrieval", "<TraceWalk", "<Derivations"):
+    for component in ("<LiveRun", "<Flow", "<Tech"):
         assert component in page, f"{component} is not on the page"

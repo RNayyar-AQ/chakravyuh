@@ -8,17 +8,9 @@ import { Chakra } from "./Chakra";
 
 /** The single page's bands, in the order they are read. */
 export const SECTIONS = [
+  { id: "live", label: "Run it live" },
   { id: "flow", label: "The flow" },
-  { id: "knowledge", label: "Knowledge base" },
-  { id: "retrieval", label: "Retrieval" },
-  { id: "agents", label: "Agents" },
-  { id: "trace", label: "One event" },
-  { id: "numbers", label: "The numbers" },
-  { id: "replay", label: "Replay" },
-  { id: "failures", label: "Failures" },
-  { id: "gaps", label: "Gaps" },
-  { id: "evidence", label: "Evidence" },
-  { id: "standards", label: "Standards" },
+  { id: "tech", label: "The stack" },
 ] as const;
 
 function useActiveSection(enabled: boolean): string {
@@ -62,7 +54,7 @@ export function Nav() {
           </span>
         </Link>
 
-        <nav className="ml-auto hidden min-w-0 items-center gap-0.5 overflow-x-auto xl:flex">
+        <nav className="ml-auto hidden min-w-0 items-center gap-0.5 overflow-x-auto md:flex">
           {SECTIONS.map((s) => (
             <a
               key={s.id}
@@ -80,7 +72,7 @@ export function Nav() {
 
         <Link
           href="/rubric"
-          className={`ml-auto shrink-0 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors xl:ml-2 ${
+          className={`ml-auto shrink-0 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors md:ml-2 ${
             pathname === "/rubric"
               ? "border-line-bright bg-panel-2 text-ink"
               : "border-line text-muted hover:text-ink"
@@ -93,7 +85,7 @@ export function Nav() {
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle navigation"
           aria-expanded={open}
-          className="shrink-0 rounded-md border border-line px-2.5 py-1.5 text-muted xl:hidden"
+          className="shrink-0 rounded-md border border-line px-2.5 py-1.5 text-muted md:hidden"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
             {open ? <path d="M3 3l10 10M13 3L3 13" /> : <path d="M2 4h12M2 8h12M2 12h12" />}
@@ -102,7 +94,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <nav className="grid gap-0.5 border-t border-line px-4 py-3 xl:hidden">
+        <nav className="grid gap-0.5 border-t border-line px-4 py-3 md:hidden">
           {SECTIONS.map((s) => (
             <a
               key={s.id}
