@@ -13,7 +13,7 @@ Artefacts first, page second — there is nothing to render otherwise.
 python app/scripts/showcase.py --fast    # ~35 s offline: runs, fuzz, evals, ledgers
 python app/scripts/export_web.py         # writes app/web/public/data/
 
-cd web
+cd app/web
 npm install
 npm run dev                          # http://localhost:3000
 npm run build                        # static export into app/web/out/
@@ -27,22 +27,24 @@ npx serve out            # or: python3 -m http.server -d out 8080
 
 ## Layout
 
+Two routes. The demo is one page you scroll, because a judge with seven minutes should never have
+to find a tab.
+
 | Path | What it is |
 |---|---|
-| `app/page.tsx` | Overview — the property × regime scorecard, the architecture, the limits |
-| `app/simulation/` | Ledger replay with per-regime switching, filters and expandable verdicts |
-| `app/agents/` | The six roles: mandate, blind spots, inbox filter, channel latency |
-| `app/failures/` | Fuzz campaigns and the minimal counterexamples that survived shrinking |
-| `app/gaps/` | The gap register, with computed confidence and replay commands |
-| `app/evidence/` | Clause provenance, source manifest, retrieval scores, hash chains |
-| `app/standards/` | Y.3172 node map generated from the decorator registry |
+| `app/page.tsx` | The whole argument: the pipeline, the knowledge base, retrieval, the agents, one event followed to the number it moves, the arithmetic behind every margin, the ledger replay, the failures, the gaps, the evidence, the standards, the limits |
+| `app/rubric/page.tsx` | Every rubric check with its measured detail and, where waived, the reason |
+| `components/sections/` | One component per band of the page |
+| `components/TimelineExplorer.tsx` | Ledger replay with per-regime switching, filters, expandable verdicts |
+| `components/GapExplorer.tsx` | The gap register, with computed confidence and replay commands |
 | `lib/types.ts` | The shapes `app/scripts/export_web.py` writes — the only contract between the two halves |
 
 ## Rules
 
 - **The UI computes nothing.** If a number needs deriving, derive it in Python and export it.
   One source of truth, and it is the one with the tests.
-- **`app/web/public/data/` is a build product** and is gitignored, like `outputs/` and `data/clauses/`.
-  Regenerate it; never hand-edit it.
+- **`app/web/public/data/` is a build product.** It is committed, and only because Vercel builds
+  from git with no Python available; a test regenerates it and fails on any drift. Regenerate it
+  with `make artefacts`; never hand-edit it.
 - **No runtime data fetching from anywhere but `/data`.** The site must work offline, on a
   conference Wi-Fi, from a folder.

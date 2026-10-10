@@ -326,6 +326,500 @@ def fingerprint() -> str:
     return getattr(rows[-1], "hash", "") if rows else ""
 
 
+# --------------------------------------------------------------------------- rubric
+
+def rubric_status() -> dict:
+    """The audit's own JSON. Written by app/scripts/rubric_audit.py, never asserted here."""
+    data = _load_json(OUTPUTS / "rubric_status.json", None)
+    if not data:
+        return {"source": "", "command": "python app/scripts/rubric_audit.py",
+                "totals": {"pass": 0, "waived": 0, "fail": 0, "checks": 0}, "checks": []}
+    return data
+
+
+# ------------------------------------------------------------------------- clauses
+
+def clause_index(ids: set[str]) -> dict[str, dict]:
+    """Full records for the clauses the page quotes, so a citation can be read in place."""
+    from chakravyuh.kb.clause_store import ClauseNotFound, ClauseStore
+    store = ClauseStore()
+    out: dict[str, dict] = {}
+    try:
+        for cid in sorted(ids):
+            try:
+                c = store.get_clause(cid)
+            except ClauseNotFound:
+                continue
+            out[cid] = {
+                "clause_id": c.clause_id, "instrument": c.instrument, "section": c.section,
+                "jurisdiction": c.jurisdiction, "text": c.text_verbatim,
+                "source_url": c.source_url, "sha256": c.sha256[:16], "page": c.page,
+                "provenance": c.provenance, "verbatim_status": c.verbatim_status,
+                "quotable": bool(c.quotable),
+            }
+    finally:
+        store.close()
+    return out
+
+
+# --------------------------------------------------------------------- derivations
+
+PROPERTY_FORMULA = {
+    "P1": ("margin = min %% of affected cells reachable for relief - threshold",
+           "worst suspension window", "min_pct_relief_cells"),
+    "P2": ("margin = threshold - irreversible executions on an unauthenticated order",
+           "executions traced to authentic=False", "max_forged_executions"),
+    "P3": ("margin = T_alert - worst delay from warning to a valid local-language alert",
+           "worst delay", "t_alert_min"),
+    "P4": ("margin = T_roam - worst delay from landfall to disaster roaming active",
+           "worst delay", "t_roam_min"),
+}
+
+
+def _p1(detail: dict, _horizon: int) -> tuple[float, float, float, str, list[dict]]:
+    threshold = float(detail.get("threshold_pct", 0.0))
+    observed = float(detail.get("min_pct_observed", 100.0))
+    terms = [{"label": k.split("@")[0], "value": v.get("pct_relief_reachable"),
+              "note": f"suspension {k.split('@')[-1]}, T+{v['window'][0]}..T+{v['window'][1]}"
+                      f"{'' if v.get('exempt_priority_slice') else ', no priority slice exempted'}"}
+             for k, v in sorted(detail.get("per_area", {}).items())]
+    note = (f"{detail.get('suspensions_examined', 0)} suspension(s) examined; the margin takes "
+            "the worst of them.")
+    return observed, threshold, round(observed - threshold, 2), note, terms
+
+
+def _p2(detail: dict, _horizon: int) -> tuple[float, float, float, str, list[dict]]:
+    threshold = float(detail.get("threshold", 0))
+    observed = float(detail.get("count", 0))
+    terms = [{"label": f"{e.get('action_type')} in {e.get('area')}",
+              "value": e.get("at_t"),
+              "note": f"ordered by event {e.get('order_event_id')}"}
+             for e in detail.get("executions", [])]
+    note = ("Every execution here was traced back to an order the world marks authentic=False. "
+            "No agent can read that flag.")
+    return observed, threshold, float(threshold - observed), note, terms
+
+
+def _worst_delay(per_area: dict) -> float:
+    return max((float(v["delay_min"]) for v in per_area.values() if v.get("delay_min") is not None),
+               default=0.0)
+
+
+def _p3(detail: dict, horizon: int) -> tuple[float, float, float, str, list[dict]]:
+    threshold = float(detail.get("threshold_min", 0))
+    per_area = detail.get("per_area", {})
+    worst = _worst_delay(per_area)
+    missed = detail.get("areas_missed", [])
+    bases = detail.get("warning_baseline_by_area", {})
+    if missed:
+        unserved = max((horizon - int(bases.get(a, 0)) for a in missed), default=0)
+        observed = max(worst, float(unserved))
+        note = (f"{', '.join(missed)} never received a valid local-language alert, so the delay "
+                f"is counted to the horizon (T+{horizon}) rather than left undefined.")
+    else:
+        observed = float(detail.get("max_delay_min", worst))
+        note = "Every affected area was alerted; the margin takes the slowest."
+    terms = [{"label": a,
+              "value": v.get("delay_min") if v.get("alert_t") is not None
+                       else horizon - int(bases.get(a, 0)),
+              "note": (f"alerted at T+{v['alert_t']}" if v.get("alert_t") is not None
+                       else v.get("reason", "never alerted"))}
+             for a, v in sorted(per_area.items())]
+    return observed, threshold, float(threshold - observed), note, terms
+
+
+def _p4(detail: dict, horizon: int) -> tuple[float, float, float, str, list[dict]]:
+    threshold = float(detail.get("threshold_min", 0))
+    per_area = detail.get("per_area", {})
+    worst = _worst_delay(per_area)
+    if detail.get("areas_missed"):
+        elapsed = float(detail.get("elapsed_min", 0))
+        observed = max(worst, elapsed)
+        note = (f"{', '.join(detail['areas_missed'])} never had disaster roaming, so the delay is "
+                f"counted from landfall (T+{detail.get('landfall_t')}) to the horizon "
+                f"(T+{horizon}).")
+    else:
+        observed = float(detail.get("max_delay_min", worst))
+        note = "Roaming reached every affected circle; the margin takes the slowest."
+    terms = [{"label": a,
+              "value": v.get("delay_min") if v.get("roaming_t") is not None
+                       else int(horizon - int(detail.get("landfall_t", 0))),
+              "note": (f"roaming active at T+{v['roaming_t']}" if v.get("roaming_t") is not None
+                       else "roaming never became active")}
+             for a, v in sorted(per_area.items())]
+    return observed, threshold, float(threshold - observed), note, terms
+
+
+RECOMPUTE = {"P1": _p1, "P2": _p2, "P3": _p3, "P4": _p4}
+
+
+def derivations() -> list[dict]:
+    """Recompute each margin from the operands the run recorded, and say whether it agrees.
+
+    This is the answer to "where does that number come from". Nothing here is read off the
+    scorecard: the arithmetic is redone from the property's own detail block and compared with
+    the margin the run wrote, so a disagreement would show rather than hide.
+    """
+    out: list[dict] = []
+    for path in sorted(RUNS.glob(f"{SCENARIO}__*.jsonl")):
+        rows = list(read(path))
+        header = next((e.payload for e in rows
+                       if e.kind == "EVENT" and e.payload.get("kind") == "RUN_HEADER"), {})
+        pack_id = header.get("pack_id") or path.stem
+        horizon = int(header.get("horizon_min") or 0)
+        thresholds = header.get("thresholds", {})
+        for e in rows:
+            if e.kind != "PROPERTY":
+                continue
+            p = e.payload
+            pid = p.get("property_id")
+            fn = RECOMPUTE.get(pid)
+            if fn is None:
+                continue
+            detail = p.get("detail") or {}
+            if "note" in detail and not detail.get("per_area"):
+                out.append({
+                    "pack_id": pack_id, "property_id": pid, "applicable": False,
+                    "note": detail["note"], "margin": p.get("margin"), "passed": p.get("passed"),
+                    "unit": p.get("unit", ""), "formula": PROPERTY_FORMULA[pid][0],
+                    "arithmetic": "", "observed": None, "observed_label": "",
+                    "threshold": None, "threshold_name": PROPERTY_FORMULA[pid][2],
+                    "agrees": True, "terms": [], "seq": e.seq,
+                })
+                continue
+            observed, threshold, recomputed, note, terms = fn(detail, horizon)
+            recorded = float(p.get("margin"))
+            out.append({
+                "pack_id": pack_id,
+                "property_id": pid,
+                "applicable": True,
+                "unit": p.get("unit", ""),
+                "formula": PROPERTY_FORMULA[pid][0],
+                "observed_label": PROPERTY_FORMULA[pid][1],
+                "observed": observed,
+                "threshold": threshold,
+                "threshold_name": PROPERTY_FORMULA[pid][2],
+                "threshold_from": thresholds.get(PROPERTY_FORMULA[pid][2]),
+                "arithmetic": _arith(pid, observed, threshold, recomputed),
+                "margin": recorded,
+                "recomputed": recomputed,
+                "agrees": abs(recomputed - recorded) < 1e-6,
+                "passed": bool(p.get("passed")),
+                "note": note,
+                "terms": terms,
+                "seq": e.seq,
+            })
+    return out
+
+
+def _n(x: float) -> str:
+    return str(int(x)) if float(x).is_integer() else f"{x:g}"
+
+
+def _arith(pid: str, observed: float, threshold: float, margin: float) -> str:
+    if pid == "P1":
+        return f"{_n(observed)} - {_n(threshold)} = {_n(margin)}"
+    return f"{_n(threshold)} - {_n(observed)} = {_n(margin)}"
+
+
+# ----------------------------------------------------------------------- retrieval
+
+RRF_K = 60
+
+
+def retrieval_example(retrieval: list[dict]) -> dict:
+    """One question carried through every retriever, with the RRF arithmetic written out.
+
+    Reconstructed from the per-question rankings the evaluation recorded. The engine fuses at
+    chunk level and this reconstruction is at clause level, so the two can order ties
+    differently -- `agrees_with_recorded` says whether they did.
+    """
+    by_mode = {r["mode"]: {q["qid"]: q for q in r.get("per_question", [])} for r in retrieval}
+    if "bm25" not in by_mode or "vector" not in by_mode:
+        return {}
+    questions = {}
+    qa = ROOT / "data" / "eval" / "retrieval_qa.jsonl"
+    if qa.exists():
+        for line in qa.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                row = json.loads(line)
+                questions[row["qid"]] = row
+
+    # Pick the first question where BM25 and the vector index disagree on the top hit: that is
+    # the only kind of question where showing the fusion teaches anything.
+    qid = next((q for q in sorted(by_mode["bm25"])
+                if by_mode["bm25"][q]["retrieved"][:1] != by_mode["vector"][q]["retrieved"][:1]),
+               sorted(by_mode["bm25"])[0])
+
+    ranks: dict[str, dict[str, int]] = {}
+    for mode in ("bm25", "vector"):
+        for rank, cid in enumerate(by_mode[mode][qid]["retrieved"], start=1):
+            ranks.setdefault(cid, {})[mode] = rank
+
+    fused = []
+    for cid, r in ranks.items():
+        parts = [{"mode": m, "rank": r[m], "contribution": round(1.0 / (RRF_K + r[m]), 6)}
+                 for m in ("bm25", "vector") if m in r]
+        fused.append({"clause_id": cid, "parts": parts,
+                      "score": round(sum(x["contribution"] for x in parts), 6)})
+    fused.sort(key=lambda f: (-f["score"], f["clause_id"]))
+    for a, b in zip(fused, fused[1:], strict=False):
+        a["tied_with_next"] = a["score"] == b["score"]
+    if fused:
+        fused[-1]["tied_with_next"] = False
+
+    recorded = by_mode.get("hybrid", {}).get(qid, {}).get("retrieved", [])
+    reconstructed = [f["clause_id"] for f in fused]
+    gold = questions.get(qid, {}).get("gold_clause_ids", by_mode["bm25"][qid].get("gold", []))
+    return {
+        "qid": qid,
+        "question": questions.get(qid, {}).get("question", ""),
+        "gold_clause_ids": gold,
+        "k": RRF_K,
+        "formula": "score(d) = sum over rankings of 1 / (k + rank(d)),  k = 60",
+        "rankings": [{"mode": m, "retrieved": by_mode[m][qid]["retrieved"],
+                      "top_score": by_mode[m][qid].get("top_score"),
+                      "first_gold_rank": by_mode[m][qid].get("first_gold_rank")}
+                     for m in ("bm25", "vector", "hybrid", "hybrid_rerank", "tree")
+                     if m in by_mode and qid in by_mode[m]],
+        "fused": fused,
+        "recorded_hybrid": recorded,
+        "agrees_with_recorded": reconstructed[:len(recorded)] == list(recorded),
+        "caveat": ("Fusion in the engine runs over chunks; this reconstruction runs over the "
+                   "clause ids the evaluation recorded, so ties can order differently."),
+    }
+
+
+# ------------------------------------------------------------------ knowledge base
+
+def kb_graph() -> dict:
+    """What the knowledge base is shaped like: documents, clauses, chunks, two indexes."""
+    from chakravyuh.kb.clause_store import ClauseStore
+    store = ClauseStore()
+    try:
+        clauses = list(store.all_clauses())
+    finally:
+        store.close()
+
+    by_instrument: dict[str, dict] = {}
+    for c in clauses:
+        row = by_instrument.setdefault(c.instrument, {
+            "instrument": c.instrument, "jurisdiction": c.jurisdiction,
+            "clauses": 0, "real_text": 0, "quotable": 0, "with_page": 0,
+        })
+        row["clauses"] += 1
+        row["real_text"] += int(c.is_real_text)
+        row["quotable"] += int(c.quotable)
+        row["with_page"] += int(c.page is not None)
+
+    chunks_path = ROOT / "data" / "clauses" / "chunks.jsonl"
+    chunks = 0
+    collections: Counter = Counter()
+    chunk_fields: list[str] = []
+    if chunks_path.exists():
+        for line in chunks_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            chunks += 1
+            collections[row.get("collection", "?")] += 1
+            if not chunk_fields:
+                chunk_fields = sorted(row)
+    return {
+        "clauses": len(clauses),
+        "chunks": chunks,
+        "collections": dict(sorted(collections.items())),
+        "chunk_metadata_fields": chunk_fields,
+        "instruments": sorted(by_instrument.values(),
+                              key=lambda r: (-r["clauses"], r["instrument"])),
+        "quotable": sum(1 for c in clauses if c.quotable),
+        "real_text": sum(1 for c in clauses if c.is_real_text),
+        "with_pdf_hash": sum(1 for c in clauses if c.source_pdf_sha256),
+    }
+
+
+# ----------------------------------------------------------------------- the trace
+
+TRACE_EVENTS = ("imd01", "sim03")
+
+
+def _time_anchors(detail: dict) -> set[tuple[str, int]]:
+    """(area, t) pairs a property's working actually turns on, e.g. when an alert landed."""
+    anchors: set[tuple[str, int]] = set()
+    for area, row in (detail.get("per_area") or {}).items():
+        if not isinstance(row, dict):
+            continue
+        for key, value in row.items():
+            if key.endswith("_t") and isinstance(value, int):
+                anchors.add((area.split("@")[0], value))
+    return anchors
+
+
+def _touched_properties(rows, ids: set[str], effects: list[dict]) -> list[dict]:
+    """Which property checks turn on something this event produced, and by what link.
+
+    Two kinds of link, both structural. An id link means the property's own working names the
+    suspension or the order by id. A moment link means the property turns on an (area, minute)
+    that one of these effects created -- the alert this event led to is the alert P3 timed.
+    """
+    moments = {(e.get("area") or "", e.get("t")) for e in effects}
+    out = []
+    for e in rows:
+        if e.kind != "PROPERTY":
+            continue
+        detail = e.payload.get("detail") or {}
+        via = []
+        named = sorted(i for i in ids if i in json.dumps(detail))
+        if named:
+            via.append({"kind": "id", "what": named[:3]})
+        shared = sorted(moments & _time_anchors(detail))
+        if shared:
+            via.append({"kind": "moment",
+                        "what": [f"{a} at T+{t}" for a, t in shared[:3]]})
+        if via:
+            out.append({"property_id": e.payload.get("property_id"),
+                        "margin": e.payload.get("margin"),
+                        "passed": bool(e.payload.get("passed")), "via": via})
+    return out
+
+
+def trace_for(rows, event_id: str) -> dict:
+    """Follow one event from release to the number it ends up moving."""
+    event, deliveries, proposals, verdicts, effects = None, [], [], {}, []
+    for e in rows:
+        p = e.payload
+        if e.kind == "EVENT" and (p.get("event") or {}).get("event_id") == event_id:
+            event = {"seq": e.seq, "t": e.t_minutes, **(p.get("event") or {})}
+        elif e.kind == "DELIVERY" and p.get("event_id") == event_id:
+            deliveries.append({"seq": e.seq, "role": p.get("role"),
+                               "released_t": p.get("released_t"), "arrives_t": p.get("arrives_t"),
+                               "latency_min": p.get("latency_min"),
+                               "visible_payload": (p.get("visible") or {}).get("payload", {})})
+        elif e.kind == "PROPOSAL" and event_id in (p.get("triggered_by_event_ids") or []):
+            proposals.append({"seq": e.seq, "t": e.t_minutes,
+                              "proposal_id": p.get("proposal_id"), "role": p.get("actor_role"),
+                              "action": p.get("action_type"), "params": p.get("params", {}),
+                              "reasoning": p.get("reasoning", ""),
+                              "cited_rule_ids": p.get("cited_rule_ids", []),
+                              "cited_clause_ids": p.get("cited_clause_ids", [])})
+    pids = {x["proposal_id"] for x in proposals}
+    for e in rows:
+        p = e.payload
+        if e.kind == "VERDICT" and p.get("proposal_id") in pids:
+            verdicts[p["proposal_id"]] = {
+                "seq": e.seq, "decision": p.get("decision"), "mode": p.get("mode"),
+                "explanation": p.get("explanation", ""), "rule_ids": p.get("rule_ids", []),
+                "clause_ids": p.get("clause_ids", [])}
+        elif e.kind == "EFFECT" and p.get("proposal_id") in pids:
+            effects.append({"seq": e.seq, "t": e.t_minutes, "action": p.get("action_type"),
+                            "area": p.get("area", ""),
+                            "detail": {k: v for k, v in sorted(p.items())
+                                       if k not in ("action_type", "actor_role", "proposal_id")}})
+    ids = {event_id} | pids | {f"susp-{x}" for x in pids}
+    hidden = sorted((event or {}).get("payload", {}).get("truth", {}))
+    return {
+        "event_id": event_id,
+        "event": event,
+        "hidden_from_agents": hidden,
+        "deliveries": sorted(deliveries, key=lambda d: (d["arrives_t"], d["role"])),
+        "proposals": [{**x, "verdict": verdicts.get(x["proposal_id"])} for x in proposals],
+        "effects": effects,
+        "moves": _touched_properties(rows, ids, effects),
+    }
+
+
+def traces() -> list[dict]:
+    path = RUNS / f"{SCENARIO}__india_current__rule__seed0.jsonl"
+    if not path.exists():
+        return []
+    rows = list(read(path))
+    return [trace_for(rows, eid) for eid in TRACE_EVENTS]
+
+
+# ------------------------------------------------------------------------- the flow
+
+def flow(bundle: dict, rows_by_pack: dict[str, Counter]) -> list[dict]:
+    """The pipeline as stages, each one carrying the number it actually produced."""
+    india = rows_by_pack.get("india_current", Counter())
+    kb = bundle["kb_graph"]
+    held = sum(1 for s in bundle["sources"] if s["status"] == "held")
+    rules = sum(p["rule_count"] for p in bundle["packs"])
+    fuzz_runs = sum(r.get("runs_completed") or 0 for r in bundle["fuzz"]["runs"])
+    stages = [
+        ("SRC", "Primary sources", "data/sources/MANIFEST.yaml",
+         "python app/scripts/fetch_sources.py --check",
+         f"{held} documents held", "sources pinned by sha256",
+         "Every instrument is fetched once, hashed, and checked against strings only the real "
+         "document carries. A source we do not hold says so, and names the finding it caps."),
+        ("C", "Ingest", "chakravyuh/kb/ingest.py",
+         "python app/scripts/build_kb.py",
+         f"{kb['clauses']} clauses", f"{kb['real_text']} carry the instrument's own words",
+         "Gazette PDFs are split clause by clause. Each record keeps its verbatim text, a "
+         "sha256 of that text, the page, and the hash of the PDF it came from."),
+        ("PP", "Structure and retrieval", "chakravyuh/kb/retrieve.py",
+         "python app/scripts/eval_retrieval.py",
+         f"{kb['chunks']} chunks", "BM25 + vector, fused by RRF",
+         "One chunk per clause, each carrying clause_id, instrument, jurisdiction, page and "
+         "source_url -- so a hit can be cited, not just quoted."),
+        ("PP", "Policy packs", "chakravyuh/policy/compiler.py",
+         "python app/scripts/run_demo.py --seed 0",
+         f"{rules} rules", f"across {len(bundle['packs'])} rulebooks",
+         "A rule that cites a clause the store does not hold, or whose text no longer hashes "
+         "as recorded, does not compile. The simulator cannot run on invented law."),
+        ("M", "Agents propose", "chakravyuh/agents/",
+         "python app/scripts/run_demo.py --pack india_current",
+         f"{india.get('PROPOSAL', 0)} proposals", f"from {len(bundle['roles'])} role-bound agents",
+         "Each agent sees only its own inbox, delayed and redacted, and returns a typed proposal "
+         "naming the rule it believes authorises it."),
+        ("P", "The engine decides", "chakravyuh/policy/engine.py",
+         "python -m pytest tests/test_p2_policy_engine.py",
+         f"{india.get('VERDICT', 0)} verdicts", "ALLOW | BLOCK | NEEDS_HUMAN",
+         "A pure function over (proposal, world, pack). No model appears anywhere in its import "
+         "graph, and a test fails the build if one ever does."),
+        ("D", "The Game Master resolves", "chakravyuh/sim/game_master.py",
+         "python app/scripts/run_demo.py --seed 0",
+         f"{india.get('EFFECT', 0)} effects", f"{india.get('DELIVERY', 0)} deliveries",
+         "One world state, one rulebook, one fixed order: (t, role priority, proposal_id). "
+         "This is what makes the same seed produce the same ledger head hash."),
+        ("SINK", "Ledger and findings", "chakravyuh/audit/ledger.py",
+         "python app/scripts/verify_ledger.py --all",
+         f"{sum(r['entries'] for r in bundle['ledger']['runs'])} ledger entries",
+         f"{len(bundle['gaps'])} registered gaps",
+         "Every entry commits to the one before it. The four properties are checked against the "
+         f"finished world, and {fuzz_runs:,} mutated worlds are fuzzed to find the minimal case."),
+    ]
+    return [{"node": n, "title": t, "module": m, "command": c,
+             "measure": a, "measure_sub": b, "body": body}
+            for n, t, m, c, a, b, body in stages]
+
+
+def kind_counts() -> dict[str, Counter]:
+    """Entries per kind per pack: the measured numbers the flow diagram reports."""
+    out: dict[str, Counter] = {}
+    for path in sorted(RUNS.glob(f"{SCENARIO}__*.jsonl")):
+        rows = list(read(path))
+        header = next((e.payload for e in rows
+                       if e.kind == "EVENT" and e.payload.get("kind") == "RUN_HEADER"), {})
+        out[header.get("pack_id") or path.stem] = Counter(e.kind for e in rows)
+    return out
+
+
+def cited_clause_ids(bundle: dict) -> set[str]:
+    """Every clause the page can show in place, gathered from what the page actually cites."""
+    ids: set[str] = set()
+    for t in bundle["traces"]:
+        for pr in t["proposals"]:
+            ids.update(pr["cited_clause_ids"])
+            ids.update((pr.get("verdict") or {}).get("clause_ids", []))
+    for card in bundle["fuzz"]["cards"]:
+        ids.update(card.get("responsible_clause_ids", []))
+    ex = bundle.get("retrieval_example") or {}
+    for r in ex.get("rankings", []):
+        ids.update(r["retrieved"])
+    ids.update(ex.get("gold_clause_ids", []))
+    return {i for i in ids if i}
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     comparison = _load_json(OUTPUTS / "comparison.json", {}) or {}
@@ -344,10 +838,17 @@ def main() -> int:
         "ledger": ledger_meta(),
         "y3172": y3172_map(),
         "kb": kb_stats(),
+        "kb_graph": kb_graph(),
         "sources": sources_meta(),
         "retrieval": [{k: v for k, v in r.items() if k != "per_question"} for r in retrieval],
+        "retrieval_example": retrieval_example(retrieval),
         "adviser": adviser.get("summary", {}),
+        "derivations": derivations(),
+        "traces": traces(),
+        "rubric": rubric_status(),
     }
+    bundle["flow"] = flow(bundle, kind_counts())
+    bundle["clauses"] = clause_index(cited_clause_ids(bundle))
     (OUT / "bundle.json").write_text(json.dumps(bundle, indent=1, sort_keys=True))
     print(f"wrote {OUT/'bundle.json'}")
 

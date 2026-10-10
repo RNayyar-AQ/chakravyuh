@@ -159,3 +159,142 @@ def test_exporter_reruns_cleanly(tmp_path):
 
     for path in sorted(DATA.glob("timeline.*.json")):
         assert path.stat().st_size > 0
+
+
+# --------------------------------------------------------------------------------------------
+# The single page claims to show its own working. These pin that the working is real.
+
+
+def test_every_margin_recomputes_to_the_one_the_run_recorded(bundle):
+    """The page shows arithmetic. If the arithmetic disagreed with the ledger it would be theatre."""
+    rows = bundle["derivations"]
+    assert rows, "no derivations exported"
+    disagreed = [f"{d['pack_id']}/{d['property_id']}" for d in rows if not d["agrees"]]
+    assert not disagreed, f"recomputed margin differs from the recorded one: {disagreed}"
+
+
+def test_the_arithmetic_string_is_the_arithmetic(bundle):
+    """`360 - 7500 = -7140` must actually hold, or the page is showing a decorative subtraction."""
+    for d in bundle["derivations"]:
+        if not d["applicable"]:
+            continue
+        left, right = d["arithmetic"].split("=")
+        a, b = (float(x) for x in left.split("-"))
+        assert a - b == pytest.approx(float(right)), f"{d['property_id']}: {d['arithmetic']}"
+        assert float(right) == pytest.approx(d["margin"])
+        # P1 subtracts the threshold from what was observed; the timing properties do the reverse.
+        expected = (d["observed"], d["threshold"]) if d["property_id"] == "P1" \
+            else (d["threshold"], d["observed"])
+        assert (a, b) == pytest.approx(expected)
+
+
+def test_every_property_is_derived_for_every_pack(bundle):
+    """A pack missing a property would quietly drop a failure from the comparison."""
+    packs = {p["pack_id"] for p in bundle["packs"]}
+    for pack in packs:
+        got = {d["property_id"] for d in bundle["derivations"] if d["pack_id"] == pack}
+        assert got == set(bundle["properties"]), f"{pack} is missing {set(bundle['properties']) - got}"
+
+
+def test_the_traces_are_entries_in_a_real_ledger(bundle):
+    """Each step the page walks must be a sequence number in the chain, in order."""
+    path = ROOT / "runs" / "amphan_2020__india_current__rule__seed0.jsonl"
+    if not path.exists():
+        pytest.skip("no India run to check against")
+    seqs = {json.loads(line)["seq"]: json.loads(line)["kind"]
+            for line in path.read_text(encoding="utf-8").splitlines() if line.strip()}
+    assert bundle["traces"], "no traces exported"
+    for trace in bundle["traces"]:
+        assert trace["event"], f"{trace['event_id']} has no event entry"
+        assert seqs.get(trace["event"]["seq"]) == "EVENT"
+        for d in trace["deliveries"]:
+            assert seqs.get(d["seq"]) == "DELIVERY"
+            assert d["arrives_t"] >= d["released_t"]
+        for p in trace["proposals"]:
+            assert seqs.get(p["seq"]) == "PROPOSAL"
+            assert p["seq"] > trace["event"]["seq"], "a proposal cannot precede its trigger"
+            if p["verdict"]:
+                assert seqs.get(p["verdict"]["seq"]) == "VERDICT"
+                assert p["verdict"]["seq"] > p["seq"], "a verdict cannot precede its proposal"
+
+
+def test_the_forged_order_is_still_marked_forged(bundle):
+    """The adversarial trace is the demo's sharpest claim; it must not soften in export."""
+    forged = [t for t in bundle["traces"] if t["event"] and t["event"]["authentic"] is False]
+    assert forged, "no inauthentic event is traced on the page"
+    for t in forged:
+        assert t["hidden_from_agents"], "ground truth must be recorded as hidden, not absent"
+        delivered = json.dumps([d["visible_payload"] for d in t["deliveries"]])
+        assert "forged" not in delivered, "the forged flag leaked into what an agent can see"
+        assert any(m["property_id"] == "P2" for m in t["moves"]), "P2 does not see the forgery"
+
+
+def test_every_clause_the_page_can_open_is_a_real_record(bundle):
+    """A citation the reader can expand must come from the store, with its provenance attached."""
+    cited = set()
+    for t in bundle["traces"]:
+        for p in t["proposals"]:
+            cited.update(p["cited_clause_ids"])
+    assert cited, "no clause is cited anywhere in the traces"
+    missing = sorted(c for c in cited if c not in bundle["clauses"])
+    assert not missing, f"the page cites clauses it cannot show: {missing}"
+    for record in bundle["clauses"].values():
+        assert record["text"], f"{record['clause_id']} has no text"
+        assert record["provenance"], f"{record['clause_id']} has no provenance"
+
+
+def test_the_rrf_worked_example_adds_up(bundle):
+    """The page writes out 1/(k+rank) per retriever. Recompute it here."""
+    ex = bundle["retrieval_example"]
+    if not ex:
+        pytest.skip("no retrieval evaluation to build an example from")
+    assert ex["question"], "the worked example has no question text"
+    for row in ex["fused"]:
+        total = sum(1.0 / (ex["k"] + part["rank"]) for part in row["parts"])
+        assert row["score"] == pytest.approx(total, abs=1e-6), row["clause_id"]
+        for part in row["parts"]:
+            assert part["contribution"] == pytest.approx(1.0 / (ex["k"] + part["rank"]), abs=1e-6)
+    scores = [r["score"] for r in ex["fused"]]
+    assert scores == sorted(scores, reverse=True), "fused rows are not in rank order"
+
+
+def test_the_flow_reports_the_run_it_was_built_from(bundle):
+    """A stage's headline number must be the one in the ledger, not a round figure."""
+    stages = {s["title"]: s for s in bundle["flow"]}
+    assert stages, "no flow stages exported"
+    india = next(r for r in bundle["ledger"]["runs"] if "india_current" in r["run_id"])
+    assert str(india["kinds"]["PROPOSAL"]) in stages["Agents propose"]["measure"]
+    assert str(india["kinds"]["VERDICT"]) in stages["The engine decides"]["measure"]
+    assert str(bundle["kb_graph"]["clauses"]) in stages["Ingest"]["measure"]
+    for stage in bundle["flow"]:
+        assert stage["command"], f"{stage['title']} does not say how to reproduce it"
+        assert stage["node"] in {n["node"] for n in bundle["y3172"]}
+
+
+def test_the_rubric_shown_is_the_audit_that_ran(bundle):
+    """The rubric page must be the audit's own output, not a transcription of it."""
+    source = ROOT / "outputs" / "rubric_status.json"
+    if not source.exists():
+        pytest.skip("rubric audit has not been run")
+    recorded = json.loads(source.read_text(encoding="utf-8"))
+    assert bundle["rubric"] == recorded
+    totals = bundle["rubric"]["totals"]
+    assert totals["checks"] == len(bundle["rubric"]["checks"])
+    counted = {s: sum(1 for c in bundle["rubric"]["checks"] if c["status"] == s)
+               for s in ("PASS", "WAIVED", "FAIL")}
+    assert (counted["PASS"], counted["WAIVED"], counted["FAIL"]) == \
+        (totals["pass"], totals["waived"], totals["fail"])
+    for check in bundle["rubric"]["checks"]:
+        if check["status"] == "WAIVED":
+            assert check["waiver"], f"{check['id']} is waived without a reason"
+
+
+def test_the_kb_graph_agrees_with_the_clause_store_summary(bundle):
+    """Two views of the same corpus; if they drifted, one of them would be decoration."""
+    g = bundle["kb_graph"]
+    assert g["clauses"] == bundle["kb"]["total"]
+    assert sum(r["clauses"] for r in g["instruments"]) == g["clauses"]
+    real = bundle["kb"]["total"] - bundle["kb"]["verbatim_status"].get("unverified_summary", 0)
+    assert g["real_text"] == real
+    assert g["quotable"] <= g["real_text"]
+    assert g["chunks"] >= g["clauses"], "fewer chunks than clauses means a clause was dropped"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { RunFooterPanel } from "@/components/RunFooterPanel";
 import { timelineUrl } from "@/lib/api";
@@ -49,7 +49,30 @@ export function TimelineExplorer({ packs }: { packs: Pack[] }) {
   const v: PackView = view.pack === packId ? view : { pack: packId, ...EMPTY_VIEW };
   const { data, error, limit, open } = v;
 
+  // The explorer now lives partway down a single page, and the Bangladesh ledger is 2.4 MB.
+  // Nothing is fetched until the section is nearly in view, so arriving at the page costs the
+  // hero and the scorecard, not every run we ship.
+  const host = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(false);
+
   useEffect(() => {
+    const el = host.current;
+    if (!el || near) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "500px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near]);
+
+  useEffect(() => {
+    if (!near) return;
     let live = true;
     fetch(timelineUrl(packId))
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
@@ -58,7 +81,7 @@ export function TimelineExplorer({ packs }: { packs: Pack[] }) {
     return () => {
       live = false;
     };
-  }, [packId]);
+  }, [packId, near]);
 
   const roles = useMemo(() => {
     const s = new Set<string>();
@@ -81,7 +104,7 @@ export function TimelineExplorer({ packs }: { packs: Pack[] }) {
   const horizon = (data?.header.horizon_min as number) ?? 7500;
 
   return (
-    <div className="grid gap-4">
+    <div ref={host} className="grid gap-4">
       {/* regime selector */}
       <div className="flex flex-wrap gap-2">
         {packs.map((p) => {
@@ -125,7 +148,7 @@ export function TimelineExplorer({ packs }: { packs: Pack[] }) {
       {!data && !error && (
         <Panel className="p-10 text-center">
           <div className="font-mono text-[12px] text-faint" style={{ animation: "cv-pulse 1.4s ease-in-out infinite" }}>
-            loading ledger…
+            {near ? "loading ledger…" : "ledger loads when you reach it"}
           </div>
         </Panel>
       )}

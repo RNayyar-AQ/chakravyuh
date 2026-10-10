@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 ROOT = Path(__file__).resolve().parents[2]
 OUT_HTML = Path("docs/rubric_status.html")
 OUT_MD = Path("docs/rubric_status.md")
+OUT_JSON = Path("outputs/rubric_status.json")
 
 PASS, FAIL, WAIVED = "PASS", "FAIL", "WAIVED"
 
@@ -662,7 +663,22 @@ def main() -> int:
         if args.markdown:
             OUT_MD.write_text(_report(checks, n_pass, n_waive, n_fail), encoding="utf-8")
             print(f"wrote {OUT_MD}")
+        OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
+        OUT_JSON.write_text(_report_json(checks, n_pass, n_waive, n_fail), encoding="utf-8")
+        print(f"wrote {OUT_JSON}")
     return 1 if (n_fail or (args.strict and n_waive)) else 0
+
+
+def _report_json(checks: list[Check], n_pass: int, n_waive: int, n_fail: int) -> str:
+    """The same results the HTML shows, in the form the web bundle reads."""
+    return json.dumps({
+        "source": "CHAKRAVYUH_RUBRIC_SHOWCASE.md Phase 1",
+        "command": "python app/scripts/rubric_audit.py",
+        "totals": {"pass": n_pass, "waived": n_waive, "fail": n_fail, "checks": len(checks)},
+        "checks": [{"id": c.id, "criterion": c.criterion, "question": c.question,
+                    "status": c.result.status, "detail": c.result.detail,
+                    "waiver": c.result.waiver} for c in checks],
+    }, indent=1, sort_keys=True)
 
 
 def _report(checks: list[Check], n_pass: int, n_waive: int, n_fail: int) -> str:

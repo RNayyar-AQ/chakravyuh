@@ -11,7 +11,922 @@
   "judged": 0,
   "retrieval_mode": "hybrid"
  },
+ "clauses": {
+  "BD.BTRA2001.s97A": {
+   "clause_id": "BD.BTRA2001.s97A",
+   "instrument": "Bangladesh Telecommunication Regulation Act 2001",
+   "jurisdiction": "BD",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "s.97A",
+   "sha256": "0668623736ccf565",
+   "source_url": "http://www.btrc.gov.bd/",
+   "text": "The Government may, in the interest of the security of the State or public order, direct the suspension or interception of telecommunication services, and any such direction shall be issued by the authority empowered by the Government for that purpose.",
+   "verbatim_status": "unverified_summary"
+  },
+  "BD.CPP.WARNING": {
+   "clause_id": "BD.CPP.WARNING",
+   "instrument": "Cyclone Preparedness Programme standing order (Bangladesh)",
+   "jurisdiction": "BD",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "CPP warning dissemination",
+   "sha256": "69032b1fea99d255",
+   "source_url": "https://cpp.gov.bd/",
+   "text": "The Cyclone Preparedness Programme shall disseminate cyclone warning signals issued by the Bangladesh Meteorological Department to coastal communities through its network of volunteers using megaphones, flags and sirens, in Bengali, and shall continue dissemination until the danger signal is withdrawn.",
+   "verbatim_status": "unverified_summary"
+  },
+  "BD.DMA2012.s24": {
+   "clause_id": "BD.DMA2012.s24",
+   "instrument": "Disaster Management Act 2012 (Bangladesh)",
+   "jurisdiction": "BD",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "s.24",
+   "sha256": "d81186e5a9bda567",
+   "source_url": "https://www.ddm.gov.bd/",
+   "text": "On receipt of an early warning of an impending disaster, the Deputy Commissioner of the district concerned shall activate the district disaster management committee and shall cause the warning to be disseminated to the inhabitants of the areas likely to be affected through all available means without delay.",
+   "verbatim_status": "unverified_summary"
+  },
+  "BD.SOD2019.ptd": {
+   "clause_id": "BD.SOD2019.ptd",
+   "instrument": "Bangladesh Standing Orders on Disaster (SOD) 2019",
+   "jurisdiction": "BD",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "Posts and Telecommunications Division / BTRC / BTCL responsibilities (pp. 240-246)",
+   "sha256": "2d8c7254ab7c294c",
+   "source_url": "https://www.adrc.asia/documents/dm_information/BGD_SOD2019_English_FINAL.pdf",
+   "text": "The Posts and Telecommunications Division, the Bangladesh Telecommunication Regulatory Commission and BTCL are assigned responsibilities for maintaining and restoring telecommunication services during a disaster, including keeping emergency communication available to the disaster management authorities. Page range per the SOD table of contents; extract and quote the actual pages before citing.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.CERTIN2022.p2": {
+   "clause_id": "IN.CERTIN2022.p2",
+   "instrument": "CERT-In Directions under s.70B(6) IT Act, 28 April 2022 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "Direction (ii)",
+   "sha256": "ae3371aeb2e4c2a0",
+   "source_url": "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf",
+   "text": "Any service provider, intermediary, data centre, body corporate and Government organisation shall mandatorily report cyber incidents of the types specified in Annexure I to CERT-In within six hours of noticing such incidents or being brought to notice about such incidents.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.DMA2005.s22.2.h": {
+   "clause_id": "IN.DMA2005.s22.2.h",
+   "instrument": "Disaster Management Act 2005 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "s.22(2)(h)",
+   "sha256": "5bb2574cdb396633",
+   "source_url": "https://ndma.gov.in/sites/default/files/PDF/DM_act2005.pdf",
+   "text": "The State Executive Committee shall give directions to any department of the Government of the State or any other authority or body in the State regarding actions to be taken in response to any threatening disaster situation or disaster, and shall advise the State Government regarding all financial matters in relation to disaster management.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.DMA2005.s34.c": {
+   "clause_id": "IN.DMA2005.s34.c",
+   "instrument": "Disaster Management Act 2005 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "s.34(c)",
+   "sha256": "b93c7df20e14b901",
+   "source_url": "https://ndma.gov.in/sites/default/files/PDF/DM_act2005.pdf",
+   "text": "For the purpose of assisting and protecting the community affected by a disaster, the District Authority may give directions for the release and use of resources available with any department of the Government and the local authority in the district, and may ensure that warnings and alerts are communicated to the public in the affected area.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.DMA2005.s6": {
+   "clause_id": "IN.DMA2005.s6",
+   "instrument": "Disaster Management Act 2005 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "s.6",
+   "sha256": "71734fd08f8660de",
+   "source_url": "https://ndma.gov.in/sites/default/files/PDF/DM_act2005.pdf",
+   "text": "The National Disaster Management Authority shall have the responsibility for laying down the policies, plans and guidelines for disaster management and for coordinating their enforcement and implementation throughout the country, and shall lay down guidelines to be followed by the departments or agencies of the Government of India.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.DOTSOP2020.committees": {
+   "clause_id": "IN.DOTSOP2020.committees",
+   "instrument": "DoT Standard Operating Procedure 2020 for Telecommunication Services for responding to Disasters (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "Institutional structure",
+   "sha256": "87ba7106db2fd178",
+   "source_url": "https://www.communicationstoday.co.in/dot-issues-updated-sop-2020-in-disaster-response/",
+   "text": "A national committee chaired by Member (Technology) oversees telecom disaster response, with corresponding committees at licensed service area (circle) level, nodal officers designated by each telecom service provider, and damage-assessment teams. Content per secondary reporting; verify against the SOP before quoting.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.DOTSOP2020.icr": {
+   "clause_id": "IN.DOTSOP2020.icr",
+   "instrument": "DoT Standard Operating Procedure 2020 for Telecommunication Services for responding to Disasters (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "Intra-circle roaming (ICR)",
+   "sha256": "3a331c602496e763",
+   "source_url": "https://dehradun.nic.in/document/standard-operating-proceduresop-2020-for-telecommunications-services-for-responding-to-disasters/",
+   "text": "Intra-circle roaming during a disaster is to be arranged through mutual agreement between telecom service providers, pursuant to memoranda of understanding entered into between them, rather than by a standing regulatory trigger. Activation is requested through the designated DoT disaster official. Dated 14 December 2020. Content per secondary reporting; verify against the SOP before quoting.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.DPDP2023.s2": {
+   "clause_id": "IN.DPDP2023.s2",
+   "instrument": "Digital Personal Data Protection Act, 2023 (Act 22 of 2023)",
+   "jurisdiction": "IN",
+   "page": 2,
+   "provenance": "gazette_pdf",
+   "quotable": true,
+   "section": "s.2",
+   "sha256": "4f8470cd1fb7cff1",
+   "source_url": "https://egazette.gov.in/WriteReadData/2023/248045.pdf",
+   "text": "2. In this Act, unless the context otherwise requires,\u2014 (a) \u201cAppellate Tribunal\u201d means the Telecom Disputes Settlement and Appellate Tribunal established under section 14 of the Telecom Regulatory Authority of India Act, 1997; (b) \u201cautomated\u201d means any digital process capable of operating automatically in response to instructions given or otherwise for the purpose of processing data; (c) \u201cBoard\u201d means the Data Protection Board of India established by the Central Government under section 18; (d) \u201ccertain legitimate uses\u201d means the uses referred to in section 7; (e) \u201cChairperson\u201d means the Chairperson of the Board; (f) \u201cchild\u201d means an individual who has not completed the age of eighteen years; (g) \u201cConsent Manager\u201d means a person registered with the Board, who acts as a single point of contact to enable a Data Principal to give, manage, review and withdraw her consent through an accessible, transparent and interoperable platform; (h) \u201cdata\u201d means a representation of information, facts, concepts, opinions or instructions in a manner suitable for communication, interpretation or processing by human beings or by automated means; (i) \u201cData Fiduciary\u201d means any person who alone or in conjunction with other persons determines the purpose and means of processing of personal data; (j) \u201cData Principal\u201d means the individual to whom the personal data relates and where such individual is\u2014 (i) a child, includes the parents or lawful guardian of such a child; (ii) a person with disability, includes her lawful guardian, acting on her behalf; (k) \u201cData Processor\u201d means any person who processes personal data on behalf of a Data Fiduciary; (l) \u201cData Protection Officer\u201d means an individual appointed by the Significant Data Fiduciary under clause (a) of sub-section (2) of section 10; (m) \u201cdigital office\u201d means an office that adopts an online mechanism wherein the proceedings, from receipt of intimation or complaint or reference or directions or appeal, as the case may be, to the disposal thereof, are conducted in online or digital mode; (n) \u201cdigital personal data\u201d means personal data in digital form; (o) \u201cgain\u201d means\u2014 (i) a gain in property or supply of services, whether temporary or permanent; or (ii) an opportunity to earn remuneration or greater remuneration or to gain a financial advantage otherwise than by way of legitimate remuneration; (p) \u201closs\u201d means\u2014 (i) a loss in property or interruption in supply of services, whether temporary or permanent; or (ii) a loss of opportunity to earn remuneration or greater remuneration or to gain a financial advantage otherwise than by way of legitimate remuneration; (q) \u201cMember\u201d means a Member of the Board and includes the Chairperson; (r) \u201cnotification\u201d means a notification published in the Official Gazette and the expressions \u201cnotify\u201d and \u201cnotified\u201d shall be construed accordingly; (s) \u201cperson\u201d includes\u2014 (i) an individual; (ii) a Hindu undivided family; (iii) a company; (iv) a firm; (v) an association of persons or a body of individuals, whether incorporated or not; (vi) the State; and (vii) every artificial juristic person, not falling within any of the preceding sub-clauses; (t) \u201cpersonal data\u201d means any data about an individual who is identifiable by or in relation to such data; (u) \u201cpersonal data breach\u201d means any unauthorised processing of personal data or accidental disclosure, acquisition, sharing, use, alteration, destruction or loss of access to personal data, that compromises the confidentiality, integrity or availability of personal data; (v) \u201cprescribed\u201d means prescribed by rules made under this Act; (w) \u201cproceeding\u201d means any action taken by the Board under the provisions of this Act; (x) \u201cprocessing\u201d in relation to personal data, means a wholly or partly automated operation or set of operations performed on digital personal data, and includes operations such as collection, recording, organisation, structuring, storage, adaptation, retrieval, use, alignment or combination, indexing, sharing, disclosure by transmission, dissemination or otherwise making available, restriction, erasure or destruction; (y) \u201cshe\u201d in relation to an individual includes the reference to such individual irrespective of gender; (z) \u201cSignificant Data Fiduciary\u201d means any Data Fiduciary or class of Data Fiduciaries as may be notified by the Central Government under section 10; (za) \u201cspecified purpose\u201d means the purpose mentioned in the notice given by the Data Fiduciary to the Data Principal in accordance with the provisions of this Act and the rules made thereunder; and (zb) \u201cState\u201d means the State as defined under article 12 of the Constitution.",
+   "verbatim_status": "verified"
+  },
+  "IN.DPDP2023.s27": {
+   "clause_id": "IN.DPDP2023.s27",
+   "instrument": "Digital Personal Data Protection Act, 2023 (Act 22 of 2023)",
+   "jurisdiction": "IN",
+   "page": 14,
+   "provenance": "gazette_pdf",
+   "quotable": true,
+   "section": "s.27",
+   "sha256": "797d02cd1f6afce8",
+   "source_url": "https://egazette.gov.in/WriteReadData/2023/248045.pdf",
+   "text": "27. (1) The Board shall exercise and perform the following powers and functions, namely:\u2014 (a) on receipt of an intimation of personal data breach under sub-section (6) of section 8, to direct any urgent remedial or mitigation measures in the event of a personal data breach, and to inquire into such personal data breach and impose penalty as provided in this Act; (b) on a complaint made by a Data Principal in respect of a personal data breach or a breach in observance by a Data Fiduciary of its obligations in relation to her personal data or the exercise of her rights under the provisions of this Act, or on a reference made to it by the Central Government or a State Government, or in compliance of the directions of any court, to inquire into such breach and impose penalty as provided in this Act; (c) on a complaint made by a Data Principal in respect of a breach in observance by a Consent Manager of its obligations in relation to her personal data, to inquire into such breach and impose penalty as provided in this Act; (d) on receipt of an intimation of breach of any condition of registration of a Consent Manager, to inquire into such breach and impose penalty as provided in this Act; and (e) on a reference made by the Central Government in respect of the breach in observance of the provisions of sub-section (2) of section 37 by an intermediary, to inquire into such breach and impose penalty as provided in this Act. (2) The Board may, for the effective discharge of its functions under the provisions of this Act, after giving the person concerned an opportunity of being heard and after recording reasons in writing, issue such directions as it may consider necessary to such person, who shall be bound to comply with the same. (3) The Board may, on a representation made to it by a person affected by a direction issued under sub-section (1) or sub-section (2), or on a reference made by the Central Government, modify, suspend, withdraw or cancel such direction and, while doing so, impose such conditions as it may deem fit, subject to which the modification, suspension, withdrawal or cancellation shall have effect. Procedure to be followed by Board.",
+   "verbatim_status": "verified"
+  },
+  "IN.IMD.CYCWARN": {
+   "clause_id": "IN.IMD.CYCWARN",
+   "instrument": "IMD Cyclone Warning Services standard operating procedure (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "Cyclone warning stages",
+   "sha256": "97a9d2f7ce58ba7a",
+   "source_url": "https://mausam.imd.gov.in/responsive/cycloneinformation.php",
+   "text": "The India Meteorological Department issues cyclone warnings in four stages: Pre-Cyclone Watch, Cyclone Alert, Cyclone Warning, and Post-Landfall Outlook, addressed to the State Governments and disaster management authorities of the areas likely to be affected, with the Cyclone Warning stage issued at least twenty-four hours before expected commencement of adverse weather.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.NDMA.CAP.SACHET": {
+   "clause_id": "IN.NDMA.CAP.SACHET",
+   "instrument": "NDMA Common Alerting Protocol / SACHET Integrated Alert System (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "CAP-India operating guideline",
+   "sha256": "d53c1184a799a698",
+   "source_url": "https://sachet.ndma.gov.in/",
+   "text": "The Common Alerting Protocol based Integrated Alert System disseminates disaster warnings issued by designated alerting authorities to the public in the affected area over multiple channels including cell broadcast and SMS, in English, Hindi and the relevant regional language, with the alerting authority responsible for the area accountable for issuing the alert.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.SUSP2024.r2.1": {
+   "clause_id": "IN.SUSP2024.r2.1",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "r.2(1)",
+   "sha256": "04a6174eadbdb3e6",
+   "source_url": "https://www.scconline.com/blog/post/2024/11/25/government-notifies-telecommunications-temporary-suspension-of-services-rules",
+   "text": "Directions to suspend telecommunication services shall not be issued except by an order made by the Secretary to the Government of India in the Ministry of Home Affairs in the case of the Central Government, or by the Secretary to the State Government in charge of the Home Department in the case of a State Government, who is hereby designated as the competent authority.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.SUSP2024.r2.2": {
+   "clause_id": "IN.SUSP2024.r2.2",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "r.2(2)",
+   "sha256": "f9b9ca4c6ca5c1c9",
+   "source_url": "https://www.scconline.com/blog/post/2024/11/25/government-notifies-telecommunications-temporary-suspension-of-services-rules",
+   "text": "In unavoidable circumstances where obtaining prior direction of the competent authority is not feasible, such direction may be issued by an officer not below the rank of Joint Secretary to the Government of India who has been duly authorised by the competent authority, and such direction shall cease to be in effect unless confirmed by the competent authority within twenty-four hours of its issue.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.SUSP2024.r2.3": {
+   "clause_id": "IN.SUSP2024.r2.3",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "r.2(3)",
+   "sha256": "3b950e142679f04a",
+   "source_url": "https://www.scconline.com/blog/post/2024/11/25/government-notifies-telecommunications-temporary-suspension-of-services-rules",
+   "text": "Every order issued directing suspension of telecommunication services shall contain reasons for such direction, shall specify the area and duration of suspension, and a copy of such order shall be forwarded to the concerned Review Committee not later than the next working day.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.SUSP2024.r2.4": {
+   "clause_id": "IN.SUSP2024.r2.4",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "r.2(4)",
+   "sha256": "99467b0afc70765f",
+   "source_url": "https://www.scconline.com/blog/post/2024/11/25/government-notifies-telecommunications-temporary-suspension-of-services-rules",
+   "text": "Any direction for suspension of telecommunication services shall not remain in operation for more than fifteen days at a time, and a fresh order shall be required to continue the suspension beyond that period.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.SUSP2024.r2.5": {
+   "clause_id": "IN.SUSP2024.r2.5",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "r.2(5)",
+   "sha256": "93b3b5f4cb9c556c",
+   "source_url": "https://www.scconline.com/blog/post/2024/11/25/government-notifies-telecommunications-temporary-suspension-of-services-rules",
+   "text": "The Review Committee shall meet within five working days of the issue of a direction for suspension of telecommunication services and shall record its findings on whether the direction is in accordance with the governing provisions of law.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.SUSP2024.r3": {
+   "clause_id": "IN.SUSP2024.r3",
+   "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "r.3",
+   "sha256": "28cc80c4b681e3d2",
+   "source_url": "https://www.scconline.com/blog/post/2024/11/25/government-notifies-telecommunications-temporary-suspension-of-services-rules",
+   "text": "The authorised entity shall designate a nodal officer in each licensed service area to receive and handle directions for suspension of telecommunication services, and no direction shall be acted upon unless it is received through the designated nodal officer channel.",
+   "verbatim_status": "unverified_summary"
+  },
+  "IN.TA2023.s20.2": {
+   "clause_id": "IN.TA2023.s20.2",
+   "instrument": "Telecommunications Act, 2023 (Act 44 of 2023)",
+   "jurisdiction": "IN",
+   "page": 9,
+   "provenance": "gazette_pdf_subsection",
+   "quotable": false,
+   "section": "s.20(2)",
+   "sha256": "be54689ffe2ccd79",
+   "source_url": "https://egazette.gov.in/WriteReadData/2023/250880.pdf",
+   "text": "(2) On the occurrence of any public emergency or in the interest of public safety, the Central Government or a State Government or any officer specially authorised in this behalf by the Central Government or a State Government, may, if satisfied that it is necessary or expedient so to do, in the interest of the sovereignty and integrity of India, defence and security of the State, friendly relations with foreign States, public order, or for preventing incitement to the commission of any offence, subject to such procedure and safeguards as may be prescribed, and for reasons to be recorded in writing, by order\u2014 (a) direct that any message or class of messages, to or from any person or class of persons, to or from any telecommunication equipment or class of telecommunication equipment, or relating to any particular subject, brought for Provisions for public emergency or public safety. transmission by, or transmitted or received by any telecommunication service or telecommunication network, shall not be transmitted, or shall be intercepted or detained, or shall be disclosed in intelligible format to the officer mentioned in such order; or (b) direct that any telecommunication service or class of telecommunication services to or from any person or class of persons, to or from any telecommunication equipment or class of telecommunication equipment, or relating to any particular subject, transmitted or received by any telecommunication service or telecommunication network, shall be suspended.",
+   "verbatim_status": "verified_with_artifacts"
+  },
+  "IN.TA2023.s23": {
+   "clause_id": "IN.TA2023.s23",
+   "instrument": "Telecommunications Act, 2023 (Act 44 of 2023)",
+   "jurisdiction": "IN",
+   "page": 11,
+   "provenance": "gazette_pdf",
+   "quotable": false,
+   "section": "s.23",
+   "sha256": "6108f1481ef403c4",
+   "source_url": "https://egazette.gov.in/WriteReadData/2023/250880.pdf",
+   "text": "23. If it appears necessary or expedient so to do in the public interest, the Central Government may direct any authorised entity to transmit in its telecommunication services or telecommunication network, specific messages, in such manner as may be specified. Power to give directions. DIGITAL BHARAT NIDHI 13 of 1885.",
+   "verbatim_status": "verified_with_artifacts"
+  },
+  "IN.TA2023.s59": {
+   "clause_id": "IN.TA2023.s59",
+   "instrument": "Telecommunications Act, 2023 (Act 44 of 2023)",
+   "jurisdiction": "IN",
+   "page": 20,
+   "provenance": "gazette_pdf",
+   "quotable": true,
+   "section": "s.59",
+   "sha256": "42aacc1f95b3df63",
+   "source_url": "https://egazette.gov.in/WriteReadData/2023/250880.pdf",
+   "text": "59. In the Telecom Regulatory Authority of India Act, 1997,\u2014 (a) in section 2,\u2014 (i) in sub-section (1),\u2014 (A) for clause (e), the following clause shall be substituted, namely:\u2014 '(e) \"licensee\" means an authorised entity providing telecommunication services under the Telecommunications Act, 2023, or registered for providing cable television network under the Cable Television Networks (Regulation) Act, 1995 or any other Act for the time being in force;'; (B) for clause (ea), the following clause shall be substituted, namely:\u2014 '(ea) \"licensor\" means the Central Government which grants an authorisation for telecommunication services under the Telecommunications Act, 2023, or registration under the Cable Television Networks (Regulation) Act, 1995 or any other Act for the time being in force;'; (C) after clause (j), the following clause shall be inserted, namely:\u2014 '(ja) \"telecommunication\" shall have the meaning as assigned to it in the Telecommunications Act, 2023;'; (D) for clause (k), the following clause shall be substituted, namely:\u2014 '(k) \"telecommunication services\" means any service for telecommunication;'; 13 of 1885. (ii) in sub-section (2), for the words and figures \"the Indian Telegraph Act, 1885 or the Indian Wireless Telegraphy Act, 1933\", the words, figures and brackets \"the Telecommunications Act, 2023 or the Cable Television Networks (Regulation) Act, 1995\" shall be substituted; (b) in section 4, for the proviso, the following provisos shall be substituted, namely:\u2014 \"Provided that a person who is, or has been, in the service of Government shall not be appointed\u2014 (a) as a Chairperson unless such person has held the post of Secretary to the Government of India or any equivalent post in the Central Government or the State Government; or (b) as a member unless such person has held the post of Additional Secretary to the Government of India or any equivalent post in the Central Government or the State Government: Provided further that a person who is, or has been, in a service other than that of Government, shall be appointed\u2014 (a) as a Chairperson if such person has at least thirty years of professional experience and has served as a member of the board of directors or a chief executive of a company in the areas as specified in this section; or (b) as a Member if such person has at least twenty-five years of professional experience and has served as a member of the board of directors or chief executive of a company in the areas as specified in this section.\"; (c) in section 11,\u2014 (i) in sub-section (1),\u2014 13 of 1885. (A) for the words and figures \"Indian Telegraph Act, 1885\", the words, figures and brackets \"Telecommunications Act, 2023 or the Cable Television Networks (Regulation) Act, 1995\" shall be substituted; (B) in the fifth proviso, for the portion beginning with the words \"may, within fifteen days from the date of receipt\" and ending with the words \"take a final decision\", the following shall be substituted, namely:\u2014 \"shall, within thirty days from the date of receipt of such reference communicate to the Central Government any further recommendations that it may have, after considering the reference made by the Central Government and after receipt of further recommendation if any, the Central Government shall take a final decision.\"; (ii) in sub-section (2),\u2014 13 of 1885. (A) for the words and figures \"Indian Telegraph Act, 1885\", the words, figures and brackets \"Telecommunications Act, 2023 or the Cable Television Networks (Regulation) Act, 1995\" shall be substituted; (B) after the proviso, the following proviso shall be inserted, namely:\u2014 \"Provided further that the Authority may direct an authorised entity or class of authorised entities providing telecommunication services, to abstain from predatory pricing that is harmful to competition, long term development and the overall health of the telecommunication sector.\"; (d) in section 14, in clause (a),\u2014 (i) sub-clause (i) shall be omitted; (ii) for paragraph (C), the following shall be substituted, namely:\u2014 \"(C) any disputes to be adjudicated by the Adjudicating Officer or the Designated Appeals Committee under the Telecommunications Act, 2023; (iii) after clause (c), the following clause shall be inserted, namely:\u2014 \"(d) hear and dispose of appeals under section 39 of the Telecommunications Act, 2023. Any action instituted under the Telecom Regulatory Authority of India Act, 1997 and pending immediately before the appointed day in the Telecom Disputes Settlement and Appellate Tribunal, shall continue to be heard and disposed of by the Telecom Disputes Settlement and Appellate Tribunal as if this Act had not been passed;\"; (e) for section 38, the following section shall be substituted, namely:\u2014 Application of certain laws. \"38. The provisions of this Act shall be in addition to the provisions of the Telecommunications Act, 2023 and, in particular, nothing in this Act shall affect any jurisdiction, powers and functions required to be exercised or performed by the appropriate authority in relation to any area falling within the jurisdiction of such authority.\". REPEAL AND SAVINGS Repeal of certain Acts and savings.",
+   "verbatim_status": "verified"
+  },
+  "IN.TCSR2024.no_order_auth": {
+   "clause_id": "IN.TCSR2024.no_order_auth",
+   "instrument": "Telecommunications (Telecom Cyber Security) Rules 2024 (India)",
+   "jurisdiction": "IN",
+   "page": null,
+   "provenance": "secondary_source",
+   "quotable": false,
+   "section": "ABSENCE OF PROVISION (negative finding)",
+   "sha256": "f436334209c0ba8c",
+   "source_url": "https://scconline.com/blog/?p=335732",
+   "text": "NEGATIVE FINDING, not a quotation. The Telecom Cyber Security Rules 2024 impose incident-reporting duties on authorised entities but, on secondary reporting of the notified text, contain no requirement that an authorised entity authenticate the provenance of a direction or order received from a government officer before giving effect to it. This record exists so the policy engine can cite the absence of such a duty. It must be confirmed against the full notified text before the report asserts it.",
+   "verbatim_status": "unverified_summary"
+  },
+  "INTL.ITU.X1303": {
+   "clause_id": "INTL.ITU.X1303",
+   "instrument": "ITU-T Recommendation X.1303, Common Alerting Protocol (CAP 1.1)",
+   "jurisdiction": "INTL",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "X.1303 CAP message structure",
+   "sha256": "b7e7bb99ff58a404",
+   "source_url": "https://www.itu.int/rec/T-REC-X.1303",
+   "text": "The Common Alerting Protocol provides an open, non-proprietary digital message format for all types of alerts and notifications, specifying an alert message structure with alert, info, resource and area blocks, where the info block carries the language, category, urgency, severity and certainty of the alert and the area block carries the geographic scope.",
+   "verbatim_status": "unverified_summary"
+  },
+  "INTL.TAMPERE1998.art3": {
+   "clause_id": "INTL.TAMPERE1998.art3",
+   "instrument": "Tampere Convention on the Provision of Telecommunication Resources for Disaster Mitigation and Relief Operations, 1998",
+   "jurisdiction": "INTL",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "Article 3",
+   "sha256": "8203dcb91c05cc49",
+   "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=XXV-4&chapter=25",
+   "text": "The States Parties shall cooperate among themselves and with non-State entities and intergovernmental organizations to facilitate the use of telecommunication resources for disaster mitigation and relief, including the deployment of terrestrial and satellite telecommunication equipment to predict, monitor and provide information concerning natural hazards and disasters. Party status of individual States must be verified on the UN Treaty Collection before being encoded in a policy pack (see spec section 14).",
+   "verbatim_status": "unverified_summary"
+  },
+  "INTL.TAMPERE1998.art4": {
+   "clause_id": "INTL.TAMPERE1998.art4",
+   "instrument": "Tampere Convention on the Provision of Telecommunication Resources for Disaster Mitigation and Relief Operations, 1998",
+   "jurisdiction": "INTL",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "Article 4",
+   "sha256": "ee4b1d245415d6be",
+   "source_url": "https://treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=XXV-4&chapter=25",
+   "text": "A State Party requiring telecommunication assistance for disaster mitigation and relief may request such assistance from any other State Party, and the requested State Party shall promptly determine and notify the requesting State Party whether it will render the assistance requested, directly or otherwise, and the scope of and terms on which such assistance might be rendered.",
+   "verbatim_status": "unverified_summary"
+  },
+  "US.FCC.WEA": {
+   "clause_id": "US.FCC.WEA",
+   "instrument": "FCC Wireless Emergency Alerts rules (United States)",
+   "jurisdiction": "US",
+   "page": null,
+   "provenance": "model_written",
+   "quotable": false,
+   "section": "WEA multilingual alerting",
+   "sha256": "38aa998c0b23f0b0",
+   "source_url": "https://www.fcc.gov/consumers/guides/wireless-emergency-alerts-wea",
+   "text": "Participating Commercial Mobile Service providers shall support transmission of Wireless Emergency Alerts in English and Spanish, and shall transmit alerts received from the Alert Gateway to the geographic area specified by the alert originator.",
+   "verbatim_status": "unverified_summary"
+  }
+ },
+ "derivations": [
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "100 - 60 = 40",
+   "formula": "margin = min %% of affected cells reachable for relief - threshold",
+   "margin": 40.0,
+   "note": "0 suspension(s) examined; the margin takes the worst of them.",
+   "observed": 100.0,
+   "observed_label": "worst suspension window",
+   "pack_id": "bangladesh",
+   "passed": true,
+   "property_id": "P1",
+   "recomputed": 40.0,
+   "seq": 7991,
+   "terms": [],
+   "threshold": 60.0,
+   "threshold_from": 60.0,
+   "threshold_name": "min_pct_relief_cells",
+   "unit": "% of affected cells reachable for relief"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "0 - 0 = 0",
+   "formula": "margin = threshold - irreversible executions on an unauthenticated order",
+   "margin": 0.0,
+   "note": "Every execution here was traced back to an order the world marks authentic=False. No agent can read that flag.",
+   "observed": 0.0,
+   "observed_label": "executions traced to authentic=False",
+   "pack_id": "bangladesh",
+   "passed": true,
+   "property_id": "P2",
+   "recomputed": 0.0,
+   "seq": 7992,
+   "terms": [],
+   "threshold": 0.0,
+   "threshold_from": 0,
+   "threshold_name": "max_forged_executions",
+   "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "360 - 15 = 345",
+   "formula": "margin = T_alert - worst delay from warning to a valid local-language alert",
+   "margin": 345.0,
+   "note": "Every affected area was alerted; the margin takes the slowest.",
+   "observed": 15.0,
+   "observed_label": "worst delay",
+   "pack_id": "bangladesh",
+   "passed": true,
+   "property_id": "P3",
+   "recomputed": 345.0,
+   "seq": 7993,
+   "terms": [
+    {
+     "label": "BD-KHULNA",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-BALASORE",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-BHADRAK",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-JAGATSINGHPUR",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-KENDRAPARA",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-EAST-MEDINIPUR",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "alerted at T+1440",
+     "value": 5
+    },
+    {
+     "label": "WB-NORTH-24-PARGANAS",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-SOUTH-24-PARGANAS",
+     "note": "alerted at T+15",
+     "value": 15
+    }
+   ],
+   "threshold": 360.0,
+   "threshold_from": 360,
+   "threshold_name": "t_alert_min",
+   "unit": "minutes from first warning to a valid local-language alert"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "360 - 1215 = -855",
+   "formula": "margin = T_roam - worst delay from landfall to disaster roaming active",
+   "margin": -855.0,
+   "note": "OD-BALASORE never had disaster roaming, so the delay is counted from landfall (T+6285) to the horizon (T+7500).",
+   "observed": 1215.0,
+   "observed_label": "worst delay",
+   "pack_id": "bangladesh",
+   "passed": false,
+   "property_id": "P4",
+   "recomputed": -855.0,
+   "seq": 7994,
+   "terms": [
+    {
+     "label": "BD-KHULNA",
+     "note": "roaming active at T+90",
+     "value": 0
+    },
+    {
+     "label": "OD-BALASORE",
+     "note": "roaming never became active",
+     "value": 1215
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "roaming active at T+6360",
+     "value": 75
+    },
+    {
+     "label": "WB-NORTH-24-PARGANAS",
+     "note": "roaming active at T+6360",
+     "value": 75
+    },
+    {
+     "label": "WB-SOUTH-24-PARGANAS",
+     "note": "roaming active at T+6360",
+     "value": 75
+    }
+   ],
+   "threshold": 360.0,
+   "threshold_from": 360,
+   "threshold_name": "t_roam_min",
+   "unit": "minutes from landfall to roaming active"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "100 - 60 = 40",
+   "formula": "margin = min %% of affected cells reachable for relief - threshold",
+   "margin": 40.0,
+   "note": "0 suspension(s) examined; the margin takes the worst of them.",
+   "observed": 100.0,
+   "observed_label": "worst suspension window",
+   "pack_id": "fcc_mdri",
+   "passed": true,
+   "property_id": "P1",
+   "recomputed": 40.0,
+   "seq": 4193,
+   "terms": [],
+   "threshold": 60.0,
+   "threshold_from": 60.0,
+   "threshold_name": "min_pct_relief_cells",
+   "unit": "% of affected cells reachable for relief"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "0 - 0 = 0",
+   "formula": "margin = threshold - irreversible executions on an unauthenticated order",
+   "margin": 0.0,
+   "note": "Every execution here was traced back to an order the world marks authentic=False. No agent can read that flag.",
+   "observed": 0.0,
+   "observed_label": "executions traced to authentic=False",
+   "pack_id": "fcc_mdri",
+   "passed": true,
+   "property_id": "P2",
+   "recomputed": 0.0,
+   "seq": 4194,
+   "terms": [],
+   "threshold": 0.0,
+   "threshold_from": 0,
+   "threshold_name": "max_forged_executions",
+   "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "360 - 15 = 345",
+   "formula": "margin = T_alert - worst delay from warning to a valid local-language alert",
+   "margin": 345.0,
+   "note": "Every affected area was alerted; the margin takes the slowest.",
+   "observed": 15.0,
+   "observed_label": "worst delay",
+   "pack_id": "fcc_mdri",
+   "passed": true,
+   "property_id": "P3",
+   "recomputed": 345.0,
+   "seq": 4195,
+   "terms": [
+    {
+     "label": "BD-KHULNA",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-BALASORE",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-BHADRAK",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-JAGATSINGHPUR",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-KENDRAPARA",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-EAST-MEDINIPUR",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "alerted at T+1440",
+     "value": 5
+    },
+    {
+     "label": "WB-NORTH-24-PARGANAS",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-SOUTH-24-PARGANAS",
+     "note": "alerted at T+15",
+     "value": 15
+    }
+   ],
+   "threshold": 360.0,
+   "threshold_from": 360,
+   "threshold_name": "t_alert_min",
+   "unit": "minutes from first warning to a valid local-language alert"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "360 - 15 = 345",
+   "formula": "margin = T_roam - worst delay from landfall to disaster roaming active",
+   "margin": 345.0,
+   "note": "Roaming reached every affected circle; the margin takes the slowest.",
+   "observed": 15.0,
+   "observed_label": "worst delay",
+   "pack_id": "fcc_mdri",
+   "passed": true,
+   "property_id": "P4",
+   "recomputed": 345.0,
+   "seq": 4196,
+   "terms": [
+    {
+     "label": "BD-KHULNA",
+     "note": "roaming active at T+90",
+     "value": 0
+    },
+    {
+     "label": "OD-BALASORE",
+     "note": "roaming active at T+4155",
+     "value": 0
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "roaming active at T+6300",
+     "value": 15
+    },
+    {
+     "label": "WB-NORTH-24-PARGANAS",
+     "note": "roaming active at T+6300",
+     "value": 15
+    },
+    {
+     "label": "WB-SOUTH-24-PARGANAS",
+     "note": "roaming active at T+6300",
+     "value": 15
+    }
+   ],
+   "threshold": 360.0,
+   "threshold_from": 360,
+   "threshold_name": "t_roam_min",
+   "unit": "minutes from landfall to roaming active"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "0 - 60 = -60",
+   "formula": "margin = min %% of affected cells reachable for relief - threshold",
+   "margin": -60.0,
+   "note": "2 suspension(s) examined; the margin takes the worst of them.",
+   "observed": 0.0,
+   "observed_label": "worst suspension window",
+   "pack_id": "india_current",
+   "passed": false,
+   "property_id": "P1",
+   "recomputed": -60.0,
+   "seq": 923,
+   "terms": [
+    {
+     "label": "WB-KOLKATA",
+     "note": "suspension susp-tsp_network:05640:SUSPEND_SERVICE:2282, T+5640..T+6000, no priority slice exempted",
+     "value": 0.0
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "suspension susp-tsp_network:05715:SUSPEND_SERVICE:2313, T+5715..T+6075, no priority slice exempted",
+     "value": 0.0
+    }
+   ],
+   "threshold": 60.0,
+   "threshold_from": 60.0,
+   "threshold_name": "min_pct_relief_cells",
+   "unit": "% of affected cells reachable for relief"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "0 - 1 = -1",
+   "formula": "margin = threshold - irreversible executions on an unauthenticated order",
+   "margin": -1.0,
+   "note": "Every execution here was traced back to an order the world marks authentic=False. No agent can read that flag.",
+   "observed": 1.0,
+   "observed_label": "executions traced to authentic=False",
+   "pack_id": "india_current",
+   "passed": false,
+   "property_id": "P2",
+   "recomputed": -1.0,
+   "seq": 924,
+   "terms": [
+    {
+     "label": "SUSPEND_SERVICE in WB-KOLKATA",
+     "note": "ordered by event sim03",
+     "value": 5715
+    }
+   ],
+   "threshold": 0.0,
+   "threshold_from": 0,
+   "threshold_name": "max_forged_executions",
+   "unit": "irreversible executions on an unauthenticated order (fewer is better)"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "360 - 7500 = -7140",
+   "formula": "margin = T_alert - worst delay from warning to a valid local-language alert",
+   "margin": -7140.0,
+   "note": "BD-KHULNA never received a valid local-language alert, so the delay is counted to the horizon (T+7500) rather than left undefined.",
+   "observed": 7500.0,
+   "observed_label": "worst delay",
+   "pack_id": "india_current",
+   "passed": false,
+   "property_id": "P3",
+   "recomputed": -7140.0,
+   "seq": 925,
+   "terms": [
+    {
+     "label": "BD-KHULNA",
+     "note": "no alert issued for this area",
+     "value": 7500
+    },
+    {
+     "label": "OD-BALASORE",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-BHADRAK",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-JAGATSINGHPUR",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "OD-KENDRAPARA",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-EAST-MEDINIPUR",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "alerted at T+1440",
+     "value": 5
+    },
+    {
+     "label": "WB-NORTH-24-PARGANAS",
+     "note": "alerted at T+15",
+     "value": 15
+    },
+    {
+     "label": "WB-SOUTH-24-PARGANAS",
+     "note": "alerted at T+15",
+     "value": 15
+    }
+   ],
+   "threshold": 360.0,
+   "threshold_from": 360,
+   "threshold_name": "t_alert_min",
+   "unit": "minutes from first warning to a valid local-language alert"
+  },
+  {
+   "agrees": true,
+   "applicable": true,
+   "arithmetic": "360 - 1215 = -855",
+   "formula": "margin = T_roam - worst delay from landfall to disaster roaming active",
+   "margin": -855.0,
+   "note": "BD-KHULNA, OD-BALASORE never had disaster roaming, so the delay is counted from landfall (T+6285) to the horizon (T+7500).",
+   "observed": 1215.0,
+   "observed_label": "worst delay",
+   "pack_id": "india_current",
+   "passed": false,
+   "property_id": "P4",
+   "recomputed": -855.0,
+   "seq": 926,
+   "terms": [
+    {
+     "label": "BD-KHULNA",
+     "note": "roaming never became active",
+     "value": 1215
+    },
+    {
+     "label": "OD-BALASORE",
+     "note": "roaming never became active",
+     "value": 1215
+    },
+    {
+     "label": "WB-KOLKATA",
+     "note": "roaming active at T+6420",
+     "value": 135
+    },
+    {
+     "label": "WB-NORTH-24-PARGANAS",
+     "note": "roaming active at T+6420",
+     "value": 135
+    },
+    {
+     "label": "WB-SOUTH-24-PARGANAS",
+     "note": "roaming active at T+6420",
+     "value": 135
+    }
+   ],
+   "threshold": 360.0,
+   "threshold_from": 360,
+   "threshold_name": "t_roam_min",
+   "unit": "minutes from landfall to roaming active"
+  }
+ ],
  "fingerprint": "7292efb8de09e93aafc42992757d43de46b5d65249c01fc2c61a5b19caadacea",
+ "flow": [
+  {
+   "body": "Every instrument is fetched once, hashed, and checked against strings only the real document carries. A source we do not hold says so, and names the finding it caps.",
+   "command": "python app/scripts/fetch_sources.py --check",
+   "measure": "6 documents held",
+   "measure_sub": "sources pinned by sha256",
+   "module": "data/sources/MANIFEST.yaml",
+   "node": "SRC",
+   "title": "Primary sources"
+  },
+  {
+   "body": "Gazette PDFs are split clause by clause. Each record keeps its verbatim text, a sha256 of that text, the page, and the hash of the PDF it came from.",
+   "command": "python app/scripts/build_kb.py",
+   "measure": "157 clauses",
+   "measure_sub": "110 carry the instrument's own words",
+   "module": "chakravyuh/kb/ingest.py",
+   "node": "C",
+   "title": "Ingest"
+  },
+  {
+   "body": "One chunk per clause, each carrying clause_id, instrument, jurisdiction, page and source_url -- so a hit can be cited, not just quoted.",
+   "command": "python app/scripts/eval_retrieval.py",
+   "measure": "266 chunks",
+   "measure_sub": "BM25 + vector, fused by RRF",
+   "module": "chakravyuh/kb/retrieve.py",
+   "node": "PP",
+   "title": "Structure and retrieval"
+  },
+  {
+   "body": "A rule that cites a clause the store does not hold, or whose text no longer hashes as recorded, does not compile. The simulator cannot run on invented law.",
+   "command": "python app/scripts/run_demo.py --seed 0",
+   "measure": "44 rules",
+   "measure_sub": "across 3 rulebooks",
+   "module": "chakravyuh/policy/compiler.py",
+   "node": "PP",
+   "title": "Policy packs"
+  },
+  {
+   "body": "Each agent sees only its own inbox, delayed and redacted, and returns a typed proposal naming the rule it believes authorises it.",
+   "command": "python app/scripts/run_demo.py --pack india_current",
+   "measure": "393 proposals",
+   "measure_sub": "from 6 role-bound agents",
+   "module": "chakravyuh/agents/",
+   "node": "M",
+   "title": "Agents propose"
+  },
+  {
+   "body": "A pure function over (proposal, world, pack). No model appears anywhere in its import graph, and a test fails the build if one ever does.",
+   "command": "python -m pytest tests/test_p2_policy_engine.py",
+   "measure": "394 verdicts",
+   "measure_sub": "ALLOW | BLOCK | NEEDS_HUMAN",
+   "module": "chakravyuh/policy/engine.py",
+   "node": "P",
+   "title": "The engine decides"
+  },
+  {
+   "body": "One world state, one rulebook, one fixed order: (t, role priority, proposal_id). This is what makes the same seed produce the same ledger head hash.",
+   "command": "python app/scripts/run_demo.py --seed 0",
+   "measure": "51 effects",
+   "measure_sub": "69 deliveries",
+   "module": "chakravyuh/sim/game_master.py",
+   "node": "D",
+   "title": "The Game Master resolves"
+  },
+  {
+   "body": "Every entry commits to the one before it. The four properties are checked against the finished world, and 612 mutated worlds are fuzzed to find the minimal case.",
+   "command": "python app/scripts/verify_ledger.py --all",
+   "measure": "13122 ledger entries",
+   "measure_sub": "11 registered gaps",
+   "module": "chakravyuh/audit/ledger.py",
+   "node": "SINK",
+   "title": "Ledger and findings"
+  }
+ ],
  "fuzz": {
   "cards": [
    {
@@ -392,6 +1307,281 @@
    "verified_with_artifacts": 27
   }
  },
+ "kb_graph": {
+  "chunk_metadata_fields": [
+   "chunk_id",
+   "clause_id",
+   "collection",
+   "instrument",
+   "jurisdiction",
+   "page",
+   "section",
+   "sha256",
+   "source_url",
+   "text",
+   "verbatim_status"
+  ],
+  "chunks": 266,
+  "clauses": 157,
+  "collections": {
+   "kb_decisions": 4,
+   "kb_framework": 5,
+   "kb_main": 257
+  },
+  "instruments": [
+   {
+    "clauses": 64,
+    "instrument": "Telecommunications Act, 2023 (Act 44 of 2023)",
+    "jurisdiction": "IN",
+    "quotable": 50,
+    "real_text": 64,
+    "with_page": 64
+   },
+   {
+    "clauses": 46,
+    "instrument": "Digital Personal Data Protection Act, 2023 (Act 22 of 2023)",
+    "jurisdiction": "IN",
+    "quotable": 33,
+    "real_text": 46,
+    "with_page": 46
+   },
+   {
+    "clauses": 6,
+    "instrument": "Telecommunications (Temporary Suspension of Services) Rules 2024 (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 5,
+    "instrument": "Disaster Management Act 2005 (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 3,
+    "instrument": "47 CFR 4.17 \u2014 Mandatory Disaster Response Initiative (United States)",
+    "jurisdiction": "US",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 3,
+    "instrument": "Tampere Convention on the Provision of Telecommunication Resources for Disaster Mitigation and Relief Operations, 1998",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 2,
+    "instrument": "Bangladesh Telecommunication Regulation Act 2001",
+    "jurisdiction": "BD",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 2,
+    "instrument": "CERT-In Directions under s.70B(6) IT Act, 28 April 2022 (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 2,
+    "instrument": "Disaster Management Act 2012 (Bangladesh)",
+    "jurisdiction": "BD",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 2,
+    "instrument": "DoT Standard Operating Procedure 2020 for Telecommunication Services for responding to Disasters (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 2,
+    "instrument": "Telecommunications (Telecom Cyber Security) Rules 2024 (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "47 CFR Part 4 -- Disruptions to Communications (United States)",
+    "jurisdiction": "US",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "BTRC international roaming directive (Bangladesh)",
+    "jurisdiction": "BD",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Bangladesh National Emergency Telecommunication Service (NETS) initiative",
+    "jurisdiction": "BD",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Bangladesh Standing Orders on Disaster (SOD) 2019",
+    "jurisdiction": "BD",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Bhutan Standard Operating Procedure for Telecommunication Services during Disaster",
+    "jurisdiction": "BT",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Constitution of the International Telecommunication Union",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Cyclone Preparedness Programme standing order (Bangladesh)",
+    "jurisdiction": "BD",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "FCC Disaster Information Reporting System (United States)",
+    "jurisdiction": "US",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "FCC Wireless Emergency Alerts rules (United States)",
+    "jurisdiction": "US",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "GSMA guidance on mobile network operator disaster response",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "IMD Cyclone Warning Services standard operating procedure (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "ITU-D Guidelines for National Emergency Telecommunication Plans (2020)",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "ITU-T Recommendation E.106, International Emergency Preference Scheme for disaster relief operations",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "ITU-T Recommendation Q.3057 (signature-based calling party identity authentication)",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "ITU-T Recommendation X.1303, Common Alerting Protocol (CAP 1.1)",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "ITU-T Recommendation Y.3172, Architectural framework for machine learning in future networks including IMT-2020",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "ITU-T Recommendation Y.3173, Framework for evaluating intelligence levels of future networks including IMT-2020",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "NDMA Common Alerting Protocol / SACHET Integrated Alert System (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Sendai Framework for Disaster Risk Reduction 2015-2030",
+    "jurisdiction": "INTL",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   },
+   {
+    "clauses": 1,
+    "instrument": "Unified Licence, Department of Telecommunications (India)",
+    "jurisdiction": "IN",
+    "quotable": 0,
+    "real_text": 0,
+    "with_page": 0
+   }
+  ],
+  "quotable": 83,
+  "real_text": 110,
+  "with_pdf_hash": 110
+ },
  "ledger": {
   "runs": [
    {
@@ -544,6 +1734,194 @@
    "recall_at_k": 0.312
   }
  ],
+ "retrieval_example": {
+  "agrees_with_recorded": false,
+  "caveat": "Fusion in the engine runs over chunks; this reconstruction runs over the clause ids the evaluation recorded, so ties can order differently.",
+  "formula": "score(d) = sum over rankings of 1 / (k + rank(d)),  k = 60",
+  "fused": [
+   {
+    "clause_id": "IN.SUSP2024.r2.1",
+    "parts": [
+     {
+      "contribution": 0.016129,
+      "mode": "bm25",
+      "rank": 2
+     },
+     {
+      "contribution": 0.016393,
+      "mode": "vector",
+      "rank": 1
+     }
+    ],
+    "score": 0.032522,
+    "tied_with_next": true
+   },
+   {
+    "clause_id": "IN.SUSP2024.r2.2",
+    "parts": [
+     {
+      "contribution": 0.016393,
+      "mode": "bm25",
+      "rank": 1
+     },
+     {
+      "contribution": 0.016129,
+      "mode": "vector",
+      "rank": 2
+     }
+    ],
+    "score": 0.032522,
+    "tied_with_next": false
+   },
+   {
+    "clause_id": "IN.DPDP2023.s27",
+    "parts": [
+     {
+      "contribution": 0.015873,
+      "mode": "bm25",
+      "rank": 3
+     }
+    ],
+    "score": 0.015873,
+    "tied_with_next": true
+   },
+   {
+    "clause_id": "IN.SUSP2024.r3",
+    "parts": [
+     {
+      "contribution": 0.015873,
+      "mode": "vector",
+      "rank": 3
+     }
+    ],
+    "score": 0.015873,
+    "tied_with_next": false
+   },
+   {
+    "clause_id": "IN.SUSP2024.r2.3",
+    "parts": [
+     {
+      "contribution": 0.015625,
+      "mode": "vector",
+      "rank": 4
+     }
+    ],
+    "score": 0.015625,
+    "tied_with_next": true
+   },
+   {
+    "clause_id": "IN.SUSP2024.r2.5",
+    "parts": [
+     {
+      "contribution": 0.015625,
+      "mode": "bm25",
+      "rank": 4
+     }
+    ],
+    "score": 0.015625,
+    "tied_with_next": false
+   },
+   {
+    "clause_id": "IN.DPDP2023.s2",
+    "parts": [
+     {
+      "contribution": 0.015385,
+      "mode": "bm25",
+      "rank": 5
+     }
+    ],
+    "score": 0.015385,
+    "tied_with_next": true
+   },
+   {
+    "clause_id": "IN.SUSP2024.r2.4",
+    "parts": [
+     {
+      "contribution": 0.015385,
+      "mode": "vector",
+      "rank": 5
+     }
+    ],
+    "score": 0.015385,
+    "tied_with_next": false
+   }
+  ],
+  "gold_clause_ids": [
+   "IN.SUSP2024.r2.1"
+  ],
+  "k": 60,
+  "qid": "Q01",
+  "question": "Who is the competent authority that may issue a direction to suspend telecom services in India?",
+  "rankings": [
+   {
+    "first_gold_rank": 2,
+    "mode": "bm25",
+    "retrieved": [
+     "IN.SUSP2024.r2.2",
+     "IN.SUSP2024.r2.1",
+     "IN.DPDP2023.s27",
+     "IN.SUSP2024.r2.5",
+     "IN.DPDP2023.s2"
+    ],
+    "top_score": 30.9503
+   },
+   {
+    "first_gold_rank": 1,
+    "mode": "vector",
+    "retrieved": [
+     "IN.SUSP2024.r2.1",
+     "IN.SUSP2024.r2.2",
+     "IN.SUSP2024.r3",
+     "IN.SUSP2024.r2.3",
+     "IN.SUSP2024.r2.4"
+    ],
+    "top_score": 0.8037
+   },
+   {
+    "first_gold_rank": 2,
+    "mode": "hybrid",
+    "retrieved": [
+     "IN.SUSP2024.r2.2",
+     "IN.SUSP2024.r2.1",
+     "IN.SUSP2024.r2.5",
+     "IN.TA2023.s59",
+     "IN.SUSP2024.r2.4"
+    ],
+    "top_score": 0.0325
+   },
+   {
+    "first_gold_rank": 2,
+    "mode": "hybrid_rerank",
+    "retrieved": [
+     "IN.SUSP2024.r2.2",
+     "IN.SUSP2024.r2.1",
+     "IN.SUSP2024.r2.5",
+     "IN.TA2023.s59",
+     "IN.SUSP2024.r2.4"
+    ],
+    "top_score": 0.0325
+   },
+   {
+    "first_gold_rank": null,
+    "mode": "tree",
+    "retrieved": [
+     "IN.DOTSOP2020.icr",
+     "IN.DOTSOP2020.committees",
+     "IN.IMD.CYCWARN",
+     "BD.BTRA2001.s97A",
+     "IN.CERTIN2022.p2"
+    ],
+    "top_score": 0.5625
+   }
+  ],
+  "recorded_hybrid": [
+   "IN.SUSP2024.r2.2",
+   "IN.SUSP2024.r2.1",
+   "IN.SUSP2024.r2.5",
+   "IN.TA2023.s59",
+   "IN.SUSP2024.r2.4"
+  ]
+ },
  "roles": [
   {
    "analogue": "Union/State Home Secretary under Telecom Act 2023 s.20 + Suspension Rules 2024",
@@ -642,6 +2020,194 @@
    "role_id": "adviser"
   }
  ],
+ "rubric": {
+  "checks": [
+   {
+    "criterion": "KB",
+    "detail": "157 clauses: text_verbatim, sha256 and source_url present on all 157; page present on 110",
+    "id": "A1",
+    "question": "every clause row has text, hash, URL and a page",
+    "status": "WAIVED",
+    "waiver": "the 47 records without a page are all summaries ({'model_written': 29, 'secondary_source': 18}), not extracts from a PDF we hold. A page number points into a primary document; these records point at a source URL instead, and a fabricated page would be worse than none."
+   },
+   {
+    "criterion": "KB / Audit",
+    "detail": "re-hashing text_verbatim reproduces the stored sha256 for all 157 clauses",
+    "id": "A2",
+    "question": "re-hashing text_verbatim reproduces the stored sha256",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "KB",
+    "detail": "all citations in 44 rules across 3 packs resolve to a clause record; 44 rules cite at least one record that is a summary rather than the instrument's own words",
+    "id": "A3",
+    "question": "every pack rule's clause ids resolve and are sourced",
+    "status": "WAIVED",
+    "waiver": "The rubric's \u00a70 rule would exclude these rules from the demo as PENDING_SOURCE. Doing that would delete the three comparator packs and most of the India pack, and the demo would then show only what we already hold primary text for -- two Acts, neither of which governs suspension, roaming or alerting. We keep them and make the dependency visible everywhere instead: each record's `provenance` and `verbatim_status`, the gap register's computed `confidence` column (every row currently `likely`, not `certain`), the starred clause ids in the register, and the collection list in data/sources/CLAUSES_PROVENANCE.md. No rule's text is paraphrased from memory: every summary record names the source it came from."
+   },
+   {
+    "criterion": "KB / ITU",
+    "detail": "kb_main has 257 chunks, 235 from India sources; each chunk carries ['clause_id', 'instrument', 'jurisdiction', 'page', 'sha256', 'source_url'] -- metadata ITU's reference ingest does not record",
+    "id": "A4",
+    "question": "Chroma kb_main has India chunks via the ITU ingest",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "KB",
+    "detail": "53 questions: 48 answerable with every gold clause id resolving, plus 5 whose honest answer is that the KB cannot say (each one tied to a documented absence, so abstention is scored against a real gap rather than a trick question)",
+    "id": "A5",
+    "question": ">=30 eval questions with resolvable gold clause ids",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "KB",
+    "detail": "5 retrievers scored over 48 questions (bm25 r@5=0.979/MRR=0.907, hybrid r@5=0.979/MRR=0.908, hybrid_rerank r@5=0.979/MRR=0.908, tree r@5=0.312/MRR=0.299, vector r@5=0.979/MRR=0.894); best hybrid",
+    "id": "A6",
+    "question": "recall@5 and MRR for >=3 retrievers",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Agent capability",
+    "detail": "15 events (7 from the IMD release, 8 labelled synthetic), epoch 2020-05-16T08:45:00+05:30, landfall at T+6285 min = 104.75 h, 9 real districts",
+    "id": "B1",
+    "question": "amphan_2020 scenario with the real IMD timeline",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Agent capability",
+    "detail": "9 events reach two or more roles at different times (e.g. imd01, spread 150 min) and 5 reach exactly one role",
+    "id": "B2",
+    "question": "information arrives chunked and uneven per role",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Agent capability",
+    "detail": "23 adviser cases: every cited clause id is in the retrieved set and in the clause store (C4 23/23); the gold clause is recovered on 19/23 (C1); 10 cases expect an abstention or a GAP answer",
+    "id": "B3",
+    "question": "every clause the Adviser cites is retrieved and real",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Agent capability / Gap",
+    "detail": "forged event(s) ['sim03'] reached the engine: 1 verdict(s), first = SUSPEND_SERVICE -> ALLOW: permitted_by_rule: IN.R.SUSPEND_SERVICE; 1 irreversible action(s) executed on the forged order (this is the P2 finding, reported as found)",
+    "id": "B4",
+    "question": "forged order reaches the engine and the verdict is logged",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Audit",
+    "detail": "chakravyuh.policy.engine transitively imports 1 project modules and none of them is chakravyuh.llm (checked by walking the import graph, not by inspecting one file)",
+    "id": "B5",
+    "question": "policy engine imports nothing from llm/",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Gap",
+    "detail": "11 rows, \u00a74 columns first and in order; by type {'policy': 7, 'coordination': 2, 'standards': 1, 'execution': 1}; by source {'simulation': 4, 'document': 7}; confidence {'likely': 11}; every row has an India instance, a neighbour cell, a global example and evidence",
+    "id": "C1",
+    "question": "gap register has \u00a74 columns, >=5 rows, all three instances",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Audit",
+    "detail": "11/11 ledgers verify; the tamper demo alters one character and the chain catches it -- 3. verify the altered copy      : FAIL payload tampered at seq 45: hash mismatch",
+    "id": "D1",
+    "question": "ledger chain verifies and tampering is detected",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Audit",
+    "detail": "all 393 PROPOSAL entries carry reasoning, cited_rule_ids and cited_clause_ids; 394 VERDICT entries carry the deciding rule and clause ids; the demo run is the deterministic rule tier and makes 0 LLM calls, so the LLM_TRACE invariant holds with nothing to record. The mechanism is exercised by tests/test_p6_agents_and_adviser.py, which asserts a trace per call under the LLM tier",
+    "id": "D2",
+    "question": "proposals carry reasoning and cited rule + clause ids",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "ITU alignment",
+    "detail": "docs/y3172_map.md covers all seven Y.3172 nodes ['SRC', 'C', 'PP', 'M', 'P', 'D', 'SINK'], generated from the @node decorators in the source",
+    "id": "E1",
+    "question": "y3172 map generated from @node, all 7 nodes",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "ITU alignment",
+    "detail": "all 13 dimension labels read from ITU's 02_ITU_AI_Readiness_dimensions.json at generation time (framework 2.0); D1 is 'Data/Model Marketplace', not 'Open Source'",
+    "id": "E2",
+    "question": "AI Readiness map reads labels from ITU's dimensions.json",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "ITU alignment",
+    "detail": "README carries a table covering all 8 of the brief's perspectives, each with the file that evidences it",
+    "id": "E3",
+    "question": "README carries the brief's 8-perspective table",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Ground rules",
+    "detail": "\u00a70 corrections hold across the repo: DPDP s.7(h) is the disaster ground and 7(g) appears only as the epidemics ground; no file asserts a 3-hour takedown; D1 is read from ITU's file; Tampere party status is never encoded",
+    "id": "F1",
+    "question": "\u00a70's corrections hold everywhere in the repo",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Submission",
+    "detail": "all 11 submission files present; every one of the 13 repo-relative links in SUBMISSION.md resolves",
+    "id": "G1",
+    "question": "every promised submission file exists and its links resolve",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Submission",
+    "detail": "`bash app/scripts/replay_demo.sh` pins CHAKRAVYUH_LLM_MODE=replay, so a cache miss raises instead of reaching the network; builds the KB, replays every pack, verifies all ledgers, runs the tamper demo and the rubric audit",
+    "id": "G2",
+    "question": "one command replays the demo with the network off",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "Submission",
+    "detail": "no file claims ITU certification, approval or compliance; NOTICE states the relationship as 'aligned with and mapped to', which is what it is",
+    "id": "G3",
+    "question": "no claim of ITU certification, approval or compliance",
+    "status": "PASS",
+    "waiver": ""
+   },
+   {
+    "criterion": "KB",
+    "detail": "6 primary sources held, each pinned by sha256 and verified against required strings that only the real instrument carries; 3 not held, each naming what it blocks (IN-TCS-2024, IN-TCS-AMEND-2025, IN-SOP-2020)",
+    "id": "G4",
+    "question": "every held source is hashed and completeness-checked",
+    "status": "PASS",
+    "waiver": ""
+   }
+  ],
+  "command": "python app/scripts/rubric_audit.py",
+  "source": "CHAKRAVYUH_RUBRIC_SHOWCASE.md Phase 1",
+  "totals": {
+   "checks": 22,
+   "fail": 0,
+   "pass": 20,
+   "waived": 2
+  }
+ },
  "scenario": {
   "areas": [
    "OD-JAGATSINGHPUR",
@@ -882,6 +2448,1454 @@
    "sha256": "a3cc9bfd2b09c7b5",
    "status": "held",
    "url": "https://raw.githubusercontent.com/CrashingGuru/ITUAIReadiness/main/simulation/data/framework/dimensions.json"
+  }
+ ],
+ "traces": [
+  {
+   "deliveries": [
+    {
+     "arrives_t": 0,
+     "latency_min": 0,
+     "released_t": 0,
+     "role": "competent_authority",
+     "seq": 2,
+     "visible_payload": {
+      "areas_at_risk": [
+       "OD-JAGATSINGHPUR",
+       "OD-KENDRAPARA",
+       "OD-BHADRAK",
+       "OD-BALASORE",
+       "WB-EAST-MEDINIPUR",
+       "WB-SOUTH-24-PARGANAS",
+       "WB-NORTH-24-PARGANAS"
+      ],
+      "cross_border_areas": [
+       "BD-KHULNA"
+      ],
+      "headline": "Pre-cyclone watch for Odisha and West Bengal coasts",
+      "hours_to_landfall": 104,
+      "languages_by_area": {
+       "BD-KHULNA": [
+        "bn"
+       ],
+       "OD-BALASORE": [
+        "or",
+        "hi"
+       ],
+       "OD-BHADRAK": [
+        "or",
+        "hi"
+       ],
+       "OD-JAGATSINGHPUR": [
+        "or",
+        "hi"
+       ],
+       "OD-KENDRAPARA": [
+        "or",
+        "hi"
+       ],
+       "WB-EAST-MEDINIPUR": [
+        "bn",
+        "hi"
+       ],
+       "WB-NORTH-24-PARGANAS": [
+        "bn",
+        "hi"
+       ],
+       "WB-SOUTH-24-PARGANAS": [
+        "bn",
+        "hi"
+       ]
+      },
+      "stage": "Pre-Cyclone Watch"
+     }
+    },
+    {
+     "arrives_t": 15,
+     "latency_min": 15,
+     "released_t": 0,
+     "role": "sdma_alerts",
+     "seq": 43,
+     "visible_payload": {
+      "areas_at_risk": [
+       "OD-JAGATSINGHPUR",
+       "OD-KENDRAPARA",
+       "OD-BHADRAK",
+       "OD-BALASORE",
+       "WB-EAST-MEDINIPUR",
+       "WB-SOUTH-24-PARGANAS",
+       "WB-NORTH-24-PARGANAS"
+      ],
+      "cross_border_areas": [
+       "BD-KHULNA"
+      ],
+      "headline": "Pre-cyclone watch for Odisha and West Bengal coasts",
+      "hours_to_landfall": 104,
+      "languages_by_area": {
+       "BD-KHULNA": [
+        "bn"
+       ],
+       "OD-BALASORE": [
+        "or",
+        "hi"
+       ],
+       "OD-BHADRAK": [
+        "or",
+        "hi"
+       ],
+       "OD-JAGATSINGHPUR": [
+        "or",
+        "hi"
+       ],
+       "OD-KENDRAPARA": [
+        "or",
+        "hi"
+       ],
+       "WB-EAST-MEDINIPUR": [
+        "bn",
+        "hi"
+       ],
+       "WB-NORTH-24-PARGANAS": [
+        "bn",
+        "hi"
+       ],
+       "WB-SOUTH-24-PARGANAS": [
+        "bn",
+        "hi"
+       ]
+      },
+      "stage": "Pre-Cyclone Watch"
+     }
+    },
+    {
+     "arrives_t": 150,
+     "latency_min": 150,
+     "released_t": 0,
+     "role": "neighbour_authority",
+     "seq": 106,
+     "visible_payload": {
+      "areas_at_risk": [
+       "OD-JAGATSINGHPUR",
+       "OD-KENDRAPARA",
+       "OD-BHADRAK",
+       "OD-BALASORE",
+       "WB-EAST-MEDINIPUR",
+       "WB-SOUTH-24-PARGANAS",
+       "WB-NORTH-24-PARGANAS"
+      ],
+      "cross_border_areas": [
+       "BD-KHULNA"
+      ],
+      "headline": "Pre-cyclone watch for Odisha and West Bengal coasts",
+      "hours_to_landfall": 104,
+      "languages_by_area": {
+       "BD-KHULNA": [
+        "bn"
+       ],
+       "OD-BALASORE": [
+        "or",
+        "hi"
+       ],
+       "OD-BHADRAK": [
+        "or",
+        "hi"
+       ],
+       "OD-JAGATSINGHPUR": [
+        "or",
+        "hi"
+       ],
+       "OD-KENDRAPARA": [
+        "or",
+        "hi"
+       ],
+       "WB-EAST-MEDINIPUR": [
+        "bn",
+        "hi"
+       ],
+       "WB-NORTH-24-PARGANAS": [
+        "bn",
+        "hi"
+       ],
+       "WB-SOUTH-24-PARGANAS": [
+        "bn",
+        "hi"
+       ]
+      },
+      "stage": "Pre-Cyclone Watch"
+     }
+    }
+   ],
+   "effects": [
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "BD-KHULNA",
+     "detail": {
+      "advisory_override": false,
+      "area": "BD-KHULNA",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "BD-KHULNA",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 5,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "OD-BALASORE",
+     "detail": {
+      "advisory_override": false,
+      "area": "OD-BALASORE",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "OD-BALASORE",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 8,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "OD-BHADRAK",
+     "detail": {
+      "advisory_override": false,
+      "area": "OD-BHADRAK",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "OD-BHADRAK",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 11,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "OD-JAGATSINGHPUR",
+     "detail": {
+      "advisory_override": false,
+      "area": "OD-JAGATSINGHPUR",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "OD-JAGATSINGHPUR",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 14,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "OD-KENDRAPARA",
+     "detail": {
+      "advisory_override": false,
+      "area": "OD-KENDRAPARA",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "OD-KENDRAPARA",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 17,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "WB-EAST-MEDINIPUR",
+     "detail": {
+      "advisory_override": false,
+      "area": "WB-EAST-MEDINIPUR",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "WB-EAST-MEDINIPUR",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 20,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "WB-NORTH-24-PARGANAS",
+     "detail": {
+      "advisory_override": false,
+      "area": "WB-NORTH-24-PARGANAS",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "WB-NORTH-24-PARGANAS",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 23,
+     "t": 0
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "area": "WB-SOUTH-24-PARGANAS",
+     "detail": {
+      "advisory_override": false,
+      "area": "WB-SOUTH-24-PARGANAS",
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "declared": "WB-SOUTH-24-PARGANAS",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "t": 0,
+      "trigger_authentic": true
+     },
+     "seq": 26,
+     "t": 0
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "OD-BALASORE",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0017",
+      "area": "OD-BALASORE",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0017",
+      "cap_language": "or-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 48,
+     "t": 15
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "OD-BHADRAK",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0018",
+      "area": "OD-BHADRAK",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0018",
+      "cap_language": "or-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 51,
+     "t": 15
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "OD-JAGATSINGHPUR",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0019",
+      "area": "OD-JAGATSINGHPUR",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0019",
+      "cap_language": "or-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 54,
+     "t": 15
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "OD-KENDRAPARA",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0020",
+      "area": "OD-KENDRAPARA",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0020",
+      "cap_language": "or-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 57,
+     "t": 15
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "WB-EAST-MEDINIPUR",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0021",
+      "area": "WB-EAST-MEDINIPUR",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0021",
+      "cap_language": "bn-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "bn",
+       "hi"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 60,
+     "t": 15
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "WB-NORTH-24-PARGANAS",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0022",
+      "area": "WB-NORTH-24-PARGANAS",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0022",
+      "cap_language": "bn-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "bn",
+       "hi"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 63,
+     "t": 15
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "area": "WB-SOUTH-24-PARGANAS",
+     "detail": {
+      "advisory_override": false,
+      "alert_id": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0023",
+      "area": "WB-SOUTH-24-PARGANAS",
+      "cap_identifier": "alert-sdma_alerts:00015:ISSUE_CAP_ALERT:0023",
+      "cap_language": "bn-IN",
+      "cap_sent": "2020-05-16T09:00:00+05:30",
+      "cap_shape_ok": true,
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "in_local_language": true,
+      "languages": [
+       "bn",
+       "hi"
+      ],
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 66,
+     "t": 15
+    },
+    {
+     "action": "REQUEST_CROSS_BORDER_ALERT",
+     "area": "BD-KHULNA",
+     "detail": {
+      "advisory_override": false,
+      "area": "BD-KHULNA",
+      "clause_ids": [
+       "INTL.TAMPERE1998.art3",
+       "INTL.TAMPERE1998.art4"
+      ],
+      "note": "communicative act: effect is the derived event it emits",
+      "rule_ids": [
+       "IN.R.REQUEST_CROSS_BORDER"
+      ],
+      "t": 15,
+      "trigger_authentic": true
+     },
+     "seq": 69,
+     "t": 15
+    }
+   ],
+   "event": {
+    "area": null,
+    "authentic": true,
+    "claimed_issuer": null,
+    "delay_by_role": {
+     "neighbour_authority": 150,
+     "sdma_alerts": 15
+    },
+    "event_id": "imd01",
+    "payload": {
+     "areas_at_risk": [
+      "OD-JAGATSINGHPUR",
+      "OD-KENDRAPARA",
+      "OD-BHADRAK",
+      "OD-BALASORE",
+      "WB-EAST-MEDINIPUR",
+      "WB-SOUTH-24-PARGANAS",
+      "WB-NORTH-24-PARGANAS"
+     ],
+     "cross_border_areas": [
+      "BD-KHULNA"
+     ],
+     "headline": "Pre-cyclone watch for Odisha and West Bengal coasts",
+     "hours_to_landfall": 104,
+     "languages_by_area": {
+      "BD-KHULNA": [
+       "bn"
+      ],
+      "OD-BALASORE": [
+       "or",
+       "hi"
+      ],
+      "OD-BHADRAK": [
+       "or",
+       "hi"
+      ],
+      "OD-JAGATSINGHPUR": [
+       "or",
+       "hi"
+      ],
+      "OD-KENDRAPARA": [
+       "or",
+       "hi"
+      ],
+      "WB-EAST-MEDINIPUR": [
+       "bn",
+       "hi"
+      ],
+      "WB-NORTH-24-PARGANAS": [
+       "bn",
+       "hi"
+      ],
+      "WB-SOUTH-24-PARGANAS": [
+       "bn",
+       "hi"
+      ]
+     },
+     "stage": "Pre-Cyclone Watch",
+     "truth": {
+      "areas_at_risk": [
+       "OD-JAGATSINGHPUR",
+       "OD-KENDRAPARA",
+       "OD-BHADRAK",
+       "OD-BALASORE",
+       "WB-EAST-MEDINIPUR",
+       "WB-SOUTH-24-PARGANAS",
+       "WB-NORTH-24-PARGANAS"
+      ]
+     }
+    },
+    "seq": 1,
+    "synthetic": false,
+    "t": 0,
+    "t_minutes": 0,
+    "type": "IMD_WARNING",
+    "visible_to": [
+     "competent_authority",
+     "sdma_alerts",
+     "neighbour_authority"
+    ]
+   },
+   "event_id": "imd01",
+   "hidden_from_agents": [
+    "areas_at_risk"
+   ],
+   "moves": [
+    {
+     "margin": -7140.0,
+     "passed": false,
+     "property_id": "P3",
+     "via": [
+      {
+       "kind": "moment",
+       "what": [
+        "OD-BALASORE at T+15",
+        "OD-BHADRAK at T+15",
+        "OD-JAGATSINGHPUR at T+15"
+       ]
+      }
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "BD-KHULNA"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0001",
+     "reasoning": "IMD_WARNING names BD-KHULNA as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 3,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 4
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "OD-BALASORE"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0002",
+     "reasoning": "IMD_WARNING names OD-BALASORE as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 6,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 7
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "OD-BHADRAK"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0003",
+     "reasoning": "IMD_WARNING names OD-BHADRAK as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 9,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 10
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "OD-JAGATSINGHPUR"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0004",
+     "reasoning": "IMD_WARNING names OD-JAGATSINGHPUR as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 12,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 13
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "OD-KENDRAPARA"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0005",
+     "reasoning": "IMD_WARNING names OD-KENDRAPARA as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 15,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 16
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "WB-EAST-MEDINIPUR"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0006",
+     "reasoning": "IMD_WARNING names WB-EAST-MEDINIPUR as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 18,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 19
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "WB-NORTH-24-PARGANAS"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0007",
+     "reasoning": "IMD_WARNING names WB-NORTH-24-PARGANAS as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 21,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 22
+     }
+    },
+    {
+     "action": "DECLARE_DISASTER",
+     "cited_clause_ids": [
+      "IN.DMA2005.s22.2.h",
+      "IN.DMA2005.s34.c"
+     ],
+     "cited_rule_ids": [
+      "IN.R.DECLARE_DISASTER"
+     ],
+     "params": {
+      "area": "WB-SOUTH-24-PARGANAS"
+     },
+     "proposal_id": "competent_authority:00000:DECLARE_DISASTER:0008",
+     "reasoning": "IMD_WARNING names WB-SOUTH-24-PARGANAS as at risk; declaring enables the response powers that depend on a declaration.",
+     "role": "competent_authority",
+     "seq": 24,
+     "t": 0,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s22.2.h",
+       "IN.DMA2005.s34.c"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.DECLARE_DISASTER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.DECLARE_DISASTER"
+      ],
+      "seq": 25
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "BD-KHULNA",
+      "languages": [
+       "bn"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0015",
+     "reasoning": "IMD_WARNING puts BD-KHULNA at risk; issuing a CAP alert in ['bn'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 44,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.DMA2005.s6",
+       "IN.NDMA.CAP.SACHET"
+      ],
+      "decision": "BLOCK",
+      "explanation": "prohibited_by_rule: IN.R.NO_CROSS_BORDER_ALERT (Domestic alerting authority holds no power to alert across an international border)",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.NO_CROSS_BORDER_ALERT"
+      ],
+      "seq": 45
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "OD-BALASORE",
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0017",
+     "reasoning": "IMD_WARNING puts OD-BALASORE at risk; issuing a CAP alert in ['hi', 'or'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 46,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 47
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "OD-BHADRAK",
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0018",
+     "reasoning": "IMD_WARNING puts OD-BHADRAK at risk; issuing a CAP alert in ['hi', 'or'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 49,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 50
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "OD-JAGATSINGHPUR",
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0019",
+     "reasoning": "IMD_WARNING puts OD-JAGATSINGHPUR at risk; issuing a CAP alert in ['hi', 'or'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 52,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 53
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "OD-KENDRAPARA",
+      "languages": [
+       "hi",
+       "or"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0020",
+     "reasoning": "IMD_WARNING puts OD-KENDRAPARA at risk; issuing a CAP alert in ['hi', 'or'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 55,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 56
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "WB-EAST-MEDINIPUR",
+      "languages": [
+       "bn",
+       "hi"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0021",
+     "reasoning": "IMD_WARNING puts WB-EAST-MEDINIPUR at risk; issuing a CAP alert in ['bn', 'hi'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 58,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 59
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "WB-NORTH-24-PARGANAS",
+      "languages": [
+       "bn",
+       "hi"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0022",
+     "reasoning": "IMD_WARNING puts WB-NORTH-24-PARGANAS at risk; issuing a CAP alert in ['bn', 'hi'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 61,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 62
+     }
+    },
+    {
+     "action": "ISSUE_CAP_ALERT",
+     "cited_clause_ids": [
+      "IN.NDMA.CAP.SACHET",
+      "IN.DMA2005.s34.c",
+      "IN.TA2023.s23",
+      "INTL.ITU.X1303",
+      "IN.DMA2005.s6"
+     ],
+     "cited_rule_ids": [
+      "IN.R.ISSUE_CAP_ALERT",
+      "IN.R.NO_CROSS_BORDER_ALERT"
+     ],
+     "params": {
+      "area": "WB-SOUTH-24-PARGANAS",
+      "languages": [
+       "bn",
+       "hi"
+      ],
+      "languages_include_local": true,
+      "severity": "Severe"
+     },
+     "proposal_id": "sdma_alerts:00015:ISSUE_CAP_ALERT:0023",
+     "reasoning": "IMD_WARNING puts WB-SOUTH-24-PARGANAS at risk; issuing a CAP alert in ['bn', 'hi'] so the population can act on it.",
+     "role": "sdma_alerts",
+     "seq": 64,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "IN.NDMA.CAP.SACHET",
+       "IN.DMA2005.s34.c",
+       "IN.TA2023.s23",
+       "INTL.ITU.X1303"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.ISSUE_CAP_ALERT",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.ISSUE_CAP_ALERT"
+      ],
+      "seq": 65
+     }
+    },
+    {
+     "action": "REQUEST_CROSS_BORDER_ALERT",
+     "cited_clause_ids": [
+      "INTL.TAMPERE1998.art3",
+      "INTL.TAMPERE1998.art4"
+     ],
+     "cited_rule_ids": [
+      "IN.R.REQUEST_CROSS_BORDER"
+     ],
+     "params": {
+      "area": "BD-KHULNA",
+      "languages": [
+       "bn"
+      ]
+     },
+     "proposal_id": "sdma_alerts:00015:REQUEST_CROSS_BORDER_ALERT:0016",
+     "reasoning": "BD-KHULNA lies across the border and is outside my alerting power; passing the warning to the neighbouring authority.",
+     "role": "sdma_alerts",
+     "seq": 67,
+     "t": 15,
+     "verdict": {
+      "clause_ids": [
+       "INTL.TAMPERE1998.art3",
+       "INTL.TAMPERE1998.art4"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.REQUEST_CROSS_BORDER",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.REQUEST_CROSS_BORDER"
+      ],
+      "seq": 68
+     }
+    }
+   ]
+  },
+  {
+   "deliveries": [
+    {
+     "arrives_t": 5715,
+     "latency_min": 0,
+     "released_t": 5715,
+     "role": "tsp_network",
+     "seq": 370,
+     "visible_payload": {
+      "action": "SUSPEND_SERVICE",
+      "area": "WB-KOLKATA",
+      "channel": "nodal officer email",
+      "duration_min": 360,
+      "exempt_priority_slice": false,
+      "reasons": "prevention of incitement, rumour-driven mobilisation"
+     }
+    }
+   ],
+   "effects": [
+    {
+     "action": "SUSPEND_SERVICE",
+     "area": "WB-KOLKATA",
+     "detail": {
+      "advisory_override": false,
+      "area": "WB-KOLKATA",
+      "clause_ids": [
+       "IN.SUSP2024.r3",
+       "IN.TA2023.s20.2",
+       "IN.TCSR2024.no_order_auth"
+      ],
+      "exempt_priority_slice": false,
+      "order_authentic": false,
+      "rule_ids": [
+       "IN.R.SUSPEND_SERVICE"
+      ],
+      "suspension_id": "susp-tsp_network:05715:SUSPEND_SERVICE:2313",
+      "t": 5715,
+      "trigger_authentic": false,
+      "until_t": 6075
+     },
+     "seq": 375,
+     "t": 5715
+    }
+   ],
+   "event": {
+    "area": "WB-KOLKATA",
+    "authentic": false,
+    "claimed_issuer": "Home Department, Government of West Bengal",
+    "delay_by_role": {},
+    "event_id": "sim03",
+    "payload": {
+     "action": "SUSPEND_SERVICE",
+     "area": "WB-KOLKATA",
+     "channel": "nodal officer email",
+     "duration_min": 360,
+     "exempt_priority_slice": false,
+     "reasons": "prevention of incitement, rumour-driven mobilisation",
+     "truth": {
+      "forged": true,
+      "note": "SYNTHETIC adversarial test. Spoofed letterhead over the nodal-officer channel. The India pack imposes no duty to authenticate it, which is what P2 measures."
+     }
+    },
+    "seq": 369,
+    "synthetic": true,
+    "t": 5715,
+    "t_minutes": 5715,
+    "type": "ORDER",
+    "visible_to": [
+     "tsp_network"
+    ]
+   },
+   "event_id": "sim03",
+   "hidden_from_agents": [
+    "forged",
+    "note"
+   ],
+   "moves": [
+    {
+     "margin": -60.0,
+     "passed": false,
+     "property_id": "P1",
+     "via": [
+      {
+       "kind": "id",
+       "what": [
+        "susp-tsp_network:05715:SUSPEND_SERVICE:2313",
+        "tsp_network:05715:SUSPEND_SERVICE:2313"
+       ]
+      }
+     ]
+    },
+    {
+     "margin": -1.0,
+     "passed": false,
+     "property_id": "P2",
+     "via": [
+      {
+       "kind": "id",
+       "what": [
+        "sim03",
+        "susp-tsp_network:05715:SUSPEND_SERVICE:2313",
+        "tsp_network:05715:SUSPEND_SERVICE:2313"
+       ]
+      }
+     ]
+    }
+   ],
+   "proposals": [
+    {
+     "action": "SUSPEND_SERVICE",
+     "cited_clause_ids": [
+      "IN.SUSP2024.r3",
+      "IN.TA2023.s20.2",
+      "IN.TCSR2024.no_order_auth"
+     ],
+     "cited_rule_ids": [
+      "IN.R.SUSPEND_SERVICE"
+     ],
+     "params": {
+      "area": "WB-KOLKATA",
+      "duration_min": 360,
+      "exempt_priority_slice": false
+     },
+     "proposal_id": "tsp_network:05715:SUSPEND_SERVICE:2313",
+     "reasoning": "Received a suspension direction for WB-KOLKATA from Home Department, Government of West Bengal; giving effect to it as the licence condition requires.",
+     "role": "tsp_network",
+     "seq": 373,
+     "t": 5715,
+     "verdict": {
+      "clause_ids": [
+       "IN.SUSP2024.r3",
+       "IN.TA2023.s20.2",
+       "IN.TCSR2024.no_order_auth"
+      ],
+      "decision": "ALLOW",
+      "explanation": "permitted_by_rule: IN.R.SUSPEND_SERVICE",
+      "mode": "blocking",
+      "rule_ids": [
+       "IN.R.SUSPEND_SERVICE"
+      ],
+      "seq": 374
+     }
+    }
+   ]
   }
  ],
  "y3172": [

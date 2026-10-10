@@ -108,3 +108,36 @@ export function Provenance({ children }: { children: ReactNode }) {
     </p>
   );
 }
+
+/** One band of the single page: an anchor, a heading, and the thing itself. */
+export function Section({
+  id,
+  kicker,
+  title,
+  lead,
+  provenance,
+  children,
+}: {
+  id: string;
+  kicker: string;
+  title: string;
+  lead?: ReactNode;
+  provenance?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section id={id} className="scroll-mt-28 border-t border-line pt-12 first:border-0">
+      <div className="mb-6 max-w-3xl">
+        <div className="mb-2 font-mono text-[10px] tracking-[0.18em] text-faint uppercase">
+          {kicker}
+        </div>
+        <h2 className="text-[26px] leading-tight font-semibold tracking-tight text-balance">
+          {title}
+        </h2>
+        {lead && <p className="mt-3 text-[14px] leading-relaxed text-muted">{lead}</p>}
+        {provenance && <Provenance>{provenance}</Provenance>}
+      </div>
+      {children}
+    </section>
+  );
+}

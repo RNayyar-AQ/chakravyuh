@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Tests](https://img.shields.io/badge/tests-195%20passing-2dd4a7?style=for-the-badge)](tests/)
+[![Tests](https://img.shields.io/badge/tests-206%20passing-2dd4a7?style=for-the-badge)](tests/)
 [![Knowledge base](https://img.shields.io/badge/clauses-157%20%7C%2070%25%20primary%20text-4aa8ff?style=for-the-badge)](data/sources/MANIFEST.yaml)
 [![Determinism](https://img.shields.io/badge/same%20seed-same%20ledger%20hash-f0b429?style=for-the-badge)](tests/test_p3_determinism.py)
 [![Standards](https://img.shields.io/badge/ITU--T-Y.3172%20%C2%B7%20Y.3173%20%C2%B7%20X.1303-c084fc?style=for-the-badge)](docs/y3172_map.md)

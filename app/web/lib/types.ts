@@ -101,6 +101,162 @@ export interface RetrievalResult {
 /** Gap register rows are read straight from the CSV, so every value is a string. */
 export type GapRow = Record<string, string>;
 
+export interface ClauseRecord {
+  clause_id: string;
+  instrument: string;
+  section: string;
+  jurisdiction: string;
+  text: string;
+  source_url: string;
+  sha256: string;
+  page: number | null;
+  provenance: string;
+  verbatim_status: string;
+  quotable: boolean;
+}
+
+/** One pipeline stage, carrying the number that stage actually produced. */
+export interface FlowStage {
+  node: string;
+  title: string;
+  module: string;
+  command: string;
+  measure: string;
+  measure_sub: string;
+  body: string;
+}
+
+/** A margin, recomputed from the operands the run recorded. */
+export interface Derivation {
+  pack_id: string;
+  property_id: string;
+  applicable: boolean;
+  unit: string;
+  formula: string;
+  observed_label: string;
+  observed: number | null;
+  threshold: number | null;
+  threshold_name: string;
+  threshold_from?: number;
+  arithmetic: string;
+  margin: number;
+  recomputed?: number;
+  agrees: boolean;
+  passed: boolean;
+  note: string;
+  terms: { label: string; value: number | null; note: string }[];
+  seq: number;
+}
+
+export interface RrfPart {
+  mode: string;
+  rank: number;
+  contribution: number;
+}
+
+export interface RetrievalExample {
+  qid: string;
+  question: string;
+  gold_clause_ids: string[];
+  k: number;
+  formula: string;
+  rankings: { mode: string; retrieved: string[]; top_score: number; first_gold_rank: number | null }[];
+  fused: { clause_id: string; parts: RrfPart[]; score: number; tied_with_next: boolean }[];
+  recorded_hybrid: string[];
+  agrees_with_recorded: boolean;
+  caveat: string;
+}
+
+export interface KbGraph {
+  clauses: number;
+  chunks: number;
+  collections: Record<string, number>;
+  chunk_metadata_fields: string[];
+  instruments: {
+    instrument: string;
+    jurisdiction: string;
+    clauses: number;
+    real_text: number;
+    quotable: number;
+    with_page: number;
+  }[];
+  quotable: number;
+  real_text: number;
+  with_pdf_hash: number;
+}
+
+export interface TraceDelivery {
+  seq: number;
+  role: string;
+  released_t: number;
+  arrives_t: number;
+  latency_min: number;
+  visible_payload: Record<string, unknown>;
+}
+
+export interface TraceProposal {
+  seq: number;
+  t: number;
+  proposal_id: string;
+  role: string;
+  action: string;
+  params: Record<string, unknown>;
+  reasoning: string;
+  cited_rule_ids: string[];
+  cited_clause_ids: string[];
+  verdict: {
+    seq: number;
+    decision: Decision;
+    mode: string;
+    explanation: string;
+    rule_ids: string[];
+    clause_ids: string[];
+  } | null;
+}
+
+export interface Trace {
+  event_id: string;
+  event: {
+    seq: number;
+    t: number;
+    event_id: string;
+    type: string;
+    area: string | null;
+    authentic: boolean;
+    synthetic: boolean;
+    claimed_issuer: string | null;
+    visible_to: string[];
+    delay_by_role: Record<string, number>;
+    payload: Record<string, unknown>;
+  } | null;
+  hidden_from_agents: string[];
+  deliveries: TraceDelivery[];
+  proposals: TraceProposal[];
+  effects: { seq: number; t: number; action: string; area: string; detail: Record<string, unknown> }[];
+  moves: {
+    property_id: string;
+    margin: number;
+    passed: boolean;
+    via: { kind: "id" | "moment"; what: string[] }[];
+  }[];
+}
+
+export interface RubricCheck {
+  id: string;
+  criterion: string;
+  question: string;
+  status: "PASS" | "FAIL" | "WAIVED";
+  detail: string;
+  waiver: string;
+}
+
+export interface Rubric {
+  source: string;
+  command: string;
+  totals: { pass: number; waived: number; fail: number; checks: number };
+  checks: RubricCheck[];
+}
+
 export interface Bundle {
   fingerprint: string;
   scenario: {
@@ -127,7 +283,14 @@ export interface Bundle {
   };
   sources: Source[];
   retrieval: RetrievalResult[];
+  retrieval_example: RetrievalExample;
   adviser: Record<string, number | string>;
+  clauses: Record<string, ClauseRecord>;
+  flow: FlowStage[];
+  derivations: Derivation[];
+  traces: Trace[];
+  kb_graph: KbGraph;
+  rubric: Rubric;
 }
 
 export type Decision = "ALLOW" | "BLOCK" | "NEEDS_HUMAN";

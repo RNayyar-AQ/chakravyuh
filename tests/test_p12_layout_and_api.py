@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import ast
+import re
 from pathlib import Path
 
 import pytest
@@ -205,3 +206,31 @@ def test_the_bundle_ships_a_verifiable_ledger_pair():
     names = [p.name for p in ledgers]
     assert any(not n.endswith(".tampered.jsonl") for n in names), "no intact ledger shipped"
     assert any(n.endswith(".tampered.jsonl") for n in names), "no tampered ledger shipped"
+
+
+# --------------------------------------------------------------------------------------------
+# The demo is one page plus the rubric. A judge with seven minutes should not have to find a tab.
+
+WEB_APP = APP / "web" / "app"
+
+
+def test_the_site_is_one_page_plus_the_rubric():
+    routes = sorted(p.parent.name for p in WEB_APP.rglob("page.tsx"))
+    assert routes == ["app", "rubric"], f"unexpected routes: {routes}"
+
+
+def test_every_nav_anchor_is_a_section_that_exists():
+    """A nav link to a section that was renamed scrolls nowhere and says nothing about it."""
+    nav = (APP / "web" / "components" / "Nav.tsx").read_text(encoding="utf-8")
+    page = (WEB_APP / "page.tsx").read_text(encoding="utf-8")
+    linked = set(re.findall(r'\{\s*id:\s*"([a-z]+)"', nav))
+    rendered = set(re.findall(r'\n\s+id="([a-z]+)"', page))
+    assert linked, "the nav lists no sections"
+    assert linked <= rendered, f"nav links to missing sections: {sorted(linked - rendered)}"
+
+
+def test_the_page_renders_the_sections_that_explain_the_numbers():
+    """These four are the ask: the flow, the knowledge base, the retrieval, and the arithmetic."""
+    page = (WEB_APP / "page.tsx").read_text(encoding="utf-8")
+    for component in ("<Flow", "<KnowledgeBase", "<Retrieval", "<TraceWalk", "<Derivations"):
+        assert component in page, f"{component} is not on the page"
